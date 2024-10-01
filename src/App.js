@@ -5,7 +5,7 @@ import Navbar from './components/Navbar';
 import SignUp from './components/SignUp';
 import LogIn from './components/LogIn';
 import Footer from './components/Footer';
-import Heartrate from './components.Heartrate';
+import Heartrate from './components/Heartrate';
 
 function App() {
   return (

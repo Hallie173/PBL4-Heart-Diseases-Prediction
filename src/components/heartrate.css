@@ -5,3 +5,14 @@
     --color4: #D6D6D6;
     --color5: #a5e8f9;
 }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.heart-rate {
+    margin-top: 75px;
+    min-height: calc(100vh - 100px);
+}
