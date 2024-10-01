@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import SignUp from './components/SignUp';
 import LogIn from './components/LogIn';
 import Footer from './components/Footer';
+import Heartrate from './components.Heartrate';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path='/' exact />
         </Routes>
+        <Heartrate></Heartrate>
         <Footer></Footer>
       </Router>
     </>
