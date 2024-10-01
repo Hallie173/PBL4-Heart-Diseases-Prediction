@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+    --color1: #FAB10C;
+    --color2: #F4B076;
+    --color3: #21899e;
+    --color4: #D6D6D6;
+    --color5: #a5e8f9;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    width: 100%;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.navbar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    background: var(--color5);
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: calc(100% - 40px);
+    padding: 0 30px;
+    margin: 10px auto;
+    height: 11vh;
+    font-size: 20px;
+}
+
+.navbar-brand {
+    width: 20%;
+    padding: 10px;
+}
+
+.navbar-toggler {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+div[id="navbarNav"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+}
+
+.nav-link {
+    text-decoration: none;
+    border-radius: 20px;
+    padding: 5px 10px 5px;
+    background: linear-gradient(var(--color4), var(--color3));
+    color: white;
+    text-shadow: 1px 1px 2px black;
+    transition: 0.2s;
+}
+
+.nav-link:hover {
+    color: var(--color4);
+    background: linear-gradient(var(--color3), var(--color4));
+}
+
+.log-in {
+    color: var(--color3);
+    border: none;
+    outline: none;
+    font-size: 20px;
+    border-radius: 20px;
+    transition: 0.2s;
+    padding: 10px;
+    width: 20%;
+    margin-right: 5px;
+    background: transparent;
+}
+
+.log-in:hover {
+    cursor: pointer;
+    background: var(--color3);
+}
+
+.sign-up {
+    font-size: 20px;
+    border: none;
+    outline: none;
+    border-radius: 20px;
+    padding: 10px;
+    background: var(--color3);
+    color: white;
+    transition: 0.2s;
+    width: 20%;
+    margin-left: 5px;
+}
+
+.sign-up:hover {
+    cursor: pointer;
+    color: var(--color2);
+}
