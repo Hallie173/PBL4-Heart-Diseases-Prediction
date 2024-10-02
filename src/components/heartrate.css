@@ -12,7 +12,6 @@
     box-sizing: border-box;
 }
 
-.heart-rate {
-    margin-top: 75px;
-    min-height: calc(100vh - 100px);
+.heart-rate-container {
+    position: static;
 }

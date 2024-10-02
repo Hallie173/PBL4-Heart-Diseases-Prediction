@@ -18,8 +18,7 @@
 
 .navbar {
     width: 100%;
-    position: fixed;
-    top: 0;
+    position: static;
     z-index: 1000;
     background: var(--color5);
 }
@@ -30,8 +29,8 @@
     align-items: center;
     width: calc(100% - 40px);
     padding: 0 30px;
-    margin: 10px auto;
-    height: 75px;
+    margin: 0 auto;
+    height: 100px;
     font-size: 20px;
 }
 
@@ -61,7 +60,7 @@ div[id="navbarNav"] {
 .nav-link {
     text-decoration: none;
     border-radius: 20px;
-    padding: 5px 10px 5px;
+    padding: 10px;
     background: linear-gradient(var(--color4), var(--color3));
     color: white;
     text-shadow: 1px 1px 2px black;
@@ -78,7 +77,7 @@ div[id="navbarNav"] {
     border: none;
     outline: none;
     font-size: 20px;
-    border-radius: 20px;
+    border-radius: 25px;
     transition: 0.2s;
     padding: 10px;
     width: 20%;
@@ -88,14 +87,15 @@ div[id="navbarNav"] {
 
 .log-in:hover {
     cursor: pointer;
-    background: var(--color3);
+    border: 2px solid var(--color3);
+    background: var(--color4);
 }
 
 .sign-up {
     font-size: 20px;
     border: none;
     outline: none;
-    border-radius: 20px;
+    border-radius: 25px;
     padding: 10px;
     background: var(--color3);
     color: white;
@@ -106,5 +106,13 @@ div[id="navbarNav"] {
 
 .sign-up:hover {
     cursor: pointer;
-    color: var(--color2);
+    border: 2px solid var(--color3);
+    background: var(--color4);
+    color: var(--color3);
+}
+
+@media screen and (max-width: 800px) {
+    .navbar-nav {
+        display: none;
+    }
 }

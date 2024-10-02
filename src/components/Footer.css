@@ -16,8 +16,7 @@
 }
 
 .footer {
-    position: absolute;
-    bottom: 0;
+    position: static;
     background: var(--color3);
     padding: 30px 50px;
 
