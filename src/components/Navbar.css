@@ -73,6 +73,10 @@ div[id="navbarNav"] {
 }
 
 .log-in {
+    width: 20%;
+}
+
+.log-in button {
     color: var(--color3);
     border: none;
     outline: none;
@@ -80,18 +84,21 @@ div[id="navbarNav"] {
     border-radius: 25px;
     transition: 0.2s;
     padding: 10px;
-    width: 20%;
     margin-right: 5px;
     background: transparent;
 }
 
-.log-in:hover {
+.log-in button:hover {
     cursor: pointer;
     border: 2px solid var(--color3);
     background: var(--color4);
 }
 
 .sign-up {
+    width: 21%;
+}
+
+.sign-up button {
     font-size: 20px;
     border: none;
     outline: none;
@@ -100,11 +107,10 @@ div[id="navbarNav"] {
     background: var(--color3);
     color: white;
     transition: 0.2s;
-    width: 20%;
     margin-left: 5px;
 }
 
-.sign-up:hover {
+.sign-up button:hover {
     cursor: pointer;
     border: 2px solid var(--color3);
     background: var(--color4);

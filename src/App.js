@@ -11,12 +11,17 @@ function App() {
   return (
     <>
       <Router>
-        <Navbar></Navbar>
         <Routes>
-          <Route path='/' exact />
+          <Route path="/" element={
+            <>
+              <Navbar></Navbar>
+              <Heartrate></Heartrate>
+              <Footer></Footer>
+            </>
+          }/>
+          <Route path="/login" element={<LogIn />} />
+          <Route path="/signup" element={<SignUp />} />
         </Routes>
-        <Heartrate></Heartrate>
-        <Footer></Footer>
       </Router>
     </>
     

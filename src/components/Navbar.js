@@ -10,7 +10,7 @@ function Navbar() {
             <div className="container">
                 <a className="navbar-brand" href="#"><img src={heartLogo} /></a>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
+                  <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
                   <ul className="navbar-nav">
@@ -27,8 +27,12 @@ function Navbar() {
                         <a className="nav-link" href="#">Liên hệ</a>
                       </li>
                   </ul>
-                  <button className="btn btn-outline-primary log-in">Log In</button>
-                  <button className="btn btn-outline-secondary sign-up">Sign Up</button>
+                  <Link to="/login" className="log-in">
+                    <button className="btn btn-outline-primary">Log In</button>
+                  </Link>
+                  <Link to="/signup" className="sign-up">
+                    <button className="btn btn-outline-secondary">Sign Up</button>
+                  </Link>
                 </div>
             </div>
         </nav>

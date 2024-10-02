@@ -15,12 +15,19 @@
 }
 
 div[className="signup"] {
+    width: 100%;
     font-family: "Sans-serif";
-    background: var(--color3);
-    width: 500px;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+form {
+    border: 1px solid black;
+    border-radius: 50px;
+    background: var(--color4);
+    width: 500px;
+    margin: 0 auto;
 }
 
 h1 {
@@ -36,12 +43,10 @@ h1 {
 }
 
 .form-control {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: block;
     width: 100%;
     position: relative;
-    margin-top: 30px;
+    margin: 0;
 }
 
 .form-control input {
