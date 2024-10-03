@@ -55,7 +55,7 @@ function SignUp() {
                 <span></span>
             </div>
         </form>
-      </div>
+        </div>
     );
 }
 

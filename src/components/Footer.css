@@ -61,18 +61,19 @@
     text-shadow: 1px 1px 1px black;
 }
 
-.terms div p, .services div p, .contact div p {
+.terms div p, .services div p, .contact div p, .times div p {
     margin-top: 10px;
     color: var(--color4);
 }
 
-.contact div p {
+.contact div p, .times div p {
     display: flex;
     align-items: center;
 }
 
-.contact p .icon {
+.contact p .icon , .times div p .icon {
     width: 10%;
+    margin: 0 5px;
 }
 
 a {
