@@ -3,7 +3,7 @@ import "./LogIn.css";
 
 function LogIn() {
     return (
-        <div className="login hidden">
+        <div className="login">
         <form>
           <h1>Log In</h1>
           <div className="form-control">
