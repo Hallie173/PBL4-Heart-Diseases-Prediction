@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify";
 import Navbar from "./components/Navbar";
 import SignUp from "./components/SignUp/SignUp";
 import LogIn from "./components/LogIn/LogIn";
+import ECG from "./components/ECG/ECG";
 import Footer from "./components/Footer";
 import Heartrate from "./components/heartrate";
 
@@ -25,6 +26,7 @@ function App() {
           />
           <Route path="/login" element={<LogIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/ECG" element={<ECG />} />
         </Routes>
       </Router>
       <ToastContainer
