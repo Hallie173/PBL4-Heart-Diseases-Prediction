@@ -39,6 +39,10 @@
   padding: 10px;
 }
 
+.navbar-brand img {
+  width: 33%;
+}
+
 .navbar-toggler {
   visibility: hidden;
   pointer-events: none;
