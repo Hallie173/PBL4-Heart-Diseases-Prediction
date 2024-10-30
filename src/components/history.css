@@ -45,3 +45,25 @@
     outline: none;
     background: transparent;
 }
+
+.result-list .list li {
+    list-style: none;
+    text-align: left;
+    border: 1px solid var(--color4);
+    margin-top: 10px;
+    padding: 10px 10px 10px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--color3);
+}
+
+.info-box {
+    color: rgb(100, 100, 100);
+    margin-left: 20px;
+}
+
+.show-date-detail {
+    color: var(--color2);
+    margin: auto;
+}
