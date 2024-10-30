@@ -1,13 +1,27 @@
 import React from "react";
 import ECG from "./ECG/ECG";
+import { Link } from 'react-router-dom';
 import "./heartrate.css";
 
-function Heartrate() {
+function Heartrate({ onShowHistory }) {
   return (
     <div className="homepage">
       <div className="heartrate">
         <h2 className="your-heartrate">Kết quả của bạn</h2>
         <ECG className="ecg-graph"></ECG>
+        <div className="diagnosis">
+          <div className="preliminary-diagnosis">
+            <span className="content-name">Chẩn đoán sơ bộ: </span>
+            <span className="diagnosis-content">something</span>
+          </div>
+          <div className="detailed-diagnosis">
+            <span className="content-name">Chẩn đoán chi tiết: </span>
+            <span className="diagnosis-content">something</span>
+          </div>
+        </div>
+        <Link to="/history" className="show-history">
+          <button>Xem lịch sử đo</button>
+        </Link>
       </div>
     </div>
   );

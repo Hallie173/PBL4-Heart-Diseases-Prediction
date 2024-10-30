@@ -34,7 +34,9 @@
     align-items: center;
 }
 
-.left-info, .center-info, .right-info {
+.left-info,
+.center-info,
+.right-info {
     padding: 20px 10px 15px 10px;
     margin-left: 0;
     margin-right: 0;
@@ -61,19 +63,23 @@
     text-shadow: 1px 1px 1px black;
 }
 
-.terms div p, .services div p, .contact div p, .times div p {
+.terms div p,
+.services div p,
+.contact div p,
+.times div p {
     margin-top: 10px;
     color: var(--color4);
 }
 
-.contact div p, .times div p {
+.contact div p,
+.times div p {
     display: flex;
     align-items: center;
 }
 
-.contact p .icon , .times div p .icon {
-    width: 10%;
-    margin: 0 5px;
+.contact p .icon,
+.times div p .icon {
+    margin-right: 12px;
 }
 
 a {

@@ -8,19 +8,30 @@ import LogIn from "./components/LogIn/LogIn";
 import ECG from "./components/ECG/ECG";
 import Footer from "./components/Footer";
 import Heartrate from "./components/heartrate";
+import History from "./components/history";
 
 function App() {
+  const [showHistory, setShowHistory] = useState(false);
   return (
     <>
       <Router>
+        <Navbar />
         <Routes>
           <Route
             path="/"
             element={
               <>
-                <Navbar></Navbar>
-                <Heartrate></Heartrate>
-                <Footer></Footer>
+                <Heartrate />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/history"
+            element={
+              <>
+                <History />
+                <Footer />
               </>
             }
           />

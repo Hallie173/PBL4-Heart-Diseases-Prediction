@@ -13,49 +13,34 @@
     font-family: "Montserrat", sans-serif;
 }
 
-.homepage {
-    padding: 10px;
-    min-height: 100vh;
-}
-
-.heartrate {
+.history {
     margin: 20px;
     border: 1px solid var(--color4);
-    padding: 0 20px 20px 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    text-align: center;
 }
 
-.your-heartrate {
+.your-history {
     text-align: center;
     margin: 10px 20px;
     font-size: 30px;
     color: var(--color3);
 }
 
-.diagnosis {
-    padding: 10px 50px 30px 50px;
-    text-align: left;
-}
-
-.diagnosis .content-name {
-    font-size: 20px;
-    text-align: left;
-    font-weight: bold;
-}
-
-.diagnosis .diagnosis-content {
-    font-size: 18px;
-}
-
-.show-history {
+.show-recent-result {
     background: var(--color2);
     padding: 10px 25px;
-    font-size: 18px;
+    font-size: 15px;
     border: 2px solid black;
     border-radius: 10px;
     margin: 30px 0 30px 100px;
+    width: 200px;
 }
 
-.show-history button {
+.show-recent-result button {
     border: none;
     outline: none;
     background: transparent;
