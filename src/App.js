@@ -9,6 +9,7 @@ import ECG from "./components/ECG/ECG";
 import Footer from "./components/Footer";
 import Heartrate from "./components/heartrate";
 import History from "./components/history";
+import Account from "./components/Account/Account";
 
 function App() {
   const [showHistory, setShowHistory] = useState(false);
@@ -22,7 +23,6 @@ function App() {
             element={
               <>
                 <Heartrate />
-                <Footer />
               </>
             }
           />
@@ -31,7 +31,14 @@ function App() {
             element={
               <>
                 <History />
-                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/account"
+            element={
+              <>
+                <Account />
               </>
             }
           />
@@ -39,6 +46,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/ECG" element={<ECG />} />
         </Routes>
+        <Footer />
       </Router>
       <ToastContainer
         position="bottom-center"

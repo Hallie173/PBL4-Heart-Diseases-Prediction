@@ -134,3 +134,16 @@ div[id="navbarNav"] {
     display: none;
   }
 }
+
+.account-management {
+  width: 50px;
+  margin-left: 20px;
+}
+
+.account-management img {
+  width: 50px;
+  background: white;
+  border-radius: 50%;
+  padding: 5px;
+  border: 1px solid black;
+}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 import logo from '../logo.jpg';
+import avatar from '../avatar.png';
 
 function Navbar() {
   return (
@@ -32,6 +33,9 @@ function Navbar() {
             </Link>
             <Link to="/signup" className="sign-up">
               <button className="btn btn-outline-secondary">Sign Up</button>
+            </Link>
+            <Link to="/account" className="account-management">
+              <img src={avatar} />
             </Link>
           </div>
         </div>
