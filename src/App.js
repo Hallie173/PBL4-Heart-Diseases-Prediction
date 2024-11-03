@@ -35,7 +35,7 @@ function App() {
             }
           />
           <Route
-            path="/account"
+            path="/account/*"
             element={
               <>
                 <Account />
