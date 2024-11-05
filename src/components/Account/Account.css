@@ -40,7 +40,6 @@
     border: 3px solid var(--color4);
     border-radius: 50%;
     overflow: hidden;
-
 }
 
 .admin-account {}
@@ -48,6 +47,10 @@
 .show-avatar img {
     width: 100%;
     margin: 0 auto;
+}
+
+.show-info {
+    margin-top: 20px;
 }
 
 .show-info p {

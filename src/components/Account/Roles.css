@@ -15,3 +15,88 @@
     /* width: 100%; */
     font-family: "Montserrat", sans-serif;
 }
+
+.roles {
+    width: 100%;
+}
+
+.roles-list {
+    width: 100%;
+    list-style: none;
+    padding: 0 10px;
+}
+
+.title,
+.roles-item {
+    width: 100%;
+    border-bottom: 1px solid var(--color4);
+    display: flex;
+    align-items: center;
+}
+
+.title {
+    font-weight: bold;
+    color: var(--color3);
+    display: flex;
+    align-items: center;
+    border: none;
+    margin: 15px 0;
+    padding: 0 10px;
+}
+
+.roles-item * {
+    text-align: left;
+}
+
+.id,
+.role-id {
+    width: 120px;
+    margin-right: 20px;
+}
+
+.url,
+.role-url {
+    width: 200px;
+    margin-right: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.description,
+.role-description {
+    width: 350px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 20px;
+}
+
+.role-action {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 1000px) {
+
+    .id,
+    .role-id {
+        width: 60px;
+    }
+
+    .url,
+    .role-url {
+        width: 100px;
+    }
+
+    .description,
+    .role-description {
+        width: 170px;
+    }
+}
+
+.trash-icon {
+    color: red;
+}

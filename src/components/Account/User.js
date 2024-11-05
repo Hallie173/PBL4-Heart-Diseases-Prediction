@@ -1,4 +1,6 @@
 import "./User.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 
 function User() {
     return (
@@ -11,14 +13,17 @@ function User() {
                 <span className="group">Group</span>
                 <span className="actions">Actions</span>
             </div>
-            <ul class="account-list">
-                <li class="account-item">
-                    <span className="account-numberical-order">#001</span>
-                    <span className="account-id">PT001</span>
+            <ul className="account-list">
+                <li className="account-item">
+                    <span className="account-numberical-order">1</span>
+                    <span className="account-id">001</span>
                     <span className="account-username">LDPH</span>
                     <span className="account-email">phuonghaleduy@gmail.com</span>
                     <span className="account-group">User</span>
-                    <span className="account-actions">Actions</span>
+                    <span className="account-actions">
+                        <FontAwesomeIcon icon={faPenToSquare} className="edit-icon"></FontAwesomeIcon>
+                        <FontAwesomeIcon icon={faTrashCan} className="trash-icon"></FontAwesomeIcon>
+                    </span>
                 </li>
             </ul>
         </div>
