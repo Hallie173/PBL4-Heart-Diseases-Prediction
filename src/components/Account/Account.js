@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./Account.css";
 import GroupRoles from './GroupRoles';
@@ -10,6 +10,7 @@ import Roles from './Roles';
 import User from './User';
 
 function Account() {
+    const location = useLocation();
     return (
         <div className="management-container">
             <div className="account-manage">
@@ -35,13 +36,13 @@ function Account() {
             <div className="roles-manage">
                 <ul class="nav nav-tabs">
                     <li className="nav-item">
-                        <Link className="nav-link manage-item user-link" to="user">User</Link>
+                        <Link className={`nav-link manage-item user-link ${location.pathname.endsWith("/user") ? "active" : ""}`} to="user">User</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link manage-item role-link" to="roles">Role</Link>
+                        <Link className={`nav-link manage-item role-link ${location.pathname.endsWith("/roles") ? "active" : ""}`} to="roles">Role</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link manage-item grouprole-link" to="group-roles">Group-role</Link>
+                        <Link className={`nav-link manage-item grouprole-link ${location.pathname.endsWith("/group-roles") ? "active" : ""}`} to="group-roles">Group-role</Link>
                     </li>
                 </ul>
                 <div className="tab-content">

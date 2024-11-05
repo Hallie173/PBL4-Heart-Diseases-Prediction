@@ -20,6 +20,29 @@
     width: 100%;
 }
 
+.add-role-title {
+    color: var(--color3);
+    margin: 20px 0 10px 0;
+}
+
+.add-role-url,
+.add-role-description {
+    padding: 5px;
+    width: 300px;
+    margin: 0 20px 20px 0;
+}
+
+.save-new-role {
+    background: var(--color1);
+    border-radius: 5px;
+    padding: 5px 10px;
+    border: 1px solid black;
+}
+
+.save-new-role:hover {
+    background: var(--color2);
+}
+
 .roles-list {
     width: 100%;
     list-style: none;
@@ -48,7 +71,7 @@
     text-align: left;
 }
 
-.id,
+.r-id,
 .role-id {
     width: 120px;
     margin-right: 20px;
@@ -56,7 +79,7 @@
 
 .url,
 .role-url {
-    width: 200px;
+    width: 300px;
     margin-right: 20px;
     white-space: nowrap;
     overflow: hidden;
@@ -88,7 +111,7 @@
 
     .url,
     .role-url {
-        width: 100px;
+        width: 150px;
     }
 
     .description,

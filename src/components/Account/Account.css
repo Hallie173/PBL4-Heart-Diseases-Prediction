@@ -79,6 +79,17 @@
     color: var(--color1);
 }
 
+.nav-link {
+    color: var(--color3);
+    background-color: transparent;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.nav-link.active {
+    border-radius: 5px;
+}
+
 .tab-content {
     border: 1px solid var(--color4);
     border-top: none;

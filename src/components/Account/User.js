@@ -7,7 +7,7 @@ function User() {
         <div className="user">
             <div className="title">
                 <span className="numberical-order">#</span>
-                <span className="id">ID</span>
+                <span className="acc-id">ID</span>
                 <span className="username">Username</span>
                 <span className="email">Email</span>
                 <span className="group">Group</span>

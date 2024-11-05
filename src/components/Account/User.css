@@ -53,7 +53,7 @@
     width: 100px;
 }
 
-.id,
+.acc-id,
 .account-id {
     width: 120px;
 }
@@ -76,20 +76,16 @@
     width: 150px;
 }
 
-.action,
-.account-action {}
+.account-actions {}
 
 @media (max-width: 1000px) {
-    .account-email {
-        width: 170px;
-    }
 
     .numberical-order,
     .account-numberical-order {
         width: 50px;
     }
 
-    .id,
+    .acc-id,
     .account-id {
         width: 60px;
     }
@@ -112,6 +108,7 @@
 
 .edit-icon {
     color: var(--color1);
+    margin-right: 20px;
 }
 
 .trash-icon {
