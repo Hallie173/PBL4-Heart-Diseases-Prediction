@@ -16,13 +16,50 @@
     font-family: "Montserrat", sans-serif;
 }
 
-.nav-tabs {
-    border: 1px solid var(--color4);
-    padding: 0 20px;
+.group-roles {
+    width: 100%;
 }
 
-.manage-item {
+.select-div {
+    border-bottom: 1px solid var(--color4);
+    margin-bottom: 20px;
+}
+
+.select-title {
+    color: var(--color3);
+    margin: 20px 0 10px 0;
+}
+
+.select-group {
+    width: 50%;
+    padding: 10px 5px;
+    margin: 0 0 20px 0;
     border-radius: 5px;
-    margin: 20px 0;
-    padding: 10px 20px;
+}
+
+.select-group:focus {
+    border: 1px solid var(--color3);
+}
+
+.assign-roles {
+    display: flex;
+    flex-direction: column;
+}
+
+.assign-roles-title {
+    color: var(--color3);
+}
+
+input[type="checkbox"] {
+    transform: scale(1.5);
+    margin: 10px 15px 10px 20px;
+}
+
+.save-roles-list {
+    background: var(--color1);
+    border-radius: 5px;
+    padding: 5px;
+    margin: 20px auto 15px 15px;
+    border: 1px solid black;
+    width: 80px;
 }

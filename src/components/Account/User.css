@@ -44,28 +44,38 @@
     padding: 0 10px;
 }
 
+.account-item {
+    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .account-item * {
     text-align: left;
 }
 
 .numberical-order,
 .account-numberical-order {
-    width: 100px;
+    width: 80px;
+    margin-right: 20px;
 }
 
 .acc-id,
 .account-id {
-    width: 120px;
+    width: 100px;
+    margin-right: 20px;
 }
 
 .username,
 .account-username {
-    width: 200px;
+    width: 190px;
+    margin-right: 10px;
 }
 
 .email,
 .account-email {
-    width: 350px;
+    width: 330px;
+    margin-right: 20px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -73,21 +83,26 @@
 
 .group,
 .account-group {
-    width: 150px;
+    width: 130px;
+    margin-right: 20px;
 }
 
-.account-actions {}
+.account-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 @media (max-width: 1000px) {
 
     .numberical-order,
     .account-numberical-order {
-        width: 50px;
+        width: 40px;
     }
 
     .acc-id,
     .account-id {
-        width: 60px;
+        width: 50px;
     }
 
     .username,

@@ -20,6 +20,10 @@
     width: 100%;
 }
 
+.add-role {
+    border-bottom: 1px solid var(--color4);
+}
+
 .add-role-title {
     color: var(--color3);
     margin: 20px 0 10px 0;
@@ -30,6 +34,8 @@
     padding: 5px;
     width: 300px;
     margin: 0 20px 20px 0;
+    border: 2px solid rgba(0, 0, 0, 0.4);
+    border-radius: 5px;
 }
 
 .save-new-role {
@@ -67,6 +73,12 @@
     padding: 0 10px;
 }
 
+.roles-item {
+    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .roles-item * {
     text-align: left;
 }
@@ -95,8 +107,12 @@
     margin-right: 20px;
 }
 
-.role-action {
-    width: 100%;
+.actions,
+.role-actions {
+    width: 60px;
+}
+
+.role-actions {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -104,7 +120,7 @@
 
 @media (max-width: 1000px) {
 
-    .id,
+    .r-id,
     .role-id {
         width: 60px;
     }
@@ -117,6 +133,11 @@
     .description,
     .role-description {
         width: 170px;
+    }
+
+    .actions,
+    .role-actions {
+        width: 60px;
     }
 }
 

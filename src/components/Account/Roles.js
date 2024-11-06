@@ -14,13 +14,13 @@ function Roles() {
             <div className="title">
                 <span className="r-id">ID</span>
                 <span className="url">URL</span>
-                <span className="description">DescriptionN</span>
+                <span className="description">Description</span>
                 <span className="actions">Actions</span>
             </div>
             <ul className="roles-list">
                 <li className="roles-item">
                     <span className="role-id">001</span>
-                    <span className="role-url">/</span>
+                    <span className="role-url">..................................</span>
                     <span className="role-description">nothingnothingnothingnothingnothingnothing</span>
                     <span className="role-actions">
                         <FontAwesomeIcon icon={faTrashCan} className="trash-icon"></FontAwesomeIcon>

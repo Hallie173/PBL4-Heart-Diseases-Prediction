@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./Account.css";
@@ -8,9 +8,11 @@ import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Roles from './Roles';
 import User from './User';
+import EditProfile from './EditProfile';
 
 function Account() {
     const location = useLocation();
+
     return (
         <div className="management-container">
             <div className="account-manage">
@@ -28,7 +30,7 @@ function Account() {
                     <p><span className="left">Address:</span><span className="right">Da Nang, Viet Nam</span></p>
                 </div>
                 <div className="change-info">
-                    <button className="change-button">
+                    <button type="button" className="change-button" data-bs-toggle="modal" data-bs-target="#edit-form-modal">
                         <FontAwesomeIcon icon={faPen} />  Edit
                     </button>
                 </div>
@@ -52,10 +54,11 @@ function Account() {
                         <Route path="group-roles" element={<GroupRoles />} />
                     </Routes>
                 </div>
-
             </div>
+
+            <EditProfile />
         </div>
-    )
+    );
 }
 
 export default Account;
