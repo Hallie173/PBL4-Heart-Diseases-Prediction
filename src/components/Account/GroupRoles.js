@@ -14,16 +14,16 @@ function GroupRoles() {
             </div>
             <div className="assign-roles">
                 <h5 className="assign-roles-title">Assign Roles:</h5>
-                <label for="a-create">
+                <label for="ad-create">
                     <input type="checkbox" id="ad-create" />/admin/create
                 </label>
-                <label for="a-update">
+                <label for="ad-update">
                     <input type="checkbox" id="ad-update" />/admin/update
                 </label>
-                <label for="a-read">
+                <label for="ad-read">
                     <input type="checkbox" id="ad-read" />/admin/read
                 </label>
-                <label for="a-delete">
+                <label for="ad-delete">
                     <input type="checkbox" id="ad-delete" />/admin/delete
                 </label>
 

@@ -12,17 +12,17 @@ import History from "./components/history";
 import Account from "./components/Account/Account";
 
 function App() {
-  const [showHistory, setShowHistory] = useState(false);
   return (
     <>
       <Router>
-        <Navbar />
         <Routes>
           <Route
             path="/"
             element={
               <>
+                <Navbar />
                 <Heartrate />
+                <Footer />
               </>
             }
           />
@@ -30,7 +30,9 @@ function App() {
             path="/history"
             element={
               <>
+                <Navbar />
                 <History />
+                <Footer />
               </>
             }
           />
@@ -38,15 +40,15 @@ function App() {
             path="/account/*"
             element={
               <>
+                <Navbar />
                 <Account />
+                <Footer />
               </>
             }
           />
           <Route path="/login" element={<LogIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/ECG" element={<ECG />} />
         </Routes>
-        <Footer />
       </Router>
       <ToastContainer
         position="bottom-center"
