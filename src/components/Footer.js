@@ -6,7 +6,7 @@ import { faLocationDot, faPhone, faEnvelope, faClockFour } from '@fortawesome/fr
 function Footer() {
     return (
         <div className="footer">
-            <div className="footer-title">Chẩn đoán các vấn đề tim mạch</div>
+            <div className="footer-title"><span className="brand-name">Healthy Heart</span> - Chẩn đoán các vấn đề tim mạch</div>
             <div className="all-info">
                 <div className="left-info">
                     <div className="terms">

@@ -1,11 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 :root {
-  --color1: #fab10c;
-  --color2: #f4b076;
-  --color3: #21899e;
-  --color4: #d6d6d6;
-  --color5: #a5e8f9;
+  --color1: #D4343F;
+  --color2: #F3505A;
+  --color3: #ECEBEA;
+  --color4: #085979;
+  --color5: #008EA0;
+  --color6: #64BABE;
 }
 
 * {
@@ -20,7 +21,7 @@
   width: 100%;
   position: static;
   z-index: 1000;
-  background: var(--color5);
+  background: var(--color4);
 }
 
 .container {
@@ -64,7 +65,7 @@ div[id="navbarNav"] {
 .nav-link {
   text-decoration: none;
   border-radius: 20px;
-  border: 2px solid var(--color3);
+  border: 2px solid var(--color6);
   padding: 10px;
   background: transparent;
   color: var(--color3);
@@ -75,7 +76,7 @@ div[id="navbarNav"] {
 
 .nav-link:hover {
   color: white;
-  background: var(--color3);
+  background: var(--color5);
 }
 
 .log-in {
@@ -99,8 +100,9 @@ div[id="navbarNav"] {
 
 .log-in button:hover {
   cursor: pointer;
-  border: 2px solid var(--color3);
-  background: var(--color4);
+  border: 2px solid var(--color1);
+  background: var(--color3);
+  color: var(--color2);
 }
 
 .sign-up {
@@ -116,7 +118,7 @@ div[id="navbarNav"] {
   outline: none;
   border-radius: 25px;
   padding: 10px;
-  background: var(--color3);
+  background: var(--color2);
   color: white;
   transition: 0.2s;
   width: 80%;
@@ -124,9 +126,9 @@ div[id="navbarNav"] {
 
 .sign-up button:hover {
   cursor: pointer;
-  border: 2px solid var(--color3);
-  background: var(--color2);
-  color: var(--color3);
+  border: 2px solid var(--color1);
+  background: var(--color3);
+  color: var(--color2);
 }
 
 @media screen and (max-width: 800px) {
