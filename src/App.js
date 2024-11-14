@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import Heartrate from "./components/heartrate";
 import History from "./components/history";
 import Account from "./components/Account/Account";
+import Intro from "./components/Introduction/Intro";
 
 function App() {
   return (
@@ -42,6 +43,16 @@ function App() {
               <>
                 <Navbar />
                 <Account />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/introduction"
+            element={
+              <>
+                <Navbar />
+                <Intro />
                 <Footer />
               </>
             }

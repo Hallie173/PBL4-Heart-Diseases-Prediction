@@ -16,16 +16,16 @@ function Navbar() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <a className="nav-link" aria-current="page" href="#">Giới thiệu</a>
+                <Link to="/" className="nav-link" aria-current="page" href="#">Trang chủ</Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">Hướng dẫn</a>
+                <Link to="/introduction" className="nav-link" href="#">Giới thiệu</Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">Tra cứu</a>
+                <Link className="nav-link" href="#">Hướng dẫn</Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">Liên hệ</a>
+                <Link className="nav-link" href="#">Tra cứu</Link>
               </li>
             </ul>
             <Link to="/login" className="log-in">
