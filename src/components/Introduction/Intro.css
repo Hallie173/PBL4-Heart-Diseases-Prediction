@@ -8,3 +8,32 @@
     --color5: #008EA0;
     --color6: #64BABE;
 }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.introduction {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.slogan-div {
+    height: 450px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: var(--color3);
+}
+
+.hearthhealth-img {
+    width: 40%;
+    height: auto;
+    margin-right: 100px;
+    object-fit: contain;
+}

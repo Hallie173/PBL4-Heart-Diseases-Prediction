@@ -12,11 +12,11 @@ function Heartrate({ onShowHistory }) {
         <div className="diagnosis">
           <div className="preliminary-diagnosis">
             <span className="content-name">Chẩn đoán sơ bộ: </span>
-            <span className="diagnosis-content">something</span>
+            <span className="diagnosis-content">Bạn có một trái tim khỏe mạnh!</span>
           </div>
           <div className="detailed-diagnosis">
             <span className="content-name">Chẩn đoán chi tiết: </span>
-            <span className="diagnosis-content">something</span>
+            <span className="diagnosis-content"></span>
           </div>
         </div>
         <Link to="/history" className="show-history">
