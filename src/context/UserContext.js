@@ -24,7 +24,7 @@ const UserProvider = ({ children }) => {
     setUser({ ...userDefault, isLoading: false });
   };
 
-  const fetchUSer = async () => {
+  const fetchUser = async () => {
     let response = await getUserAccount();
     if (response && response.EC === 0) {
       let groupWithRoles = response.DT.groupWithRoles;
@@ -49,7 +49,7 @@ const UserProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchUSer();
+    fetchUser();
   }, []);
 
   return (

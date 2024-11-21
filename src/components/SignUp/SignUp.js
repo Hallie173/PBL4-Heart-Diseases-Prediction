@@ -8,7 +8,7 @@ import { UserContext } from "../../context/UserContext";
 import logo from "../../logo.svg";
 
 const SignUp = (props) => {
-  //   const { user } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -30,11 +30,11 @@ const SignUp = (props) => {
 
   let navigate = useNavigate();
 
-  //   useEffect(() => {
-  //     if (user && user.isAuthenticated) {
-  //       navigate("/");
-  //     }
-  //   }, []);
+  useEffect(() => {
+    if (user && user.isAuthenticated) {
+      navigate("/");
+    }
+  }, []);
 
   const isValidInput = () => {
     setObjCheckInput(defaultValidInput);
