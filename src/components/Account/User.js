@@ -26,10 +26,10 @@ function User() {
                     </span>
                 </li>
                 <li className="account-item">
-                    <span className="account-numberical-order">1</span>
-                    <span className="account-id">001</span>
-                    <span className="account-username">LDPH</span>
-                    <span className="account-email">phuonghaleduy@gmail.com</span>
+                    <span className="account-numberical-order">2</span>
+                    <span className="account-id">002</span>
+                    <span className="account-username">TDM</span>
+                    <span className="account-email">vanhnguyen29@gmail.com</span>
                     <span className="account-group">User</span>
                     <span className="account-actions">
                         <FontAwesomeIcon icon={faPenToSquare} className="edit-icon"></FontAwesomeIcon>

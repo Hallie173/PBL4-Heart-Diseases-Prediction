@@ -35,6 +35,7 @@ function Navbar() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item">
+
                 <a className="nav-link" aria-current="page" href="#">
                   Giới thiệu
                 </a>
@@ -53,6 +54,9 @@ function Navbar() {
                 <a className="nav-link" href="#">
                   Liên hệ
                 </a>
+
+              
+
               </li>
             </ul>
             <Link to="/login" className="log-in">

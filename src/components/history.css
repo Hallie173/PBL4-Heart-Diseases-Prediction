@@ -1,9 +1,10 @@
 :root {
-    --color1: #FAB10C;
-    --color2: #F4B076;
-    --color3: #21899e;
-    --color4: #D6D6D6;
-    --color5: #a5e8f9;
+    --color1: #D4343F;
+    --color2: #F3505A;
+    --color3: #ECEBEA;
+    --color4: #085979;
+    --color5: #008EA0;
+    --color6: #64BABE;
 }
 
 * {
@@ -27,39 +28,43 @@
     text-align: center;
     margin: 10px 20px;
     font-size: 30px;
-    color: var(--color3);
+    font-weight: bold;
+    color: var(--color1);
 }
 
 .show-recent-result {
-    background: var(--color2);
+    background: var(--color1);
     padding: 10px 25px;
-    font-size: 15px;
-    border: 2px solid black;
+    font-size: 18px;
+    box-shadow: 3px 3px var(--color2);
     border-radius: 10px;
     margin: 30px 0 30px 100px;
     width: 200px;
+    border: 0.5px solid white;
 }
 
 .show-recent-result button {
     border: none;
     outline: none;
     background: transparent;
+    color: white;
 }
 
 .result-list .list li {
     list-style: none;
     text-align: left;
-    border: 1px solid var(--color4);
+    border: 1px solid var(--color6);
     margin-top: 10px;
     padding: 10px 10px 10px 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: var(--color3);
+    color: var(--color5);
 }
 
 .info-box {
     color: rgb(100, 100, 100);
+    margin-top: 5px;
     margin-left: 20px;
 }
 
