@@ -42,7 +42,13 @@ const LogIn = (props) => {
       let groupWithRoles = response.DT.groupWithRoles;
       let email = response.DT.email;
       let username = response.DT.username;
+      let firstName = response.DT.firstName;
+      let lastName = response.DT.lastName;
       let token = response.DT.access_token;
+      let phone = response.DT.phone;
+      let gender = response.DT.gender;
+      let avatar = response.DT.avatar;
+      let address = response.DT.address;
 
       let data = {
         isAuthenticated: true,
@@ -51,12 +57,18 @@ const LogIn = (props) => {
           groupWithRoles,
           email,
           username,
+          firstName,
+          lastName,
+          phone,
+          gender,
+          avatar,
+          address,
         },
       };
 
       localStorage.setItem("jwt", token);
       loginContext(data);
-      if (groupWithRoles.name === "Admin") {
+      if (groupWithRoles.name === "admin") {
         navigate("/admin");
       } else {
         navigate("/");
@@ -78,9 +90,9 @@ const LogIn = (props) => {
   useEffect(() => {
     if (user && user.isAuthenticated) {
       console.log(user);
-      navigate("/");
+      window.history.back();
     }
-  }, []);
+  }, [user]);
 
   return (
     <>

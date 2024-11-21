@@ -1,3 +1,4 @@
+import instance from "../setup/axios";
 import axios from "../setup/axios";
 
 const registerNewUser = (

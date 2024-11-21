@@ -116,6 +116,13 @@ const SignUp = (props) => {
     }
   };
 
+  useEffect(() => {
+    if (user && user.isAuthenticated) {
+      console.log(user);
+      window.history.back();
+    }
+  }, [user]);
+
   return (
     <>
       <div class="wrapper">

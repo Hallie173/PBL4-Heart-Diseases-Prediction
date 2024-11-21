@@ -4,10 +4,25 @@ import "./Navbar.css";
 import logo from "../logo.jpg";
 import avatar from "../avatar.png";
 import { UserContext } from "../context/UserContext";
+import { toast } from "react-toastify";
+import { logoutUser } from "../services/userService";
 
 function Navbar() {
-  const { user } = useContext(UserContext);
+  const { user, logoutContext } = useContext(UserContext);
   let navigate = useNavigate();
+
+  const handleLogout = async () => {
+    let data = await logoutUser(); // clear cookies
+    localStorage.removeItem("jwt"); // clear local storage
+    logoutContext(); // clear user in context
+    if (data && +data.EC === 0) {
+      toast.success("Logout succeeds...");
+      navigate("/login");
+    } else {
+      toast.error(data.EM);
+    }
+  };
+
   useEffect(() => {
     if (user && !user.isAuthenticated) {
       console.log(user);
@@ -35,7 +50,6 @@ function Navbar() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item">
-
                 <a className="nav-link" aria-current="page" href="#">
                   Giới thiệu
                 </a>
@@ -54,19 +68,21 @@ function Navbar() {
                 <a className="nav-link" href="#">
                   Liên hệ
                 </a>
-
-              
-
               </li>
             </ul>
-            <Link to="/login" className="log-in">
+            {/* <Link to="/logout" className="log-in">
               <button className="btn btn-outline-primary">Log In</button>
-            </Link>
-            <Link to="/signup" className="sign-up">
-              <button className="btn btn-outline-secondary">Sign Up</button>
+            </Link> */}
+            <Link className="sign-up">
+              <button
+                className="btn btn-outline-secondary"
+                onClick={() => handleLogout()}
+              >
+                Log out
+              </button>
             </Link>
             <Link to="/account" className="account-management">
-              <img src={avatar} />
+              <img src={user.account.avatar} />
             </Link>
           </div>
         </div>
