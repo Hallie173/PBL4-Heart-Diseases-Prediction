@@ -7,7 +7,7 @@ import { UserContext } from "../../context/UserContext";
 import logo from "../../logo.svg";
 
 const LogIn = (props) => {
-  //   const { user, loginContext } = useContext(UserContext);
+  const { user, loginContext } = useContext(UserContext);
 
   let navigate = useNavigate();
 
@@ -55,7 +55,7 @@ const LogIn = (props) => {
       };
 
       localStorage.setItem("jwt", token);
-      //   loginContext(data);
+      loginContext(data);
       if (groupWithRoles.name === "Admin") {
         navigate("/admin");
       } else {
@@ -75,11 +75,12 @@ const LogIn = (props) => {
     }
   };
 
-  //   useEffect(() => {
-  //     if (user && user.isAuthenticated) {
-  //       navigate("/");
-  //     }
-  //   }, []);
+  useEffect(() => {
+    if (user && user.isAuthenticated) {
+      console.log(user);
+      navigate("/");
+    }
+  }, []);
 
   return (
     <>
