@@ -30,6 +30,8 @@ function EditProfile() {
     let response = await updateCurrentUser(userData);
     if (response && +response.EC === 0) {
       toast.success(response.EM);
+      let token = response.DT.access_token;
+      localStorage.setItem("jwt", token);
       updateContext(userData);
     } else toast.error(response.EM);
   };

@@ -19,7 +19,7 @@ function Account() {
     <div className="management-container">
       <div className="account-manage">
         <div className="account-type">
-          <span className="admin-account">Admin</span>
+          <span className="admin-account">User</span>
         </div>
         <div className="show-avatar">
           <img src={user.account.avatar} />

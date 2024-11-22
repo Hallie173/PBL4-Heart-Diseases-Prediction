@@ -10,7 +10,12 @@ import {
   Legend,
 } from "recharts";
 
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+} from "firebase/auth";
 import { getDatabase, ref, get, onValue, off, set } from "firebase/database";
 import { app } from "../../setup/firebase"; // Đường dẫn đến file firebase.js
 
@@ -20,23 +25,26 @@ const provider = new GoogleAuthProvider();
 
 const ECG = () => {
   // Đăng nhập bằng Google
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [ECGdata, setECGData] = useState([]);
   const [isRunning, setIsRunning] = useState(false); // Trạng thái bắt đầu/stop
   const [viewData, setViewData] = useState([]);
 
   useEffect(() => {
-    const signInAndFetchData = async () => {
-      try {
-        // Đăng nhập bằng Google
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        console.log("User logged in:", user);
-      } catch (error) {
-        console.error("Error during Google Sign-In:", error);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("User already logged in:", user);
+      } else {
+        // Chỉ gọi popup đăng nhập khi chưa đăng nhập
+        signInWithPopup(auth, provider)
+          .then((result) => console.log("User logged in:", result.user))
+          .catch((error) =>
+            console.error("Error during Google Sign-In:", error)
+          );
       }
-    };
+    });
 
-    signInAndFetchData();
+    return () => unsubscribe(); // Dừng lắng nghe khi component unmount
   }, []);
 
   useEffect(() => {
@@ -55,41 +63,35 @@ const ECG = () => {
 
   const handleStartButton = () => {
     setIsRunning(true);
+
     const db = getDatabase(app);
-    const dbRef = ref(db, "Data/FxhaovnQlHP8wJvCjvJPXb3U2ch2/state");
+    const stateRef = ref(db, "Data/FxhaovnQlHP8wJvCjvJPXb3U2ch2/run");
+    const ecgDataRef = ref(db, "Data/FxhaovnQlHP8wJvCjvJPXb3U2ch2/ecg_data");
 
-    // Gửi state=1 lên Firebase khi bắt đầu
-    set(dbRef, 1);
+    // Gửi state=1 lên Firebase
+    set(stateRef, 1);
 
-    // Lấy dữ liệu từ Firebase Realtime Database sau khi đăng nhập
-    const dbRef2 = ref(db, "Data/FxhaovnQlHP8wJvCjvJPXb3U2ch2/ecg_data");
+    // Theo dõi state trên Firebase
+    const stateListener = onValue(stateRef, async (snapshot) => {
+      const currentState = snapshot.val();
+      if (currentState === 0) {
+        // Khi state=0, dừng theo dõi và lấy dữ liệu từ ecg_data một lần
+        off(stateRef, "value", stateListener); // Dừng lắng nghe state
 
-    // Lắng nghe thay đổi dữ liệu (realtime listener)
-    const dataListener = onValue(dbRef2, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        console.log(data);
+        const ecgDataSnapshot = await get(ecgDataRef);
+        if (ecgDataSnapshot.exists()) {
+          const data = ecgDataSnapshot.val();
+          console.log(data);
 
-        let arr = data[0].split(",");
+          const arr = data.split(",");
+          setECGData(arr); // Ghi đè dữ liệu mới
+        } else {
+          console.log("No ECG data available");
+        }
 
-        // Cập nhật dữ liệu mới
-        setECGData((prevData) => [
-          ...prevData, // Giữ lại dữ liệu cũ
-          ...arr, // Thêm dữ liệu mới
-        ]);
-      } else {
-        console.log("No data available");
+        setIsRunning(false); // Dừng trạng thái đang chạy
       }
     });
-
-    // Sau 10 giây gửi state=0 và ngừng lắng nghe dữ liệu
-    setTimeout(() => {
-      set(dbRef, 0);
-      setIsRunning(false); // Đặt trạng thái không còn đang chạy
-
-      // Dừng lắng nghe dữ liệu sau 10 giây
-      off(dbRef2, "value", dataListener);
-    }, 10000); // 10 giây
   };
 
   return (

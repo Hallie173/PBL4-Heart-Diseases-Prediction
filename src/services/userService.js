@@ -1,6 +1,20 @@
 import instance from "../setup/axios";
 import axios from "../setup/axios";
 
+const deleteRole = (role) => {
+  return axios.delete("/api/v1/role/delete", {
+    data: { id: role._id },
+  });
+};
+
+const fetchAllRolesWithPaging = (page, limit) => {
+  return axios.get(`/api/v1/role/read?page=${page}&limit=${limit}`);
+};
+
+const createRoles = (roles) => {
+  return axios.post("/api/v1/role/create", [...roles]);
+};
+
 const registerNewUser = (
   firstName,
   lastName,
@@ -77,6 +91,9 @@ const ChangePassword = (data) => {
 };
 
 export {
+  fetchAllRolesWithPaging,
+  deleteRole,
+  createRoles,
   registerNewUser,
   loginUser,
   fetchAllUsers,

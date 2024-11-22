@@ -2,14 +2,58 @@ import "./User.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
-import { fetchAllUsers } from "../../services/userService";
+import { deleteUser, fetchAllUsers } from "../../services/userService";
 import ReactPaginate from "react-paginate";
+import { toast } from "react-toastify";
+import ModalUser from "./ModalUser";
+import ModalDelete from "./ModalDelete";
 
 function User() {
   const [listUsers, setListUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
   const [totalPages, setTotalPages] = useState(0);
+  // modal delete
+  const [isShowModalDelete, setIsShowModalDelete] = useState(false);
+  const [dataModal, setDataModal] = useState({});
+  // modal update/create user
+  const [isShowModalUser, setIsShowModalUser] = useState(false);
+  const [actionModalUser, setActionModalUser] = useState("CREATE");
+  const [dataModalUser, setDataModalUser] = useState({});
+
+  const handleClose = () => {
+    setIsShowModalDelete(false);
+    setDataModal({});
+  };
+
+  const confirmDeleteUser = async () => {
+    let response = await deleteUser(dataModal);
+    console.log(">>Check response: ", response);
+    if (response && response.EC === 0) {
+      toast.success(response.EM);
+      await fetchUsers();
+      setIsShowModalDelete(false);
+    } else {
+      toast.error(response.EM);
+    }
+  };
+
+  const onHideModalUser = async () => {
+    setIsShowModalUser(false);
+    setDataModalUser({});
+    await fetchUsers();
+  };
+
+  const handleEditUser = (user) => {
+    setActionModalUser("UPDATE");
+    setDataModalUser(user);
+    setIsShowModalUser(true);
+  };
+
+  const handleDeleteUser = async (user) => {
+    setDataModal(user);
+    setIsShowModalDelete(true);
+  };
 
   const fetchUsers = async () => {
     let response = await fetchAllUsers(currentPage, currentLimit);
@@ -86,10 +130,12 @@ function User() {
                         <FontAwesomeIcon
                           icon={faPenToSquare}
                           className="edit-icon"
+                          onClick={() => handleEditUser(item)}
                         ></FontAwesomeIcon>
                         <FontAwesomeIcon
                           icon={faTrashCan}
                           className="trash-icon"
+                          onClick={() => handleDeleteUser(item)}
                         ></FontAwesomeIcon>
                       </div>
                     </td>
@@ -106,47 +152,6 @@ function User() {
           )}
         </tbody>
       </table>
-      {/* <div className="title">
-        <span className="numberical-order">#</span>
-        <span className="acc-id">ID</span>
-        <span className="username">Username</span>
-        <span className="email">Email</span>
-        <span className="group">Group</span>
-        <span className="actions">Actions</span>
-      </div>
-      <ul className="account-list">
-        {listUsers && listUsers.length > 0 ? (
-          <>
-            {listUsers.map((item, index) => {
-              return (
-                <li className="account-item">
-                  <span className="account-numberical-order">{index}</span>
-                  <span className="account-id">{item._id}</span>
-                  <span className="account-username">{item.username}</span>
-                  <span className="account-email">{item.email}</span>
-                  <span className="account-group">{item.group}</span>
-                  <span className="account-actions">
-                    <FontAwesomeIcon
-                      icon={faPenToSquare}
-                      className="edit-icon"
-                    ></FontAwesomeIcon>
-                    <FontAwesomeIcon
-                      icon={faTrashCan}
-                      className="trash-icon"
-                    ></FontAwesomeIcon>
-                  </span>
-                </li>
-              );
-            })}
-          </>
-        ) : (
-          <>
-            <tr>
-              <td>Not Found User</td>
-            </tr>
-          </>
-        )}
-      </ul> */}
       {totalPages > 0 && (
         <div className="user-footer">
           <ReactPaginate
@@ -171,6 +176,19 @@ function User() {
           />
         </div>
       )}
+      <ModalDelete
+        show={isShowModalDelete}
+        handleClose={handleClose}
+        confirmDeleteUser={confirmDeleteUser}
+        dataModal={dataModal}
+      />
+
+      <ModalUser
+        show={isShowModalUser}
+        onHide={onHideModalUser}
+        action={actionModalUser}
+        dataModalUser={dataModalUser}
+      />
     </div>
   );
 }
