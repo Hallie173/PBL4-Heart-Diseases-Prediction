@@ -22,7 +22,7 @@ function Account() {
           <span className="admin-account">Admin</span>
         </div>
         <div className="show-avatar">
-          <img src={avatar} />
+          <img src={user.account.avatar} />
         </div>
         <div className="show-info">
           <p>

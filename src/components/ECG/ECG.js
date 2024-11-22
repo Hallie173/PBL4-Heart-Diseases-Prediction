@@ -31,32 +31,6 @@ const ECG = () => {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
         console.log("User logged in:", user);
-
-        // // Lấy dữ liệu từ Firebase Realtime Database sau khi đăng nhập
-        // const db = getDatabase(app);
-        // const dbRef = ref(db, "Data/FxhaovnQlHP8wJvCjvJPXb3U2ch2/ecg_data");
-
-        // // Lắng nghe thay đổi dữ liệu (realtime listener)
-        // onValue(dbRef, (snapshot) => {
-        //   if (snapshot.exists()) {
-        //     const data = snapshot.val();
-        //     // const dataArray = data.map((value, index) => ({
-        //     //   index: index + 1,
-        //     //   ECGValue: value,
-        //     // }));
-        //     console.log(data);
-
-        //     let arr = data[0].split(",");
-
-        //     // Cập nhật dữ liệu mới
-        //     setECGData((prevData) => [
-        //       ...prevData, // Giữ lại dữ liệu cũ
-        //       ...arr, // Thêm dữ liệu mới
-        //     ]);
-        //   } else {
-        //     console.log("No data available");
-        //   }
-        // });
       } catch (error) {
         console.error("Error during Google Sign-In:", error);
       }
