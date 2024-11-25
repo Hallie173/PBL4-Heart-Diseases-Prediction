@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import logo from "../logo.jpg";
-import avatar from "../avatar.png";
 import { UserContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 import { logoutUser } from "../services/userService";

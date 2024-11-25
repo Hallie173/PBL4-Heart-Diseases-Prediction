@@ -19,12 +19,14 @@ function Heartrate({ onShowHistory }) {
             <span className="diagnosis-content"></span>
           </div>
         </div>
-        <Link to="/history" className="show-history">
-          <button>Xem lịch sử đo</button>
-        </Link>
-        <Link to="/measure-prepare" className="prepare-for-measure">
-          <button>Bắt đầu đo</button>
-        </Link>
+        <div className="buttons">
+          <Link to="/history" className="show-history">
+            <button>Xem lịch sử đo</button>
+          </Link>
+          <Link to="/measure-prepare" className="prepare-for-measure">
+            <button>Bắt đầu đo</button>
+          </Link>
+        </div>
       </div>
     </div>
   );

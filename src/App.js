@@ -11,58 +11,60 @@ import Heartrate from "./components/heartrate";
 import History from "./components/history";
 import MeasurePrepare from "./components/NewMeasure/MeasurePrepare";
 import MeasureStart from "./components/NewMeasure/MeasureStart";
-import Account from "./components/Account/Account";
+import Account from "./components/Manage/Account";
 import Intro from "./components/Introduction/Intro";
+import Manage from "./components/Manage/Manage";
 
 function App() {
-  const userType = "user"; // Hoặc "admin"
+  const userType = "user";
 
   return (
     <>
       <Router>
-        <Routes>
-          {userType === "user" ? (
-            // Luồng dành cho User
-            <>
-              <Route
-                path="/"
-                element={
-                  <>
-                    <Navbar />
-                    <Heartrate />
-                    <Footer />
-                  </>
-                }
-              />
-              <Route
-                path="/history"
-                element={
-                  <>
-                    <Navbar />
-                    <History />
-                    <Footer />
-                  </>
-                }
-              />
-            </>
-          ) : (
-            // Luồng dành cho Admin
-            <>
-              <Route
-                path="/account/*"
-                element={
-                  <>
-                    <Navbar />
-                    <Account />
-                    <Footer />
-                  </>
-                }
-              />
-            </>
-          )}
-          {/* Các route chung cho cả User và Admin */}
+        <Routes> {/*user */}
+          <Route
+            path="/"
+            element={
+              <>
+                <Navbar />
+                <Heartrate />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/history"
+            element={
+              <>
+                <Navbar />
+                <History />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/account/*"
+            element={
+              <>
+                <Navbar />
+                <Account />
+                <Footer />
+              </>
+            }
+          />
           <Route path="/login" element={<LogIn />} />
           <Route path="/signup" element={<SignUp />} />
+        </Routes>
+        <Routes> {/*admin*/}
+          <Route
+            path="/manage/*"
+            element={
+              <>
+                <Navbar />
+                <Manage />
+              </>
+            }
+          />
         </Routes>
       </Router>
       <ToastContainer
