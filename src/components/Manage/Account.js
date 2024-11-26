@@ -11,14 +11,16 @@ function Account() {
   const { user } = useContext(UserContext);
 
   return (
-    <div className={styles.managementContainer}>
-      <div className={styles.accountManage}>
-        <div className={styles.accountType}>
-          <span className={styles.adminAccount}>User</span>
-        </div>
+    <div className={styles.infoContainer}>
+      <div className={styles.avatar}>
         <div className={styles.showAvatar}>
           <img src={user.account.avatar} />
         </div>
+        <div className={styles.accountType}>
+          <span className={styles.adminAccount}>User</span>
+        </div>
+      </div>
+      <div className={styles.personalInfo}>
         <div className={styles.showInfo}>
           <p>
             <span className={styles.left}>Full name:</span>

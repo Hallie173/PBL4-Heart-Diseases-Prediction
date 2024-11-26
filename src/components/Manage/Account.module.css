@@ -17,18 +17,24 @@
     font-family: "Montserrat", sans-serif;
 }
 
-.managementContainer {
+.infoContainer {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
     width: 100%;
     padding: 20px;
 }
 
-.accountManage {
-    width: 25%;
-    padding: 15px;
+.avatar {
     border: 1px solid var(--color4);
+    border-bottom: 0;
+    width: 30%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .showAvatar {
@@ -42,6 +48,12 @@
 .showAvatar img {
     width: 100%;
     margin: 0 auto;
+}
+
+.personalInfo {
+    border: 1px solid var(--color4);
+    padding: 20px;
+    width: 30%;
 }
 
 .showInfo {

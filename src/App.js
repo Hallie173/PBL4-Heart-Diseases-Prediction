@@ -58,7 +58,6 @@ function App() {
             path="/manage/*"
             element={
               <>
-                <Navbar />
                 <Manage />
                 <Footer />
               </>
