@@ -16,8 +16,6 @@ import Intro from "./components/Introduction/Intro";
 import Manage from "./components/Manage/Manage";
 
 function App() {
-  const userType = "user";
-
   return (
     <>
       <Router>
@@ -62,6 +60,7 @@ function App() {
               <>
                 <Navbar />
                 <Manage />
+                <Footer />
               </>
             }
           />

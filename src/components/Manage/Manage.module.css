@@ -17,7 +17,7 @@
     font-family: "Montserrat", sans-serif;
 }
 
-.management-container {
+.managementContainer {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -25,17 +25,13 @@
     padding: 20px;
 }
 
-.account-manage {
+.accountManage {
     width: 25%;
     padding: 15px;
     border: 1px solid var(--color4);
 }
 
-.roles-manage {
-    width: 74%;
-}
-
-.show-avatar {
+.showAvatar {
     width: 45%;
     margin: 10px auto;
     border: 3px solid var(--color5);
@@ -43,71 +39,82 @@
     overflow: hidden;
 }
 
-.admin-account {}
-
-.show-avatar img {
+.showAvatar img {
     width: 100%;
     margin: 0 auto;
 }
 
-.show-info {
+.showInfo {
     margin-top: 20px;
 }
 
-.show-info p {
+.showInfo p {
     display: flex;
     justify-content: space-between;
 }
 
-.show-info .left {
+.showInfo .left {
     color: rgba(0, 0, 0, 0.5);
 }
 
-.show-info .right {
+.showInfo .right {
     color: var(--color4);
     font-weight: bold;
 }
 
-.change-info {
+.changeInfo {
     display: flex;
     justify-content: flex-end;
 }
 
-.change-info .change-button {
+.changeInfo .changeButton {
     border: none;
     outline: none;
     background: transparent;
     color: var(--color1);
 }
 
-.manage-item {
-    color: var(--color4);
-    background-color: transparent;
+.rolesManage {
+    width: 74%;
+}
+
+.navTabs {
+    border: 1px solid var(--color4);
+    padding-top: 20px;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    list-style: none;
+    display: flex;
+}
+
+.navItem {
+    padding: 0;
+    margin: 0;
+}
+
+.manageItem {
+    display: block;
     text-decoration: none;
-    border-radius: 5px;
-    margin: 20px 0;
-    padding: 10px 20px;
-}
-
-.manage-item:hover {
-    background: var(--color4);
-}
-
-.manage-item.active {
+    color: var(--color4);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    border: 1px solid var(--color4);
+    padding: 10px 15px;
 }
 
-.tab-content {
+.manageItem:hover {
+    background: var(--color3);
+    color: var(--color4);
+}
+
+.manageItem.active {
+    background: var(--color5);
+    color: white;
+}
+
+.tabContent {
     border: 1px solid var(--color4);
     border-top: none;
     padding: 10px 20px;
-}
-
-.nav-tabs {
-    border: 1px solid var(--color4);
-    padding: 0 20px;
 }
