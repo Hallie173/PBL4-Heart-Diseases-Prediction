@@ -16,6 +16,15 @@ function Guide() {
                         <li>2. Hướng dẫn lắp đặt</li>
                         <li>3. Một số lưu ý khi đo</li>
                     </ul>
+                    <div className="equipment-info">
+
+                    </div>
+                    <div className="setup-guide">
+
+                    </div>
+                    <div className="attention">
+
+                    </div>
                 </div>
             </div>
         </div>
