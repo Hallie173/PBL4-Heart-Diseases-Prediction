@@ -12,8 +12,10 @@ import History from "./components/HistoryHealthRecord.js/history";
 import MeasurePrepare from "./components/NewMeasure/MeasurePrepare";
 import MeasureStart from "./components/NewMeasure/MeasureStart";
 import Account from "./components/Manage/Account";
-import Intro from "./components/Introduction/Intro";
+import Guide from "./components/Guide/Guide";
 import Manage from "./components/Manage/Manage";
+import Contact from "./components/Contact/Contact";
+import LookUp from "./components/LookUp/LookUp";
 import EcgHistory from "./components/HistoryHealthRecord.js/EcgHistory";
 
 function App() {
@@ -23,6 +25,36 @@ function App() {
         <Routes>
           {" "}
           {/*user */}
+          <Route
+            path="/guide"
+            element={
+              <>
+                <Navbar />
+                <Guide />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/look-up"
+            element={
+              <>
+                <Navbar />
+                <LookUp />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/contact"
+            element={
+              <>
+                <Navbar />
+                <Contact />
+                <Footer />
+              </>
+            }
+          />
           <Route
             path="/"
             element={
@@ -59,6 +91,16 @@ function App() {
               <>
                 <Navbar />
                 <Account />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/measure-prepare"
+            element={
+              <>
+                <Navbar />
+                <MeasurePrepare />
                 <Footer />
               </>
             }
