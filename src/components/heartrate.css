@@ -47,6 +47,13 @@
     font-size: 18px;
 }
 
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
 .show-history {
     background: var(--color1);
     padding: 10px 25px;
@@ -58,6 +65,23 @@
 }
 
 .show-history button {
+    color: white;
+    border: none;
+    outline: none;
+    background: transparent;
+}
+
+.prepare-for-measure {
+    background: #198754;
+    padding: 10px 25px;
+    font-size: 18px;
+    box-shadow: 3px 3px #1fa667;
+    border-radius: 10px;
+    margin: 30px 100px 30px 0;
+    border: 0.5px solid white;
+}
+
+.prepare-for-measure button {
     color: white;
     border: none;
     outline: none;

@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import logo from "../logo.jpg";
-import avatar from "../avatar.png";
 import { UserContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 import { logoutUser } from "../services/userService";
@@ -50,24 +49,24 @@ function Navbar() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <a className="nav-link" aria-current="page" href="#">
+                <Link className="nav-link" aria-current="page" to="/">
                   Giới thiệu
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">
+                <Link to="/guide" className="nav-link">
                   Hướng dẫn
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">
+                <Link to="/look-up" className="nav-link">
                   Tra cứu
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">
+                <Link to="/contact" className="nav-link">
                   Liên hệ
-                </a>
+                </Link>
               </li>
             </ul>
             {/* <Link to="/logout" className="log-in">

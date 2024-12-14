@@ -1,4 +1,4 @@
-import axios from "../setup/axios";
+import { instance, instancePy } from "../setup/axios";
 
 const registerNewUser = (
   firstName,
@@ -8,7 +8,7 @@ const registerNewUser = (
   username,
   password
 ) => {
-  return axios.post("/api/v1/register", {
+  return instance.post("/api/v1/register", {
     firstName,
     lastName,
     email,
@@ -19,60 +19,72 @@ const registerNewUser = (
 };
 
 const loginUser = (valueLogin, password) => {
-  return axios.post("/api/v1/login", {
+  return instance.post("/api/v1/login", {
     valueLogin,
     password,
   });
 };
 
 const fetchAllUsers = (page, limit) => {
-  return axios.get(`/api/v1/user/read?page=${page}&limit=${limit}`);
+  return instance.get(`/api/v1/user/read?page=${page}&limit=${limit}`);
 };
 
 const deleteUser = (user) => {
-  return axios.delete("/api/v1/user/delete", {
-    data: { id: user.id },
+  return instance.delete("/api/v1/user/delete", {
+    data: { id: user._id },
   });
 };
 
 const fetchGroup = () => {
-  return axios.get("/api/v1/group/read");
+  return instance.get("/api/v1/group/read");
 };
 
 const createNewUser = (userData) => {
-  return axios.post("/api/v1/user/create", {
+  return instance.post("/api/v1/user/create", {
     ...userData,
   });
 };
 
 const updateCurrentUser = (userData) => {
-  return axios.put("/api/v1/user/update", {
+  return instance.put("/api/v1/user/update", {
     ...userData,
   });
 };
 
 const getUserAccount = () => {
-  return axios.get("/api/v1/account");
+  return instance.get("/api/v1/account");
 };
 
 const logoutUser = () => {
-  return axios.post("/api/v1/logout");
+  return instance.post("/api/v1/logout");
 };
 
 const getUserByEmail = (email) => {
-  return axios.get(`/api/v1/user/read-info-user?email=${email}`);
+  return instance.get(`/api/v1/user/read-info-user?email=${email}`);
 };
 
 const updateUser = (userData) => {
-  return axios.put("/api/v1/user/update-info-user", {
+  return instance.put("/api/v1/user/update-info-user", {
     ...userData,
   });
 };
 
 const ChangePassword = (data) => {
-  return axios.put("/api/v1/change-pass", {
+  return instance.put("/api/v1/change-pass", {
     ...data,
   });
+};
+
+const getDataHealth = (ecg) => {
+  return instancePy.post("/api/predict", ecg);
+};
+
+const createHealthRecord = (data) => {
+  return instance.post("/api/v1/user/create-healthRecord", data);
+};
+
+const getHistoryHealthRecord = () => {
+  return instance.get("/api/v1/user/history-healthRecord");
 };
 
 export {
@@ -88,4 +100,7 @@ export {
   getUserByEmail,
   updateUser,
   ChangePassword,
+  getDataHealth,
+  createHealthRecord,
+  getHistoryHealthRecord,
 };

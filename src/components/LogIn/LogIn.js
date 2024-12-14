@@ -69,7 +69,7 @@ const LogIn = (props) => {
       localStorage.setItem("jwt", token);
       loginContext(data);
       if (groupWithRoles.name === "admin") {
-        navigate("/admin");
+        navigate("/manage");
       } else {
         navigate("/");
       }

@@ -55,6 +55,11 @@ div[id="navbarNav"] {
   align-items: center;
 }
 
+.navbar-collapse {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .navbar-nav {
   display: flex;
   justify-content: space-between;
@@ -105,14 +110,16 @@ div[id="navbarNav"] {
   color: var(--color2);
 }
 
-.sign-up {
+.sign-up,
+.log-out {
   width: 18%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.sign-up button {
+.sign-up button,
+.log-out button {
   font-size: 20px;
   border: none;
   outline: none;
@@ -124,7 +131,8 @@ div[id="navbarNav"] {
   width: 80%;
 }
 
-.sign-up button:hover {
+.sign-up button:hover,
+.log-out button:hover {
   cursor: pointer;
   border: 2px solid var(--color1);
   background: var(--color3);
