@@ -36,7 +36,7 @@ function Manage() {
     useEffect(() => {
         if (user && !user.isAuthenticated) {
             console.log(user);
-            navigate("/login");
+            // navigate("/login");
         }
     }, []);
 

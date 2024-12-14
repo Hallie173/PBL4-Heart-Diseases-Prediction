@@ -31,7 +31,7 @@ const fetchAllUsers = (page, limit) => {
 
 const deleteUser = (user) => {
   return instance.delete("/api/v1/user/delete", {
-    data: { id: user.id },
+    data: { id: user._id },
   });
 };
 
