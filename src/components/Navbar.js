@@ -50,22 +50,22 @@ function Navbar() {
             <ul className="navbar-nav">
               <li className="nav-item">
                 <Link className="nav-link" aria-current="page" to="/">
-                  Giới thiệu
+                  Introduction
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/guide" className="nav-link">
-                  Hướng dẫn
+                  Guide
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/look-up" className="nav-link">
-                  Tra cứu
+                  Look Up
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/contact" className="nav-link">
-                  Liên hệ
+                  Contact
                 </Link>
               </li>
             </ul>
