@@ -41,14 +41,6 @@ function Statistic() {
                                             <div class="p-2">{item.username}</div>
                                         </td>
                                         <td>
-                                            <div class="p-2 d-flex flex-column">{item.email}</div>
-                                        </td>
-                                        <td>
-                                            <div class="p-2">
-                                                {item.groupId ? item.groupId.name : ""}
-                                            </div>
-                                        </td>
-                                        <td>
                                             <div class="p-2 icons">
                                                 <FontAwesomeIcon
                                                     icon={faTrashCan}
