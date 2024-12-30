@@ -6,6 +6,7 @@ import "../Navbar.css";
 import logo from "../../logo.jpg";
 import classNames from "classnames";
 import GroupRoles from "./GroupRoles";
+import Statistic from "./Statistic";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Roles from "./Roles";
@@ -161,6 +162,18 @@ function Manage() {
                                 to="group-roles"
                             >
                                 Group-role
+                            </Link>
+                        </li>
+                        <li className={styles.navItem}>
+                            <Link
+                                className={classNames(styles.navLink, styles.manageItem, styles.statisticLink,
+                                    {
+                                        [styles.active]: location.pathname.endsWith("/statistic"),
+                                    }
+                                )}
+                                to="statistic"
+                            >
+                                Statistic
                             </Link>
                         </li>
                     </ul>

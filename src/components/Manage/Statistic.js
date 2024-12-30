@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Statistic.css";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+
 function Statistic() {
+    const [listUsers, setListUsers] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [currentLimit, setCurrentLimit] = useState(6);
+
+    const [dataModal, setDataModal] = useState(null);
+    const [isShowModalDelete, setIsShowModalDelete] = useState(false);
+
+    const handleDeleteUser = async (user) => {
+        setDataModal(user);
+        setIsShowModalDelete(true);
+    };
+
     return (
         <div className="statistic">
             <table class="table table-borderless table-responsive table-hover card-1 p-4">
