@@ -3,6 +3,7 @@ import "./Statistic.css";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { Link } from "react-router-dom";
 
 function Statistic() {
     const [listUsers, setListUsers] = useState([]);
@@ -32,6 +33,9 @@ function Statistic() {
                             <span class="ml-2">Username</span>
                         </th>
                         <th>
+                            <span class="ml-4">Statistic</span>
+                        </th>
+                        <th>
                             <span class="ml-4">Actions</span>
                         </th>
                     </tr>
@@ -54,6 +58,9 @@ function Statistic() {
                                         </td>
                                         <td>
                                             <div class="p-2">{item.username}</div>
+                                        </td>
+                                        <td>
+                                            <Link to="/statistic-graph" />
                                         </td>
                                         <td>
                                             <div class="p-2 icons">

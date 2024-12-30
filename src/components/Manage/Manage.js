@@ -182,6 +182,7 @@ function Manage() {
                             <Route path="user" element={<User />} />
                             <Route path="roles" element={<Roles />} />
                             <Route path="group-roles" element={<GroupRoles />} />
+                            <Route path="statistic" element={<Statistic />} />
                         </Routes>
                     </div>
                 </div>
