@@ -89,7 +89,6 @@ const LogIn = (props) => {
 
   useEffect(() => {
     if (user && user.isAuthenticated) {
-      console.log(user);
       window.history.back();
     }
   }, [user]);
@@ -124,7 +123,7 @@ const LogIn = (props) => {
                         <form class="row g-3">
                           <div class="col-12">
                             <label for="inputEmailAddress" class="form-label">
-                              Email Address
+                              Email Address or Username
                             </label>
                             <input
                               type="text"
@@ -133,7 +132,7 @@ const LogIn = (props) => {
                                   ? "form-control"
                                   : "form-control is-invalid"
                               }
-                              placeholder="Email address or phone number"
+                              placeholder="Email address or Username"
                               value={valueLogin}
                               onChange={(event) => {
                                 setValueLogin(event.target.value);
@@ -142,7 +141,7 @@ const LogIn = (props) => {
                           </div>
                           <div class="col-12">
                             <label for="inputChoosePassword" class="form-label">
-                              Enter Password
+                              Password
                             </label>
                             <div class="input-group" id="show_hide_password">
                               <input

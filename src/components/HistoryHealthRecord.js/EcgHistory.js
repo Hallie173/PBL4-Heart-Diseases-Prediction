@@ -65,7 +65,9 @@ const EcgHistory = () => {
         <div className="preliminary-diagnosis">
           <span className="content-name">Chẩn đoán sơ bộ: </span>
           <span className="diagnosis-content">
-            {ecgData && ecgData.ecg_type && ecgData.ecg_type.predicted_label
+            {ecgData &&
+            ecgData.ecg_type &&
+            ecgData.ecg_type.predicted_label >= 0
               ? predicted_label[ecgData.ecg_type.predicted_label]
               : "Loading"}
           </span>
@@ -73,7 +75,9 @@ const EcgHistory = () => {
         <div className="detailed-diagnosis">
           <span className="content-name">Chẩn đoán chi tiết: </span>
           <span className="diagnosis-content">
-            {ecgData && ecgData.ecg_type && ecgData.ecg_type.predicted_label
+            {ecgData &&
+            ecgData.ecg_type &&
+            ecgData.ecg_type.predicted_label >= 0
               ? predicted_detail[ecgData.ecg_type.predicted_label]
               : "Loading"}
           </span>

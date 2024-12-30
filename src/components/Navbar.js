@@ -23,11 +23,10 @@ function Navbar() {
   };
 
   useEffect(() => {
-    if (user && !user.isAuthenticated) {
-      console.log(user);
+    if (user && user.isAuthenticated === false) {
       navigate("/login");
     }
-  }, []);
+  }, [user]);
   return (
     <div className="navbar-container">
       <nav className="navbar navbar-expand-lg">
