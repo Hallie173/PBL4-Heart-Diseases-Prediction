@@ -48,7 +48,7 @@ const applyInterceptors = (axiosInstance) => {
         default:
           break;
       }
-      return Promise.reject(error);
+      return null;
     }
   );
 };

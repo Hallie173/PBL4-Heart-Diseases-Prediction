@@ -50,7 +50,7 @@ const ECG = ({ onDataUpdate }) => {
 
     const db = getDatabase(app);
     const stateRef = ref(db, "Data/FxhaovnQlHP8wJvCjvJPXb3U2ch2/run");
-    const ecgDataRef = ref(db, "Data/FxhaovnQlHP8wJvCjvJPXb3U2ch2/ecg_data");
+    const ecgDataRef = ref(db, "Data/FxhaovnQlHP8wJvCjvJPXb3U2ch2/ecg_data11");
 
     // Đặt state=1 lên Firebase
     set(stateRef, 1).catch((error) =>
