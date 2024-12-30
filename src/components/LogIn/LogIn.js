@@ -66,13 +66,13 @@ const LogIn = (props) => {
         },
       };
 
-      localStorage.setItem("jwt", token);
-      loginContext(data);
-      if (groupWithRoles.name === "admin") {
-        navigate("/manage");
-      } else {
-        navigate("/");
-      }
+      // localStorage.setItem("jwt", token);
+      // loginContext(data);
+      // if (groupWithRoles.name === "admin") {
+      //   navigate("/manage");
+      // } else {
+      //   navigate("/");
+      // }
     }
 
     if (response && +response.EC !== 0) {

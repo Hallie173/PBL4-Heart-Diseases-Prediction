@@ -22,7 +22,7 @@ function History() {
     ]
     return (
         <div className="history">
-            <h2 className="your-history">Lần đo gần đây</h2>
+            <h2 className="your-history">Your Recent Measures</h2>
             <div className="result-list">
                 <ul className="list">
                     {dataList.map((item, index) => (
@@ -36,13 +36,13 @@ function History() {
                                 )}
                             </span>
                             <span className="show-detail">
-                                <Link to="/" className="show-date-detail">Xem chi tiết</Link></span>
+                                <Link to="/" className="show-date-detail">More Details</Link></span>
                         </li>
                     ))}
                 </ul>
             </div>
             <Link to="/" className="show-recent-result">
-                <button>Về trang chủ</button>
+                <button>Back to Home</button>
             </Link>
         </div>
     )
