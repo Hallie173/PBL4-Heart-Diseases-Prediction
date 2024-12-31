@@ -7,6 +7,7 @@ import logo from "../../logo.jpg";
 import classNames from "classnames";
 import GroupRoles from "./GroupRoles";
 import HearthRecord from "./HearthRecord";
+import Statistic from "./Statistic";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Roles from "./Roles";
@@ -80,6 +81,7 @@ function Manage() {
                 </Link>
               </div>
             </div>
+
           </nav>
         </div>
       </div>

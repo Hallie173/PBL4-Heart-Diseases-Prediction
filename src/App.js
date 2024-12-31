@@ -174,6 +174,7 @@ import Contact from "./components/Contact/Contact";
 import LookUp from "./components/LookUp/LookUp";
 import EcgHistory from "./components/HistoryHealthRecord.js/EcgHistory";
 import { UserContext } from "./context/UserContext";
+import Statistic from "./components/Manage/Statistic";
 
 function App() {
   const { user } = useContext(UserContext);

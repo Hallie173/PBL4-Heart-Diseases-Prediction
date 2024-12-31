@@ -1,7 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Statistic.css";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { Link } from "react-router-dom";
+
 function Statistic() {
+    const [listUsers, setListUsers] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [currentLimit, setCurrentLimit] = useState(6);
+
+    const [dataModal, setDataModal] = useState(null);
+    const [isShowModalDelete, setIsShowModalDelete] = useState(false);
+
+    const handleDeleteUser = async (user) => {
+        setDataModal(user);
+        setIsShowModalDelete(true);
+    };
+
     return (
         <div className="statistic">
             <table class="table table-borderless table-responsive table-hover card-1 p-4">
@@ -15,6 +31,9 @@ function Statistic() {
                         </th>
                         <th>
                             <span class="ml-2">Username</span>
+                        </th>
+                        <th>
+                            <span class="ml-4">Statistic</span>
                         </th>
                         <th>
                             <span class="ml-4">Actions</span>
@@ -39,6 +58,9 @@ function Statistic() {
                                         </td>
                                         <td>
                                             <div class="p-2">{item.username}</div>
+                                        </td>
+                                        <td>
+                                            <Link to="/statistic-graph" />
                                         </td>
                                         <td>
                                             <div class="p-2 icons">
