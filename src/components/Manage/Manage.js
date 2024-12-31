@@ -15,6 +15,7 @@ import EditProfile from "./EditProfile";
 import { UserContext } from "../../context/UserContext";
 import { toast } from "react-toastify";
 import { logoutUser } from "../../services/userService";
+import Graph from "./Graph";
 
 function Manage() {
     const location = useLocation();

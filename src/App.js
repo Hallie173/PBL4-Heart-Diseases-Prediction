@@ -170,7 +170,6 @@ import MeasureStart from "./components/NewMeasure/MeasureStart";
 import Account from "./components/Manage/Account";
 import Guide from "./components/Guide/Guide";
 import Manage from "./components/Manage/Manage";
-import Contact from "./components/Contact/Contact";
 import LookUp from "./components/LookUp/LookUp";
 import EcgHistory from "./components/HistoryHealthRecord.js/EcgHistory";
 import { UserContext } from "./context/UserContext";
@@ -218,16 +217,6 @@ function App() {
           <>
             <Navbar />
             <LookUp />
-            <Footer />
-          </>
-        }
-      />
-      <Route
-        path="/contact"
-        element={
-          <>
-            <Navbar />
-            <Contact />
             <Footer />
           </>
         }
