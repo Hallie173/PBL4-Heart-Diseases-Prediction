@@ -49,6 +49,11 @@ const LogIn = (props) => {
       let gender = response.DT.gender;
       let avatar = response.DT.avatar;
       let address = response.DT.address;
+      if (groupWithRoles.name === "admin") {
+        navigate("/manage");
+      } else {
+        navigate("/");
+      }
 
       let data = {
         isAuthenticated: true,
@@ -68,11 +73,6 @@ const LogIn = (props) => {
 
       localStorage.setItem("jwt", token);
       loginContext(data);
-      if (groupWithRoles.name === "admin") {
-        navigate("/manage");
-      } else {
-        navigate("/");
-      }
     }
 
     if (response && +response.EC !== 0) {

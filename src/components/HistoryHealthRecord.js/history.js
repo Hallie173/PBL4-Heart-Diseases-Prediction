@@ -1,9 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "./history.css";
 import { useEffect, useState } from "react";
-import { getHistoryHealthRecord } from "../../services/userService";
+import {
+  getHistoryHealthRecord,
+  getHistoryHealthRecordByAdmin,
+} from "../../services/userService";
 
 function History() {
+  const { id } = useParams();
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [dataList, setDataList] = useState([]);
 
@@ -16,7 +20,9 @@ function History() {
   };
 
   const fetchHistoryRecord = async () => {
-    let responsive = await getHistoryHealthRecord();
+    let responsive = id
+      ? await getHistoryHealthRecordByAdmin(id)
+      : await getHistoryHealthRecord();
     if (responsive && +responsive.EC === 0) {
       setDataList(responsive.DT);
     }
@@ -48,7 +54,7 @@ function History() {
               </span>
               <span className="show-detail">
                 <Link
-                  to="/ecg-history"
+                  to={id ? "/manage/ecg-history" : "/ecg-history"}
                   state={{ ecgData: item }}
                   className="show-date-detail"
                 >
@@ -59,7 +65,10 @@ function History() {
           ))}
         </ul>
       </div>
-      <Link to="/" className="show-recent-result">
+      <Link
+        to={id ? "/manage/heart-record" : "/"}
+        className="show-recent-result"
+      >
         <button>Về trang chủ</button>
       </Link>
     </div>
