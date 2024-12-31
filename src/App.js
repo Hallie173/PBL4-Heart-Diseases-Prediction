@@ -288,9 +288,9 @@ function App() {
     <>
       <Router>
         {user &&
-        user.account &&
-        user.account.groupWithRoles &&
-        user.account.groupWithRoles.name === "admin" ? (
+          user.account &&
+          user.account.groupWithRoles &&
+          user.account.groupWithRoles.name === "admin" ? (
           <Routes>
             {adminRoutes}
             <Route path="/login" element={<LogIn />} />
