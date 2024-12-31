@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { logoutUser } from "../../services/userService";
 import History from "../HistoryHealthRecord.js/history";
 import EcgHistory from "../HistoryHealthRecord.js/EcgHistory";
+import Graph from "./Graph";
 
 function Manage() {
     const location = useLocation();
@@ -182,7 +183,7 @@ function Manage() {
                                 className={classNames(
                                     styles.navLink,
                                     styles.manageItem,
-                                    styles.grouproleLink,
+                                    styles.heartRecordLink,
                                     {
                                         [styles.active]:
                                             location.pathname.endsWith("/heart-record"),
@@ -193,6 +194,22 @@ function Manage() {
                                 Heart Record
                             </Link>
                         </li>
+                        <li className={styles.navItem}>
+                            <Link
+                                className={classNames(
+                                    styles.navLink,
+                                    styles.manageItem,
+                                    styles.statisticLink,
+                                    {
+                                        [styles.active]:
+                                            location.pathname.endsWith("/statistic"),
+                                    }
+                                )}
+                                to="statistic"
+                            >
+                                Statistic
+                            </Link>
+                        </li>
                     </ul>
                     <div className={styles.tabContent}>
                         <Routes>
@@ -201,6 +218,8 @@ function Manage() {
                             <Route path="group-roles" element={<GroupRoles />} />
                             <Route path="heart-record" element={<HearthRecord />} />
                             <Route path="heart-record/:id" element={<History />} />
+                            <Route path="statistic" element={<Statistic />} />
+                            <Route path="statistic/:id" element={<Graph />} />
                             <Route path="ecg-history" element={<EcgHistory />} />
                         </Routes>
                     </div>
