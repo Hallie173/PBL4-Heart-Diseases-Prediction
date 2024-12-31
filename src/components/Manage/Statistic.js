@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "./Statistic.css";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
@@ -89,7 +88,9 @@ function Statistic() {
                                             </div>
                                         </td>
                                         <td>
-                                            <Link to={`/manage/statistic/${item._id}`}>Show</Link>
+                                            <div class="p-2">
+                                                <Link to={`/manage/statistic/${item._id}`}>Show</Link>
+                                            </div>
                                         </td>
                                     </tr>
                                 );
