@@ -30,13 +30,11 @@ function Heartrate({ onShowHistory }) {
     <div className="homepage">
       <div className="heartrate">
         <h2 className="your-heartrate">Kết quả của bạn</h2>
-        <h2 className="your-heartrate">Your Result</h2>
         {/* Truyền handleDataUpdate vào ECG */}
         <ECG className="ecg-graph" onDataUpdate={handleDataUpdate}></ECG>
         <div className="diagnosis">
           <div className="preliminary-diagnosis">
             <span className="content-name">Chẩn đoán sơ bộ: </span>
-            <span className="content-name">Preliminary Diagnosis: </span>
             <span className="diagnosis-content">
               {ecgType ? predicted_label[ecgType.predicted_label] : "Loading"}
             </span>

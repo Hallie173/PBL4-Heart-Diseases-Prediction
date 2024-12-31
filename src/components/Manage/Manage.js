@@ -6,6 +6,7 @@ import "../Navbar.css";
 import logo from "../../logo.jpg";
 import classNames from "classnames";
 import GroupRoles from "./GroupRoles";
+import HearthRecord from "./HearthRecord";
 import Statistic from "./Statistic";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,7 +16,8 @@ import EditProfile from "./EditProfile";
 import { UserContext } from "../../context/UserContext";
 import { toast } from "react-toastify";
 import { logoutUser } from "../../services/userService";
-import Graph from "./Graph";
+import History from "../HistoryHealthRecord.js/history";
+import EcgHistory from "../HistoryHealthRecord.js/EcgHistory";
 
 function Manage() {
     const location = useLocation();
@@ -79,6 +81,7 @@ function Manage() {
                                 </Link>
                             </div>
                         </div>
+
                     </nav>
                 </div>
             </div>
@@ -131,7 +134,10 @@ function Manage() {
                     <ul class={classNames(styles.nav, styles.navTabs)}>
                         <li className={styles.navItem}>
                             <Link
-                                className={classNames(styles.navLink, styles.manageItem, styles.userLink,
+                                className={classNames(
+                                    styles.navLink,
+                                    styles.manageItem,
+                                    styles.userLink,
                                     {
                                         [styles.active]: location.pathname.endsWith("/user"),
                                     }
@@ -143,7 +149,10 @@ function Manage() {
                         </li>
                         <li className={styles.navItem}>
                             <Link
-                                className={classNames(styles.navLink, styles.manageItem, styles.roleLink,
+                                className={classNames(
+                                    styles.navLink,
+                                    styles.manageItem,
+                                    styles.roleLink,
                                     {
                                         [styles.active]: location.pathname.endsWith("/roles"),
                                     }
@@ -155,7 +164,10 @@ function Manage() {
                         </li>
                         <li className={styles.navItem}>
                             <Link
-                                className={classNames(styles.navLink, styles.manageItem, styles.grouproleLink,
+                                className={classNames(
+                                    styles.navLink,
+                                    styles.manageItem,
+                                    styles.grouproleLink,
                                     {
                                         [styles.active]: location.pathname.endsWith("/group-roles"),
                                     }
@@ -167,14 +179,18 @@ function Manage() {
                         </li>
                         <li className={styles.navItem}>
                             <Link
-                                className={classNames(styles.navLink, styles.manageItem, styles.statisticLink,
+                                className={classNames(
+                                    styles.navLink,
+                                    styles.manageItem,
+                                    styles.grouproleLink,
                                     {
-                                        [styles.active]: location.pathname.endsWith("/statistic"),
+                                        [styles.active]:
+                                            location.pathname.endsWith("/heart-record"),
                                     }
                                 )}
-                                to="statistic"
+                                to="heart-record"
                             >
-                                Statistic
+                                Heart Record
                             </Link>
                         </li>
                     </ul>
@@ -183,13 +199,15 @@ function Manage() {
                             <Route path="user" element={<User />} />
                             <Route path="roles" element={<Roles />} />
                             <Route path="group-roles" element={<GroupRoles />} />
-                            <Route path="statistic" element={<Statistic />} />
+                            <Route path="heart-record" element={<HearthRecord />} />
+                            <Route path="heart-record/:id" element={<History />} />
+                            <Route path="ecg-history" element={<EcgHistory />} />
                         </Routes>
                     </div>
                 </div>
 
                 <EditProfile />
-            </div >
+            </div>
         </div>
     );
 }
