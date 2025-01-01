@@ -48,23 +48,13 @@ function Navbar() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <Link className="nav-link" aria-current="page" to="/">
-                  Introduction
-                </Link>
-              </li>
-              <li className="nav-item">
                 <Link to="/guide" className="nav-link">
-                  Guide
+                  Hướng dẫn
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/look-up" className="nav-link">
-                  Look Up
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/contact" className="nav-link">
-                  Contact
+                  Tra cứu
                 </Link>
               </li>
             </ul>
@@ -76,7 +66,7 @@ function Navbar() {
                 className="btn btn-outline-secondary"
                 onClick={() => handleLogout()}
               >
-                Log out
+                Đăng xuất
               </button>
             </Link>
             <Link to="/account" className="account-management">
