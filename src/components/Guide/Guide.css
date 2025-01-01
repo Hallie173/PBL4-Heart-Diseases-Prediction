@@ -43,7 +43,9 @@
 }
 
 .guide-content {
-    margin: 20px;
+    width: 50%;
+    margin: auto;
+    text-align: justify;
 }
 
 .index-list {
@@ -52,8 +54,27 @@
     justify-content: center;
     list-style: none;
     background: #ECEBEA;
-    width: 50%;
-    margin: 0 20px 0 20px;
+    width: 100%;
+    margin: 0 auto 20px auto;
     padding: 20px 50px 20px 50px;
     color: var(--color5);
+    font-size: 18px;
+}
+
+img {
+    width: 100%;
+    display: block;
+    margin: 10px auto 10px auto;
+}
+
+.img-content {
+    display: block;
+    font-style: italic;
+    margin: 10px auto;
+    text-align: center;
+}
+
+.guide-content .main-title {
+    font-weight: bold;
+    font-size: 20px;
 }
