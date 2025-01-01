@@ -12,11 +12,12 @@
 .graph {
     border: 1px solid var(--color4);
     margin: 10px 0;
+    padding: 0 20px;
 }
 
 .user-statistic {
     text-align: center;
-    margin: 10px 20px;
+    margin: 20px 20px;
     font-size: 30px;
     font-weight: bold;
     color: var(--color1);
@@ -38,4 +39,26 @@
     margin: 10px 20px;
     color: white;
     outline: none;
+}
+
+.from-date,
+.to-date,
+.filter-button {
+    width: 25%;
+    color: var(--color4);
+    margin: 0 20px 0 10px;
+}
+
+.date-input {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    margin: 10px 20px 10px 0;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+}
+
+.apply-filter {
+    display: block;
+    margin: 10px 20px 10px 0;
 }
