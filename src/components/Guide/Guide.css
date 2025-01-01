@@ -78,3 +78,22 @@ img {
     font-weight: bold;
     font-size: 20px;
 }
+
+.understood {
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin: auto;
+}
+
+.start-button {
+    background: #198754;
+    padding: 10px 25px;
+    font-size: 18px;
+    box-shadow: 3px 3px #1fa667;
+    border-radius: 10px;
+    margin: 20px 0;
+    border: 0.5px solid white;
+    color: white;
+}

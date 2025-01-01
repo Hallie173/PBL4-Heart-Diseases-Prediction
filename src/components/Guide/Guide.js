@@ -50,6 +50,9 @@ function Guide() {
                         </div>
                     </div>
                 </div>
+                <div className="understood">
+                    <button className="start-button">Bắt đầu</button>
+                </div>
             </div>
         </div>
     )
