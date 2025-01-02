@@ -48,13 +48,13 @@ function Navbar() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <Link to="/guide" className="nav-link">
-                  Hướng dẫn
+                <Link to="/" className="nav-link">
+                  Trang Chủ
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/look-up" className="nav-link">
-                  Tra cứu
+                <Link to="/guide" className="nav-link">
+                  Hướng dẫn
                 </Link>
               </li>
             </ul>
