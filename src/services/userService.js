@@ -91,6 +91,10 @@ const getHistoryHealthRecordByAdmin = (id) => {
   return instance.get(`/api/v1/user/history-healthRecord/${id}`);
 };
 
+const getStatisticWithId = (id) => {
+  return instance.get(`/api/v1/user/statistic/${id}`);
+};
+
 export {
   registerNewUser,
   loginUser,
@@ -108,4 +112,5 @@ export {
   createHealthRecord,
   getHistoryHealthRecord,
   getHistoryHealthRecordByAdmin,
+  getStatisticWithId,
 };
