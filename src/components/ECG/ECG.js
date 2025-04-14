@@ -50,7 +50,7 @@ const ECG = ({ onDataUpdate }) => {
 
     const db = getDatabase(app);
     const stateRef = ref(db, "Data/FxhaovnQlHP8wJvCjvJPXb3U2ch2/run");
-    const ecgDataRef = ref(db, "Data/FxhaovnQlHP8wJvCjvJPXb3U2ch2/ecg_data11");
+    const ecgDataRef = ref(db, "Data/FxhaovnQlHP8wJvCjvJPXb3U2ch2/ecg_data");
 
     // Đặt state=1 lên Firebase
     set(stateRef, 1).catch((error) =>
@@ -58,7 +58,7 @@ const ECG = ({ onDataUpdate }) => {
     );
 
     // Theo dõi liên tục stateRef trên Firebase
-    onValue(stateRef, async (snapshot) => {
+    const listener = onValue(stateRef, async (snapshot) => {
       const currentState = snapshot.val();
 
       // Chỉ gọi API nếu currentState === 0 và API chưa được gọi
@@ -84,9 +84,20 @@ const ECG = ({ onDataUpdate }) => {
           console.error("Error fetching ECG data or calling APIs:", error);
         } finally {
           setIsRunning(false);
+          off(stateRef, "value", listener); // Gỡ lắng nghe
         }
       }
     });
+
+    // Dừng sau 10 giây
+    setTimeout(async () => {
+      try {
+        await set(stateRef, 0); // kết thúc đo
+        console.log("Đã kết thúc đo sau 10s");
+      } catch (err) {
+        console.error("Không thể cập nhật state sau 10s:", err);
+      }
+    }, 10000); // 10s = 10000 ms
   };
 
   useEffect(() => {
@@ -96,7 +107,7 @@ const ECG = ({ onDataUpdate }) => {
   }, [ecgType, onDataUpdate]);
 
   let formatECG = viewData.map((value, index) => ({
-    index: index + ECGdata.length,
+    index: index,
     ECGValue: value,
   }));
 

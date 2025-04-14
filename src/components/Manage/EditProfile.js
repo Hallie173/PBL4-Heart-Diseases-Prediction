@@ -16,6 +16,7 @@ function EditProfile() {
     gender: user.account.gender,
     avatar: user.account.avatar,
     address: user.account.address,
+    groupId: user.account.groupWithRoles._id,
   };
 
   const [userData, setUserData] = useState(defaultValue);
