@@ -2,7 +2,7 @@ import { useEffect, useState, forwardRef, useImperativeHandle } from "react";
 import {
   fetchAllRolesWithPaging,
   deleteRole,
-} from "../../services/roleService";
+} from "../../../services/roleService";
 import { toast } from "react-toastify";
 import ReactPaginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

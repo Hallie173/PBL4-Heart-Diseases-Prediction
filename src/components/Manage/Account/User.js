@@ -1,20 +1,59 @@
 import "./User.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft } from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
-import { fetchAllUsers } from "../../services/userService";
+import { deleteUser, fetchAllUsers } from "../../../services/userService";
 import ReactPaginate from "react-paginate";
 import { toast } from "react-toastify";
-import { Link, useLocation } from "react-router-dom";
-import classNames from "classnames";
-import styles from "./Manage.module.css";
+import ModalUser from "./ModalUser";
+import ModalDelete from "./ModalDelete";
 
-function HearthRecord() {
-  const location = useLocation();
+function User() {
   const [listUsers, setListUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
   const [totalPages, setTotalPages] = useState(0);
+  // modal delete
+  const [isShowModalDelete, setIsShowModalDelete] = useState(false);
+  const [dataModal, setDataModal] = useState({});
+  // modal update/create user
+  const [isShowModalUser, setIsShowModalUser] = useState(false);
+  const [actionModalUser, setActionModalUser] = useState("CREATE");
+  const [dataModalUser, setDataModalUser] = useState({});
+
+  const handleClose = () => {
+    setIsShowModalDelete(false);
+    setDataModal({});
+  };
+
+  const confirmDeleteUser = async () => {
+    let response = await deleteUser(dataModal);
+    console.log(">>Check response: ", response);
+    if (response && response.EC === 0) {
+      toast.success(response.EM);
+      await fetchUsers();
+      setIsShowModalDelete(false);
+    } else {
+      toast.error(response.EM);
+    }
+  };
+
+  const onHideModalUser = async () => {
+    setIsShowModalUser(false);
+    setDataModalUser({});
+    await fetchUsers();
+  };
+
+  const handleEditUser = (user) => {
+    setActionModalUser("UPDATE");
+    setDataModalUser(user);
+    setIsShowModalUser(true);
+  };
+
+  const handleDeleteUser = async (user) => {
+    setDataModal(user);
+    setIsShowModalDelete(true);
+  };
 
   const fetchUsers = async () => {
     let response = await fetchAllUsers(currentPage, currentLimit);
@@ -88,12 +127,16 @@ function HearthRecord() {
                     </td>
                     <td>
                       <div class="p-2 icons">
-                        <Link to={`/manage/heart-record/${item._id}`}>
-                          <FontAwesomeIcon
-                            icon={faClockRotateLeft}
-                            className="trash-icon"
-                          ></FontAwesomeIcon>
-                        </Link>
+                        <FontAwesomeIcon
+                          icon={faPenToSquare}
+                          className="edit-icon"
+                          onClick={() => handleEditUser(item)}
+                        ></FontAwesomeIcon>
+                        <FontAwesomeIcon
+                          icon={faTrashCan}
+                          className="trash-icon"
+                          onClick={() => handleDeleteUser(item)}
+                        ></FontAwesomeIcon>
                       </div>
                     </td>
                   </tr>
@@ -133,8 +176,21 @@ function HearthRecord() {
           />
         </div>
       )}
+      <ModalDelete
+        show={isShowModalDelete}
+        handleClose={handleClose}
+        confirmDeleteUser={confirmDeleteUser}
+        dataModal={dataModal}
+      />
+
+      <ModalUser
+        show={isShowModalUser}
+        onHide={onHideModalUser}
+        action={actionModalUser}
+        dataModalUser={dataModalUser}
+      />
     </div>
   );
 }
 
-export default HearthRecord;
+export default User;
