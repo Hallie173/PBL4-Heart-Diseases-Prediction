@@ -40,6 +40,7 @@ const LogIn = (props) => {
     if (response && +response.EC === 0) {
       // Success
       let groupWithRoles = response.DT.groupWithRoles;
+      let id = response.DT.id;
       let email = response.DT.email;
       let username = response.DT.username;
       let firstName = response.DT.firstName;
@@ -51,6 +52,8 @@ const LogIn = (props) => {
       let address = response.DT.address;
       if (groupWithRoles.name === "admin") {
         navigate("/manage");
+      } else if (groupWithRoles.name === "hospital") {
+        navigate("/hospital");
       } else {
         navigate("/");
       }
@@ -60,6 +63,7 @@ const LogIn = (props) => {
         token,
         account: {
           groupWithRoles,
+          id,
           email,
           username,
           firstName,

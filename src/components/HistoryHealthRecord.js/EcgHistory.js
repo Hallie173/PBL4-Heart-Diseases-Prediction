@@ -31,7 +31,8 @@ const EcgHistory = () => {
   const [viewData, setViewData] = useState([]);
 
   useEffect(() => {
-    const arr = ecgData.ecg_analysis ? ecgData.ecg_analysis.split(",") : "";
+    const arr =
+      ecgData && ecgData.ecg_analysis ? ecgData.ecg_analysis.split(",") : "";
     if (arr > 1500) {
       setViewData(arr.slice(arr.length - 1500, arr.length - 1));
     } else {
@@ -39,10 +40,12 @@ const EcgHistory = () => {
     }
   });
 
-  let formatECG = viewData.map((value, index) => ({
-    index: index + ecgData.ecg_analysis.length,
-    ECGValue: value,
-  }));
+  let formatECG = viewData
+    ? viewData.map((value, index) => ({
+        index: index,
+        ECGValue: value,
+      }))
+    : "";
 
   return (
     <div>

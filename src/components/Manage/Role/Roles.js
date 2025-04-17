@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-toastify";
 
 import TableRoles from "./TableRoles";
-import { createRoles } from "../../services/roleService";
+import { createRoles } from "../../../services/roleService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 

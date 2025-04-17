@@ -12,7 +12,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { getStatisticWithId } from "../../services/userService";
+import { getStatisticWithId } from "../../../services/userService";
 
 ChartJS.register(
   CategoryScale,

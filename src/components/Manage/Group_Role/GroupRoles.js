@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./GroupRoles.css";
-import { fetchGroup } from "../../services/userService";
+import { fetchGroup } from "../../../services/userService";
 import {
   fetchAllRoles,
   fetchRolesByGroup,
   assignRolesToGroup,
-} from "../../services/roleService";
+} from "../../../services/roleService";
 import _, { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
 

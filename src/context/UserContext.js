@@ -35,6 +35,7 @@ const UserProvider = ({ children }) => {
     if (response && response.EC === 0) {
       let groupWithRoles = response.DT.groupWithRoles;
       let token = response.DT.access_token;
+      let id = response.DT.id;
       let email = response.DT.email;
       let username = response.DT.username;
       let firstName = response.DT.firstName;
@@ -49,6 +50,7 @@ const UserProvider = ({ children }) => {
         token,
         account: {
           groupWithRoles,
+          id,
           email,
           username,
           firstName,

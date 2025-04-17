@@ -1,31 +1,51 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import styles from "./Manage.module.css";
+import styles from "../Manage/Manage.module.css";
 import "../Navbar.css";
 import logo from "../../logo.jpg";
 import classNames from "classnames";
-import GroupRoles from "./Group_Role/GroupRoles";
-import HearthRecord from "./HealthRecord/HearthRecord";
-import Statistic from "./Statistic/Statistic";
+import GroupRoles from "../Manage/Group_Role/GroupRoles";
+import HearthRecord from "../Manage/HealthRecord/HearthRecord";
+import Statistic from "../Manage/Statistic/Statistic";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Roles from "./Role/Roles";
-import User from "./Account/User";
-import EditProfile from "./Account/EditProfile";
+import Roles from "../Manage/Role/Roles";
+import User from "../Manage/Account/User";
+import EditProfile from "../Manage/Account/EditProfile";
 import { UserContext } from "../../context/UserContext";
 import { toast } from "react-toastify";
 import { logoutUser } from "../../services/userService";
 import History from "../HistoryHealthRecord.js/history";
 import EcgHistory from "../HistoryHealthRecord.js/EcgHistory";
-import Graph from "./Statistic/Graph";
-import Hospital from "./Hospital/Hospital";
+import Graph from "../Manage/Statistic/Graph";
+import ModalHospital from "../Manage/Hospital/ModalHospital";
+import Doctor from "./Doctor/Doctor";
+import Falculty from "./Falculty/Falculty";
 
-function Manage() {
+function Hospital() {
   const location = useLocation();
-
-  const { user, logoutContext } = useContext(UserContext);
+  const [isShowModalHospital, setIsShowModalHospital] = useState(false);
+  const [actionModalHospital, setActionModalHospital] = useState("UPDATE");
+  const [dataModalHospital, setDataModalHospital] = useState({});
+  const { user, logoutContext, updateContext } = useContext(UserContext);
   let navigate = useNavigate();
+
+  const onHideModalHospital = async () => {
+    setIsShowModalHospital(false);
+    setDataModalHospital({});
+  };
+
+  const handleEditHospital = (user) => {
+    console.log("check user: ", user);
+
+    setDataModalHospital(user);
+    setIsShowModalHospital(true);
+  };
+
+  const handleUpdateHospital = (newDataUser) => {
+    updateContext(newDataUser);
+  };
 
   const handleLogout = async () => {
     let data = await logoutUser(); // clear cookies
@@ -44,7 +64,7 @@ function Manage() {
       console.log(user);
       // navigate("/login");
     }
-  }, []);
+  }, [user]);
 
   return (
     <div className={styles.adminPage}>
@@ -96,18 +116,6 @@ function Manage() {
           </div>
           <div className={styles.showInfo}>
             <p>
-              <span className={styles.left}>Full name:</span>
-              <span className={styles.right}>
-                {user.account.firstName + " " + user.account.lastName}
-              </span>
-            </p>
-            <p>
-              <span className={styles.left}>Sexuality:</span>
-              <span className={styles.right}>
-                {user.account.gender === "true" ? "Male" : "Female"}
-              </span>
-            </p>
-            <p>
               <span className={styles.left}>Phone:</span>
               <span className={styles.right}>{user.account.phone}</span>
             </p>
@@ -124,8 +132,7 @@ function Manage() {
             <button
               type="button"
               className={styles.changeButton}
-              data-bs-toggle="modal"
-              data-bs-target="#edit-form-modal"
+              onClick={() => handleEditHospital(user.account)}
             >
               <FontAwesomeIcon icon={faPen} /> Edit
             </button>
@@ -140,12 +147,12 @@ function Manage() {
                   styles.manageItem,
                   styles.userLink,
                   {
-                    [styles.active]: location.pathname.endsWith("/user"),
+                    [styles.active]: location.pathname.endsWith("/doctor"),
                   }
                 )}
-                to="user"
+                to="doctor"
               >
-                User
+                Doctor
               </Link>
             </li>
             <li className={styles.navItem}>
@@ -170,12 +177,12 @@ function Manage() {
                   styles.manageItem,
                   styles.grouproleLink,
                   {
-                    [styles.active]: location.pathname.endsWith("/group-roles"),
+                    [styles.active]: location.pathname.endsWith("/faculty"),
                   }
                 )}
-                to="group-roles"
+                to="faculty"
               >
-                Group-role
+                Falculty
               </Link>
             </li>
             <li className={styles.navItem}>
@@ -209,7 +216,7 @@ function Manage() {
                 Statistic
               </Link>
             </li>
-            <li className={styles.navItem}>
+            {/* <li className={styles.navItem}>
               <Link
                 className={classNames(
                   styles.navLink,
@@ -223,27 +230,39 @@ function Manage() {
               >
                 Hospital
               </Link>
-            </li>
+            </li> */}
           </ul>
           <div className={styles.tabContent}>
             <Routes>
-              <Route path="user" element={<User />} />
+              <Route
+                path="doctor"
+                element={<Doctor hospitalID={user.account.id} />}
+              />
               <Route path="roles" element={<Roles />} />
-              <Route path="group-roles" element={<GroupRoles />} />
+              <Route
+                path="faculty"
+                element={<Falculty hospitalID={user.account.id} />}
+              />
               <Route path="heart-record" element={<HearthRecord />} />
               <Route path="heart-record/:id" element={<History />} />
               <Route path="statistic" element={<Statistic />} />
               <Route path="statistic/:id" element={<Graph />} />
               <Route path="ecg-history" element={<EcgHistory />} />
-              <Route path="hospital" element={<Hospital />} />
+              {/* <Route path="hospital" element={<Hospital />} /> */}
             </Routes>
           </div>
         </div>
 
-        <EditProfile />
+        <ModalHospital
+          show={isShowModalHospital}
+          onHide={onHideModalHospital}
+          action={actionModalHospital}
+          dataModalHospital={dataModalHospital}
+          handleUpdateHospital={handleUpdateHospital}
+        />
       </div>
     </div>
   );
 }
 
-export default Manage;
+export default Hospital;

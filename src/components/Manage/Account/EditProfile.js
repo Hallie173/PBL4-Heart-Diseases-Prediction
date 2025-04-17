@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./EditProfile.css";
-import { UserContext } from "../../context/UserContext";
+import { UserContext } from "../../../context/UserContext";
 import _ from "lodash";
-import { updateCurrentUser } from "../../services/userService";
+import { updateCurrentUser } from "../../../services/userService";
 import { toast } from "react-toastify";
 
 function EditProfile() {
@@ -16,6 +16,7 @@ function EditProfile() {
     gender: user.account.gender,
     avatar: user.account.avatar,
     address: user.account.address,
+    groupId: user.account.groupWithRoles._id,
   };
 
   const [userData, setUserData] = useState(defaultValue);

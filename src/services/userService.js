@@ -29,6 +29,10 @@ const fetchAllUsers = (page, limit) => {
   return instance.get(`/api/v1/user/read?page=${page}&limit=${limit}`);
 };
 
+const fetchAllHospital = (page, limit) => {
+  return instance.get(`/api/v1/hospital/read?page=${page}&limit=${limit}`);
+};
+
 const deleteUser = (user) => {
   return instance.delete("/api/v1/user/delete", {
     data: { id: user._id },
@@ -53,6 +57,18 @@ const updateCurrentUser = (userData) => {
 
 const getUserAccount = () => {
   return instance.get("/api/v1/account");
+};
+
+const fetchHospitalFaculty = (hospital_id, page, limit) => {
+  return instance.get(
+    `/api/v1/hospital/read-faculty?page=${page}&limit=${limit}&hospital_id=${hospital_id}`
+  );
+};
+
+const fetchFacultyWithNotPagination = (hospital_id) => {
+  return instance.get(
+    `/api/v1/hospital/read-faculty?hospital_id=${hospital_id}`
+  );
 };
 
 const logoutUser = () => {
@@ -95,6 +111,30 @@ const getStatisticWithId = (id) => {
   return instance.get(`/api/v1/user/statistic/${id}`);
 };
 
+const createNewFaculty = (facultyData) => {
+  return instance.post("/api/v1/hospital/create-faculty", {
+    ...facultyData,
+  });
+};
+
+const updateCurrentFaculty = (facultyData) => {
+  return instance.put("/api/v1/hospital/update-faculty", {
+    ...facultyData,
+  });
+};
+
+const createNewDoctor = (userData) => {
+  return instance.post("/api/v1/hospital/create-doctor", {
+    ...userData,
+  });
+};
+
+const fetchAllDoctor = (hospitalID, page, limit) => {
+  return instance.get(
+    `/api/v1/hospital/read-doctor?page=${page}&limit=${limit}&hospital_id=${hospitalID}`
+  );
+};
+
 export {
   registerNewUser,
   loginUser,
@@ -113,4 +153,11 @@ export {
   getHistoryHealthRecord,
   getHistoryHealthRecordByAdmin,
   getStatisticWithId,
+  fetchAllHospital,
+  createNewFaculty,
+  fetchHospitalFaculty,
+  updateCurrentFaculty,
+  fetchFacultyWithNotPagination,
+  createNewDoctor,
+  fetchAllDoctor,
 };

@@ -167,13 +167,14 @@ import Heartrate from "./components/heartrate";
 import History from "./components/HistoryHealthRecord.js/history";
 import MeasurePrepare from "./components/NewMeasure/MeasurePrepare";
 import MeasureStart from "./components/NewMeasure/MeasureStart";
-import Account from "./components/Manage/Account";
+import Account from "./components/Manage/Account/Account";
 import Guide from "./components/Guide/Guide";
 import Manage from "./components/Manage/Manage";
 import LookUp from "./components/LookUp/LookUp";
 import EcgHistory from "./components/HistoryHealthRecord.js/EcgHistory";
 import { UserContext } from "./context/UserContext";
-import Statistic from "./components/Manage/Statistic";
+import Statistic from "./components/Manage/Statistic/Statistic";
+import Hospital from "./components/Hospital/Hospital";
 
 function App() {
   const { user } = useContext(UserContext);
@@ -192,6 +193,20 @@ function App() {
         element={
           <>
             <Manage />
+            <Footer />
+          </>
+        }
+      />
+    </>
+  );
+
+  const hospitalRoutes = (
+    <>
+      <Route
+        path="/hospital/*"
+        element={
+          <>
+            <Hospital />
             <Footer />
           </>
         }
@@ -277,22 +292,15 @@ function App() {
   return (
     <>
       <Router>
-        {user &&
-          user.account &&
-          user.account.groupWithRoles &&
-          user.account.groupWithRoles.name === "admin" ? (
-          <Routes>
-            {adminRoutes}
-            <Route path="/login" element={<LogIn />} />
-            <Route path="/signup" element={<SignUp />} />
-          </Routes>
-        ) : (
-          <Routes>
-            {userRoutes}
-            <Route path="/login" element={<LogIn />} />
-            <Route path="/signup" element={<SignUp />} />
-          </Routes>
-        )}
+        <Routes>
+          {user?.account?.groupWithRoles?.name === "admin"
+            ? adminRoutes
+            : user?.account?.groupWithRoles?.name === "hospital"
+            ? hospitalRoutes
+            : userRoutes}
+          <Route path="/login" element={<LogIn />} />
+          <Route path="/signup" element={<SignUp />} />
+        </Routes>
       </Router>
       <ToastContainer
         position="bottom-center"
