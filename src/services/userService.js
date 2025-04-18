@@ -153,6 +153,12 @@ const fetchAllMedicalRecord = (hospitalID, page, limit) => {
   );
 };
 
+const fetchDoctorMedicalRecord = (doctorID, page, limit) => {
+  return instance.get(
+    `/api/v1/doctor/read-medicalRecord?page=${page}&limit=${limit}&doctor_id=${doctorID}`
+  );
+};
+
 export {
   registerNewUser,
   loginUser,
@@ -181,4 +187,5 @@ export {
   createNewStaff,
   fetchAllStaff,
   fetchAllMedicalRecord,
+  fetchDoctorMedicalRecord,
 };

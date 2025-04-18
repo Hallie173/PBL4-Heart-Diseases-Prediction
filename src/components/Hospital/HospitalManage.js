@@ -5,27 +5,18 @@ import styles from "../Manage/Manage.module.css";
 import "../Navbar.css";
 import logo from "../../logo.jpg";
 import classNames from "classnames";
-import GroupRoles from "../Manage/Group_Role/GroupRoles";
-import HearthRecord from "../Manage/HealthRecord/HearthRecord";
-import Statistic from "../Manage/Statistic/Statistic";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Roles from "../Manage/Role/Roles";
-import User from "../Manage/Account/User";
-import EditProfile from "../Manage/Account/EditProfile";
 import { UserContext } from "../../context/UserContext";
 import { toast } from "react-toastify";
 import { logoutUser } from "../../services/userService";
-import History from "../HistoryHealthRecord.js/history";
-import EcgHistory from "../HistoryHealthRecord.js/EcgHistory";
-import Graph from "../Manage/Statistic/Graph";
 import ModalHospital from "../Manage/Hospital/ModalHospital";
 import Doctor from "./Doctor/Doctor";
 import Falculty from "./Falculty/Falculty";
 import Staff from "./Staff/Staff";
 import MedicalRecord from "./MedicalRecord/MedicalRecord";
 
-function Hospital() {
+function HospitalManage() {
   const location = useLocation();
   const [isShowModalHospital, setIsShowModalHospital] = useState(false);
   const [actionModalHospital, setActionModalHospital] = useState("UPDATE");
@@ -89,9 +80,6 @@ function Hospital() {
                 <span className="navbar-toggler-icon"></span>
               </button>
               <div className="collapse navbar-collapse" id="navbarNav">
-                {/* <Link to="/logout" className="log-in">
-              <button className="btn btn-outline-primary">Log In</button>
-            </Link> */}
                 <Link className="log-out">
                   <button
                     className="btn btn-outline-secondary"
@@ -203,21 +191,6 @@ function Hospital() {
                 Medical Record
               </Link>
             </li>
-            {/* <li className={styles.navItem}>
-              <Link
-                className={classNames(
-                  styles.navLink,
-                  styles.manageItem,
-                  styles.statisticLink,
-                  {
-                    [styles.active]: location.pathname.endsWith("/hospital"),
-                  }
-                )}
-                to="hospital"
-              >
-                Hospital
-              </Link>
-            </li> */}
           </ul>
           <div className={styles.tabContent}>
             <Routes>
@@ -253,4 +226,4 @@ function Hospital() {
   );
 }
 
-export default Hospital;
+export default HospitalManage;

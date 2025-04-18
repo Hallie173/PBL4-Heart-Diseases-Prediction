@@ -54,6 +54,8 @@ const LogIn = (props) => {
         navigate("/manage");
       } else if (groupWithRoles.name === "hospital") {
         navigate("/hospital");
+      } else if (groupWithRoles.name === "doctor") {
+        navigate("/doctor");
       } else {
         navigate("/");
       }
