@@ -6,10 +6,10 @@ const ModalDelete = (props) => {
     <>
       <Modal show={props.show} onHide={props.handleClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Confirm Delete Doctor</Modal.Title>
+          <Modal.Title>Confirm Delete Staff</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Woohoo, you are sure to delete this doctor: {props.dataModal.username}?
+          Woohoo, you are sure to delete this staff: {props.dataModal.username}?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={props.handleClose}>

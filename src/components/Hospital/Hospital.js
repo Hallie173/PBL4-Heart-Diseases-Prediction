@@ -22,6 +22,7 @@ import Graph from "../Manage/Statistic/Graph";
 import ModalHospital from "../Manage/Hospital/ModalHospital";
 import Doctor from "./Doctor/Doctor";
 import Falculty from "./Falculty/Falculty";
+import Staff from "./Staff/Staff";
 
 function Hospital() {
   const location = useLocation();
@@ -162,12 +163,12 @@ function Hospital() {
                   styles.manageItem,
                   styles.roleLink,
                   {
-                    [styles.active]: location.pathname.endsWith("/roles"),
+                    [styles.active]: location.pathname.endsWith("/staff"),
                   }
                 )}
-                to="roles"
+                to="staff"
               >
-                Role
+                Staff
               </Link>
             </li>
             <li className={styles.navItem}>
@@ -185,7 +186,7 @@ function Hospital() {
                 Falculty
               </Link>
             </li>
-            <li className={styles.navItem}>
+            {/* <li className={styles.navItem}>
               <Link
                 className={classNames(
                   styles.navLink,
@@ -200,22 +201,7 @@ function Hospital() {
               >
                 Heart Record
               </Link>
-            </li>
-            <li className={styles.navItem}>
-              <Link
-                className={classNames(
-                  styles.navLink,
-                  styles.manageItem,
-                  styles.statisticLink,
-                  {
-                    [styles.active]: location.pathname.endsWith("/statistic"),
-                  }
-                )}
-                to="statistic"
-              >
-                Statistic
-              </Link>
-            </li>
+            </li> */}
             {/* <li className={styles.navItem}>
               <Link
                 className={classNames(
@@ -238,7 +224,10 @@ function Hospital() {
                 path="doctor"
                 element={<Doctor hospitalID={user.account.id} />}
               />
-              <Route path="roles" element={<Roles />} />
+              <Route
+                path="staff"
+                element={<Staff hospitalID={user.account.id} />}
+              />
               <Route
                 path="faculty"
                 element={<Falculty hospitalID={user.account.id} />}
