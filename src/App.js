@@ -174,7 +174,8 @@ import LookUp from "./components/LookUp/LookUp";
 import EcgHistory from "./components/HistoryHealthRecord.js/EcgHistory";
 import { UserContext } from "./context/UserContext";
 import Statistic from "./components/Manage/Statistic/Statistic";
-import Hospital from "./components/Hospital/Hospital";
+import HospitalManage from "./components/Hospital/HospitalManage";
+import DoctorManage from "./components/Doctor/DoctorManage";
 
 function App() {
   const { user } = useContext(UserContext);
@@ -206,7 +207,21 @@ function App() {
         path="/hospital/*"
         element={
           <>
-            <Hospital />
+            <HospitalManage />
+            <Footer />
+          </>
+        }
+      />
+    </>
+  );
+
+  const doctorRoutes = (
+    <>
+      <Route
+        path="/doctor/*"
+        element={
+          <>
+            <DoctorManage />
             <Footer />
           </>
         }
@@ -297,6 +312,8 @@ function App() {
             ? adminRoutes
             : user?.account?.groupWithRoles?.name === "hospital"
             ? hospitalRoutes
+            : user?.account?.groupWithRoles?.name === "doctor"
+            ? doctorRoutes
             : userRoutes}
           <Route path="/login" element={<LogIn />} />
           <Route path="/signup" element={<SignUp />} />

@@ -10,7 +10,8 @@ import { toast } from "react-toastify";
 import _ from "lodash";
 
 const ModalDoctor = (props) => {
-  const { show, action, dataModalDoctor, hospitalID } = props;
+  const { show, action, dataModalDoctor, hospitalID, handleUpdateDoctor } =
+    props;
   const defaultUserData = {
     email: "",
     username: "",
@@ -182,6 +183,10 @@ const ModalDoctor = (props) => {
         toast.error(res.EM);
       }
     }
+
+    if (handleUpdateDoctor) {
+      handleUpdateDoctor(userData);
+    }
   };
 
   const handleCloseModalDoctor = () => {
@@ -342,32 +347,33 @@ const ModalDoctor = (props) => {
                 <option value={false}>Female</option>
               </select>
             </div>
-
-            <div className="col-12 col-sm-6 form-group">
-              <label>
-                Faculty (<span className="red">*</span>):
-              </label>
-              <select
-                className={
-                  validInputs.faculty_id
-                    ? "form-select"
-                    : "form-select is-invalid"
-                }
-                onChange={(event) =>
-                  handleOnChangeInput(event.target.value, "faculty_id")
-                }
-                value={userData.faculty_id}
-              >
-                {faculty.length > 0 &&
-                  faculty.map((item, index) => {
-                    return (
-                      <option key={`faculty-${index}`} value={item._id}>
-                        {item.name}
-                      </option>
-                    );
-                  })}
-              </select>
-            </div>
+            {dataModalDoctor.faculty_id && (
+              <div className="col-12 col-sm-6 form-group">
+                <label>
+                  Faculty (<span className="red">*</span>):
+                </label>
+                <select
+                  className={
+                    validInputs.faculty_id
+                      ? "form-select"
+                      : "form-select is-invalid"
+                  }
+                  onChange={(event) =>
+                    handleOnChangeInput(event.target.value, "faculty_id")
+                  }
+                  value={userData.faculty_id}
+                >
+                  {faculty.length > 0 &&
+                    faculty.map((item, index) => {
+                      return (
+                        <option key={`faculty-${index}`} value={item._id}>
+                          {item.name}
+                        </option>
+                      );
+                    })}
+                </select>
+              </div>
+            )}
           </div>
         </Modal.Body>
         <Modal.Footer>
