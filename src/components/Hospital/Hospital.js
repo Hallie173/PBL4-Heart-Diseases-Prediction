@@ -23,6 +23,7 @@ import ModalHospital from "../Manage/Hospital/ModalHospital";
 import Doctor from "./Doctor/Doctor";
 import Falculty from "./Falculty/Falculty";
 import Staff from "./Staff/Staff";
+import MedicalRecord from "./MedicalRecord/MedicalRecord";
 
 function Hospital() {
   const location = useLocation();
@@ -186,7 +187,7 @@ function Hospital() {
                 Falculty
               </Link>
             </li>
-            {/* <li className={styles.navItem}>
+            <li className={styles.navItem}>
               <Link
                 className={classNames(
                   styles.navLink,
@@ -194,14 +195,14 @@ function Hospital() {
                   styles.heartRecordLink,
                   {
                     [styles.active]:
-                      location.pathname.endsWith("/heart-record"),
+                      location.pathname.endsWith("/medical-record"),
                   }
                 )}
-                to="heart-record"
+                to="medical-record"
               >
-                Heart Record
+                Medical Record
               </Link>
-            </li> */}
+            </li>
             {/* <li className={styles.navItem}>
               <Link
                 className={classNames(
@@ -232,12 +233,10 @@ function Hospital() {
                 path="faculty"
                 element={<Falculty hospitalID={user.account.id} />}
               />
-              <Route path="heart-record" element={<HearthRecord />} />
-              <Route path="heart-record/:id" element={<History />} />
-              <Route path="statistic" element={<Statistic />} />
-              <Route path="statistic/:id" element={<Graph />} />
-              <Route path="ecg-history" element={<EcgHistory />} />
-              {/* <Route path="hospital" element={<Hospital />} /> */}
+              <Route
+                path="medical-record"
+                element={<MedicalRecord hospitalID={user.account.id} />}
+              />
             </Routes>
           </div>
         </div>
