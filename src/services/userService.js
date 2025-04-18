@@ -135,6 +135,18 @@ const fetchAllDoctor = (hospitalID, page, limit) => {
   );
 };
 
+const createNewStaff = (userData) => {
+  return instance.post("/api/v1/hospital/create-staff", {
+    ...userData,
+  });
+};
+
+const fetchAllStaff = (hospitalID, page, limit) => {
+  return instance.get(
+    `/api/v1/hospital/read-staff?page=${page}&limit=${limit}&hospital_id=${hospitalID}`
+  );
+};
+
 export {
   registerNewUser,
   loginUser,
@@ -160,4 +172,6 @@ export {
   fetchFacultyWithNotPagination,
   createNewDoctor,
   fetchAllDoctor,
+  createNewStaff,
+  fetchAllStaff,
 };

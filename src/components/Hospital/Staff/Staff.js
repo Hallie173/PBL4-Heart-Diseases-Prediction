@@ -2,15 +2,16 @@ import "../../Manage/Account/User.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
-import { deleteUser, fetchAllDoctor } from "../../../services/userService";
+import { deleteUser, fetchAllStaff } from "../../../services/userService";
 import ReactPaginate from "react-paginate";
 import { toast } from "react-toastify";
-import ModalDoctor from "./ModalDoctor";
+import ModalDoctor from "./ModalStaff";
 import ModalDelete from "./ModalDelete";
 import { Button } from "react-bootstrap";
+import ModalStaff from "./ModalStaff";
 
-function Doctor({ hospitalID }) {
-  const [listDoctor, setListDoctor] = useState([]);
+function Staff({ hospitalID }) {
+  const [listStaff, setListStaff] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
   const [totalPages, setTotalPages] = useState(0);
@@ -18,9 +19,9 @@ function Doctor({ hospitalID }) {
   const [isShowModalDelete, setIsShowModalDelete] = useState(false);
   const [dataModal, setDataModal] = useState({});
   // modal update/create user
-  const [isShowModalDoctor, setIsShowModalDoctor] = useState(false);
-  const [actionModalDoctor, setActionModalDoctor] = useState("CREATE");
-  const [dataModalDoctor, setDataModalDoctor] = useState({});
+  const [isShowModalStaff, setIsShowModalStaff] = useState(false);
+  const [actionModalStaff, setActionModalStaff] = useState("CREATE");
+  const [dataModalStaff, setDataModalStaff] = useState({});
 
   const handleClose = () => {
     setIsShowModalDelete(false);
@@ -40,20 +41,20 @@ function Doctor({ hospitalID }) {
   };
 
   const onHideModalDoctor = async () => {
-    setIsShowModalDoctor(false);
-    setDataModalDoctor({});
+    setIsShowModalStaff(false);
+    setDataModalStaff({});
     await fetchUsers();
   };
 
   const handleEditDoctor = (user) => {
-    setActionModalDoctor("UPDATE");
-    setDataModalDoctor(user);
-    setIsShowModalDoctor(true);
+    setActionModalStaff("UPDATE");
+    setDataModalStaff(user);
+    setIsShowModalStaff(true);
   };
 
   const handleCreateDoctor = (user) => {
-    setActionModalDoctor("CREATE");
-    setIsShowModalDoctor(true);
+    setActionModalStaff("CREATE");
+    setIsShowModalStaff(true);
   };
 
   const handleDeleteUser = async (user) => {
@@ -62,12 +63,12 @@ function Doctor({ hospitalID }) {
   };
 
   const fetchUsers = async () => {
-    let response = await fetchAllDoctor(hospitalID, currentPage, currentLimit);
+    let response = await fetchAllStaff(hospitalID, currentPage, currentLimit);
 
     if (response && response.EC === 0) {
       console.log(response.DT);
       setTotalPages(response.DT.totalPages);
-      setListDoctor(response.DT.doctor);
+      setListStaff(response.DT.staff);
     }
   };
 
@@ -114,9 +115,9 @@ function Doctor({ hospitalID }) {
           </tr>
         </thead>
         <tbody>
-          {listDoctor && listDoctor.length > 0 ? (
+          {listStaff && listStaff.length > 0 ? (
             <>
-              {listDoctor.map((item, index) => {
+              {listStaff.map((item, index) => {
                 return (
                   <tr class="border-bottom" key={`row-${index}`}>
                     <td>
@@ -206,15 +207,15 @@ function Doctor({ hospitalID }) {
         dataModal={dataModal}
       />
 
-      <ModalDoctor
-        show={isShowModalDoctor}
+      <ModalStaff
+        show={isShowModalStaff}
         onHide={onHideModalDoctor}
-        action={actionModalDoctor}
+        action={actionModalStaff}
         hospitalID={hospitalID}
-        dataModalDoctor={dataModalDoctor}
+        dataModalStaff={dataModalStaff}
       />
     </div>
   );
 }
 
-export default Doctor;
+export default Staff;

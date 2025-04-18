@@ -3,13 +3,13 @@ import Button from "react-bootstrap/Button";
 import { useState, useEffect } from "react";
 import {
   updateCurrentUser,
+  createNewStaff,
   fetchFacultyWithNotPagination,
-  createNewDoctor,
 } from "../../../services/userService";
 import { toast } from "react-toastify";
 import _ from "lodash";
 
-const ModalDoctor = (props) => {
+const ModalStaff = (props) => {
   const { show, action, dataModalDoctor, hospitalID } = props;
   const defaultUserData = {
     email: "",
@@ -146,7 +146,7 @@ const ModalDoctor = (props) => {
 
     let res;
     if (action === "CREATE") {
-      res = await createNewDoctor(userData);
+      res = await createNewStaff(userData);
     } else if (action === "UPDATE") {
       res = await updateCurrentUser({
         ...userData,
@@ -383,4 +383,4 @@ const ModalDoctor = (props) => {
   );
 };
 
-export default ModalDoctor;
+export default ModalStaff;
