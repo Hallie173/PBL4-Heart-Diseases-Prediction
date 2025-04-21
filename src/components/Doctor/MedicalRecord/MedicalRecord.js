@@ -32,7 +32,6 @@ const MedicalRecord = ({ doctorID }) => {
     );
 
     if (response && response.EC === 0) {
-      console.log(response.DT);
       setTotalPages(response.DT.totalPages);
       setListMedicalRecord(response.DT.MedicalRecord);
     }

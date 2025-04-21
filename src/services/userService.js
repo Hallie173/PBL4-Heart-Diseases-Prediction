@@ -159,6 +159,30 @@ const fetchDoctorMedicalRecord = (doctorID, page, limit) => {
   );
 };
 
+const fetchAllHospitalWithPatient = () => {
+  return instance.get(`/api/v1/hospital/read`);
+};
+
+const fetchHospitalFacultyWithPatient = (hospital_id) => {
+  return instance.get(
+    `/api/v1/hospital/read-faculty?hospital_id=${hospital_id}`
+  );
+};
+
+const fetchDoctorInFaculty = (faculty_id) => {
+  return instance.get(`/api/v1/doctor/read-doctor?faculty_id=${faculty_id}`);
+};
+
+const createAppointment = (data) => {
+  return instance.post("/api/v1/user/create-appointment", data);
+};
+
+const getAppointmentByDoctor = (valueSearch, doctorID, page, limit) => {
+  return instance.get(
+    `/api/v1/doctor/read-appointment?valueSearch=${valueSearch}&page=${page}&limit=${limit}&doctor_id=${doctorID}`
+  );
+};
+
 export {
   registerNewUser,
   loginUser,
@@ -188,4 +212,9 @@ export {
   fetchAllStaff,
   fetchAllMedicalRecord,
   fetchDoctorMedicalRecord,
+  fetchAllHospitalWithPatient,
+  fetchHospitalFacultyWithPatient,
+  fetchDoctorInFaculty,
+  createAppointment,
+  getAppointmentByDoctor,
 };
