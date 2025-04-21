@@ -24,7 +24,13 @@ function History() {
       ? await getHistoryHealthRecordByAdmin(id)
       : await getHistoryHealthRecord();
     if (responsive && +responsive.EC === 0) {
-      setDataList(responsive.DT);
+      const dataWithLocalCreated_at = responsive.DT.map((data) => ({
+        ...data,
+        created_at: new Date(data.created_at).toLocaleString("vi-VN", {
+          timeZone: "Asia/Ho_Chi_Minh",
+        }),
+      }));
+      setDataList(dataWithLocalCreated_at);
     }
   };
 

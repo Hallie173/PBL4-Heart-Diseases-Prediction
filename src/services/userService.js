@@ -183,6 +183,14 @@ const getAppointmentByDoctor = (valueSearch, doctorID, page, limit) => {
   );
 };
 
+const updateAppointment = (data) => {
+  return instance.put("/api/v1//doctor/update-appointment", data);
+};
+
+const createMedicalRecord = (data) => {
+  return instance.post("/api/v1/doctor/create-medicalRecord", data);
+};
+
 export {
   registerNewUser,
   loginUser,
@@ -217,4 +225,6 @@ export {
   fetchDoctorInFaculty,
   createAppointment,
   getAppointmentByDoctor,
+  updateAppointment,
+  createMedicalRecord,
 };

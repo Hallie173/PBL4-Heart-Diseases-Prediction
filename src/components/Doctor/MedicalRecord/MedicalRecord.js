@@ -32,8 +32,19 @@ const MedicalRecord = ({ doctorID }) => {
     );
 
     if (response && response.EC === 0) {
+      const medicalRecordsWithLocalTime = response.DT.MedicalRecord.map(
+        (medicalRecord) => ({
+          ...medicalRecord,
+          created_at: new Date(medicalRecord.created_at).toLocaleString(
+            "vi-VN",
+            {
+              timeZone: "Asia/Ho_Chi_Minh",
+            }
+          ),
+        })
+      );
       setTotalPages(response.DT.totalPages);
-      setListMedicalRecord(response.DT.MedicalRecord);
+      setListMedicalRecord(medicalRecordsWithLocalTime);
     }
   };
 
