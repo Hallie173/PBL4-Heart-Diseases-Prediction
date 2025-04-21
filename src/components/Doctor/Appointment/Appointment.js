@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import styles from "../../Manage/Manage.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faPen } from "@fortawesome/free-solid-svg-icons";
 import ReactPaginate from "react-paginate";
 import { getAppointmentByDoctor } from "../../../services/userService";
+import ModalAppointment from "./ModalAppointment";
+import { toast } from "react-toastify";
+import ModalMedicalRecord from "../MedicalRecord/ModalMedicalRecord";
 
 const statuses = ["Pending", "Confirmed", "Cancelled", "Done"];
 
@@ -13,6 +16,30 @@ const Appointment = ({ doctorID }) => {
   const [currentLimit, setCurrentLimit] = useState(6);
   const [totalPages, setTotalPages] = useState(0);
   const [appointments, setAppointments] = useState([]);
+  const [isShowModalAppointment, setIsShowModalAppointment] = useState(false);
+  const [dataModalAppointment, setDataModalAppointment] = useState({});
+
+  const [isShowModalMedicalRecord, setIsShowModalMedicalRecord] =
+    useState(false);
+
+  const onHideModalMedicalRecord = async () => {
+    setIsShowModalMedicalRecord(false);
+  };
+
+  const handleDetailMedicalRecord = () => {
+    setIsShowModalMedicalRecord(true);
+  };
+
+  const onHideModalAppointment = async () => {
+    setIsShowModalAppointment(false);
+    setDataModalAppointment({});
+    await handleGetAppointment();
+  };
+
+  const handleDetailAppointment = (appointment) => {
+    setDataModalAppointment(appointment);
+    setIsShowModalAppointment(true);
+  };
 
   const handlePageClick = async (event) => {
     setCurrentPage(+event.selected + 1);
@@ -27,8 +54,17 @@ const Appointment = ({ doctorID }) => {
     );
 
     if (response && response.EC === 0) {
+      const appointmentsWithLocalTime = response.DT.Appointment.map(
+        (appointment) => ({
+          ...appointment,
+          date: new Date(appointment.date).toLocaleString("vi-VN", {
+            timeZone: "Asia/Ho_Chi_Minh",
+          }),
+        })
+      );
+
       setTotalPages(response.DT.totalPages);
-      setAppointments(response.DT.Appointment);
+      setAppointments(appointmentsWithLocalTime);
     }
   };
 
@@ -78,10 +114,20 @@ const Appointment = ({ doctorID }) => {
                   <td className="px-4 py-2">{a.date}</td>
                   <td className="px-4 py-2">{a.reason}</td>
                   <td className="px-4 py-2">
-                    <FontAwesomeIcon
-                      icon={faEye}
-                      className="edit-icon"
-                    ></FontAwesomeIcon>
+                    <div class="p-2 icons">
+                      <FontAwesomeIcon
+                        icon={faPen}
+                        className="edit-icon"
+                        onClick={() => handleDetailAppointment(a)}
+                      ></FontAwesomeIcon>
+                      {/* {activeTab === "Done" && (
+                        <FontAwesomeIcon
+                          icon={faEye}
+                          className="edit-icon"
+                          onClick={() => handleDetailMedicalRecord()}
+                        ></FontAwesomeIcon>
+                      )} */}
+                    </div>
                   </td>
                 </tr>
               ))
@@ -118,6 +164,18 @@ const Appointment = ({ doctorID }) => {
             />
           </div>
         )}
+
+        <ModalAppointment
+          show={isShowModalAppointment}
+          onHide={onHideModalAppointment}
+          dataModalAppointment={dataModalAppointment}
+          action={activeTab}
+        />
+
+        <ModalMedicalRecord
+          show={isShowModalMedicalRecord}
+          onHide={onHideModalMedicalRecord}
+        />
       </div>
     </div>
   );

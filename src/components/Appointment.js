@@ -227,7 +227,7 @@ const Appointment = ({ patient }) => {
                 Ngày khám
               </label>
               <input
-                type="date"
+                type="datetime-local"
                 class="form-control"
                 id="date"
                 placeholder="Nhập tên của bạn"
