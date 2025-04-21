@@ -176,6 +176,7 @@ import { UserContext } from "./context/UserContext";
 import Statistic from "./components/Manage/Statistic/Statistic";
 import HospitalManage from "./components/Hospital/HospitalManage";
 import DoctorManage from "./components/Doctor/DoctorManage";
+import Appointment from "./components/Appointment";
 
 function App() {
   const { user } = useContext(UserContext);
@@ -237,6 +238,16 @@ function App() {
           <>
             <Navbar />
             <Guide />
+            <Footer />
+          </>
+        }
+      />
+      <Route
+        path="/appointment"
+        element={
+          <>
+            <Navbar />
+            <Appointment patient={user.account} />
             <Footer />
           </>
         }

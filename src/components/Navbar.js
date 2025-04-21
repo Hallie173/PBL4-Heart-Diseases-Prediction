@@ -57,6 +57,11 @@ function Navbar() {
                   Hướng dẫn
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link to="/appointment" className="nav-link">
+                  Đặt lịch khám
+                </Link>
+              </li>
             </ul>
             {/* <Link to="/logout" className="log-in">
               <button className="btn btn-outline-primary">Log In</button>

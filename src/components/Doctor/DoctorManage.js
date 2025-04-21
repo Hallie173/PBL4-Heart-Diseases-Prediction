@@ -97,6 +97,7 @@ function DoctorManage() {
           </nav>
         </div>
       </div>
+      
       <div className={styles.managementContainer}>
         <div className={styles.accountManage}>
           <div className={styles.accountType}>
