@@ -11,8 +11,11 @@ import {
 } from "react-router-dom";
 import { fetchAllUsers } from "../../../services/userService";
 import ReactPaginate from "react-paginate";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 function Statistic() {
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const [listUsers, setListUsers] = useState([]);
@@ -24,7 +27,9 @@ function Statistic() {
   const [isShowModalDelete, setIsShowModalDelete] = useState(false);
 
   const fetchUsers = async () => {
+    dispatch(setLoading());
     let response = await fetchAllUsers(currentPage, currentLimit);
+    dispatch(setUnLoading());
 
     if (response && response.EC === 0) {
       console.log(response.DT);

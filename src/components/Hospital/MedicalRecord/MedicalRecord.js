@@ -9,8 +9,11 @@ import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { fetchAllMedicalRecord } from "../../../services/userService";
 import ModalMedicalRecord from "./ModalMedicalRecord";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 const MedicalRecord = ({ hospitalID }) => {
+  const dispatch = useDispatch();
   const [listMedicalRecord, setListMedicalRecord] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
@@ -25,11 +28,13 @@ const MedicalRecord = ({ hospitalID }) => {
   };
 
   const fetchMedicalRecord = async () => {
+    dispatch(setLoading());
     let response = await fetchAllMedicalRecord(
       hospitalID,
       currentPage,
       currentLimit
     );
+    dispatch(setUnLoading());
 
     if (response && response.EC === 0) {
       console.log(response.DT);
@@ -46,7 +51,9 @@ const MedicalRecord = ({ hospitalID }) => {
   const onHideModalMedicalRecord = async () => {
     setIsShowModalMedicalRecord(false);
     setDataModalMedicalRecord({});
+    dispatch(setLoading());
     await fetchMedicalRecord();
+    dispatch(setUnLoading());
   };
 
   useEffect(() => {

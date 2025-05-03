@@ -3,11 +3,15 @@ import "./LogIn.css";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { loginUser } from "../../services/userService";
-import { UserContext } from "../../context/UserContext";
 import logo from "../../logo.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
+import { loginUserRedux } from "../../redux/reducer/user.reducer";
+import { RootState } from "../../store.ts";
 
 const LogIn = (props) => {
-  const { user, loginContext } = useContext(UserContext);
+  const user = useSelector((state) => state.user) || {};
+  const dispatch = useDispatch();
 
   let navigate = useNavigate();
 
@@ -35,9 +39,12 @@ const LogIn = (props) => {
       return;
     }
 
+    dispatch(setLoading());
     let response = await loginUser(valueLogin, password);
+    dispatch(setUnLoading());
 
     if (response && +response.EC === 0) {
+      toast.success(response.EM);
       // Success
       let groupWithRoles = response.DT.groupWithRoles;
       let id = response.DT.id;
@@ -50,15 +57,6 @@ const LogIn = (props) => {
       let gender = response.DT.gender;
       let avatar = response.DT.avatar;
       let address = response.DT.address;
-      if (groupWithRoles.name === "admin") {
-        navigate("/manage");
-      } else if (groupWithRoles.name === "hospital") {
-        navigate("/hospital");
-      } else if (groupWithRoles.name === "doctor") {
-        navigate("/doctor");
-      } else {
-        navigate("/");
-      }
 
       let data = {
         isAuthenticated: true,
@@ -78,7 +76,26 @@ const LogIn = (props) => {
       };
 
       localStorage.setItem("jwt", token);
-      loginContext(data);
+      localStorage.setItem('user', JSON.stringify(data));
+      dispatch(loginUserRedux(data));
+      switch (groupWithRoles?.name) {
+        case "admin":
+          console.log("Đã vào switch case admin");
+          navigate("/manage");
+          break;
+        case "hospital":
+          console.log("Đã vào switch case");
+          navigate("/hospital");
+          break;
+        case "doctor":
+          console.log("Đã vào switch case");
+          navigate("/doctor");
+          break;
+        default:
+          console.log("Đã vào switch case");
+          navigate("/");
+          break;
+      }
     }
 
     if (response && +response.EC !== 0) {
@@ -92,12 +109,6 @@ const LogIn = (props) => {
       handleLogin();
     }
   };
-
-  useEffect(() => {
-    if (user && user.isAuthenticated) {
-      window.history.back();
-    }
-  }, [user]);
 
   return (
     <>

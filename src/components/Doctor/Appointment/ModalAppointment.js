@@ -6,8 +6,11 @@ import { updateAppointment } from "../../../services/userService";
 import { toast } from "react-toastify";
 import ModalMedicalRecord from "../MedicalRecord/ModalMedicalRecord";
 import { useState } from "react";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 const ModalAppointment = (props) => {
+  const dispatch = useDispatch();
   const { dataModalAppointment, action } = props;
   const [isShowModalMedicalRecord, setIsShowModalMedicalRecord] =
     useState(false);
@@ -26,10 +29,12 @@ const ModalAppointment = (props) => {
   };
 
   const handleConfirmAppointment = async () => {
+    dispatch(setLoading());
     const response = await updateAppointment({
       id: dataModalAppointment._id,
       status: "Confirmed",
     });
+    dispatch(setUnLoading());
     if (response && +response.EC === 0) {
       toast.success(response.EM);
       handleCloseModalAppointment();
@@ -39,10 +44,12 @@ const ModalAppointment = (props) => {
   };
 
   const handleCancelAppointment = async () => {
+    dispatch(setLoading());
     const response = await updateAppointment({
       id: dataModalAppointment._id,
       status: "Cancelled",
     });
+    dispatch(setUnLoading());
     if (response && +response.EC === 0) {
       toast.success(response.EM);
       handleCloseModalAppointment();

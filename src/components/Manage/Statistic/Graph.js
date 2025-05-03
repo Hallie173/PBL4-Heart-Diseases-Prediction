@@ -13,6 +13,8 @@ import {
   Legend,
 } from "chart.js";
 import { getStatisticWithId } from "../../../services/userService";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 ChartJS.register(
   CategoryScale,
@@ -25,6 +27,7 @@ ChartJS.register(
 );
 
 function Graph() {
+  const dispatch = useDispatch();
   const { id } = useParams();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -56,7 +59,9 @@ function Graph() {
   };
 
   const fetchDataStatistic = async () => {
+    dispatch(setLoading());
     let response = await getStatisticWithId(id);
+    dispatch(setUnLoading());
     if (response && +response.EC === 0) {
       setData(response.DT);
     }

@@ -17,8 +17,11 @@ import {
 import { getDatabase, ref, get, onValue, off, set } from "firebase/database";
 import { app } from "../../setup/firebase";
 import { getDataHealth, createHealthRecord } from "../../services/userService";
+import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 const ECG = ({ onDataUpdate }) => {
+  const dispatch = useDispatch();
   const [ECGdata, setECGData] = useState([]);
   const [isRunning, setIsRunning] = useState(false);
   const [viewData, setViewData] = useState([]);
@@ -66,14 +69,18 @@ const ECG = ({ onDataUpdate }) => {
         isAPICalledRef.current = true; // Đánh dấu API đã được gọi
 
         try {
+          dispatch(setLoading());
           const ecgDataSnapshot = await get(ecgDataRef);
+          dispatch(setUnLoading());
           if (ecgDataSnapshot.exists()) {
             const data = ecgDataSnapshot.val();
-
+            dispatch(setLoading());
             const rs = await getDataHealth({ ecg: data });
+            dispatch(setUnLoading());
             setEcgType(rs);
-
+            dispatch(setLoading());
             await createHealthRecord({ ecgData: data, ecgType: rs });
+            dispatch(setUnLoading());
 
             const arr = data.split(",");
             setECGData(arr);
@@ -92,7 +99,9 @@ const ECG = ({ onDataUpdate }) => {
     // Dừng sau 10 giây
     setTimeout(async () => {
       try {
+        dispatch(setLoading());
         await set(stateRef, 0); // kết thúc đo
+        dispatch(setUnLoading());
         console.log("Đã kết thúc đo sau 10s");
       } catch (err) {
         console.error("Không thể cập nhật state sau 10s:", err);

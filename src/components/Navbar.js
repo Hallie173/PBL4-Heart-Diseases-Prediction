@@ -2,18 +2,25 @@ import React, { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import logo from "../logo.jpg";
-import { UserContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 import { logoutUser } from "../services/userService";
+import { setLoading, setUnLoading } from "../redux/reducer/loading.ts";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUserRedux } from "../redux/reducer/user.reducer";
 
 function Navbar() {
-  const { user, logoutContext } = useContext(UserContext);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user) || {};
+
   let navigate = useNavigate();
 
   const handleLogout = async () => {
+    dispatch(setLoading());
     let data = await logoutUser(); // clear cookies
     localStorage.removeItem("jwt"); // clear local storage
-    logoutContext(); // clear user in context
+    localStorage.removeItem("user"); // clear local storage
+    dispatch(logoutUserRedux());
+    dispatch(setUnLoading());
     if (data && +data.EC === 0) {
       toast.success("Logout succeeds...");
       navigate("/login");
@@ -30,7 +37,7 @@ function Navbar() {
   return (
     <div className="navbar-container">
       <nav className="navbar navbar-expand-lg">
-        <div className="container">
+        <div className="container-nav">
           <Link to="/" className="navbar-brand" href="#">
             <img src={logo} />
           </Link>

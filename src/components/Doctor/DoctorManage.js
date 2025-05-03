@@ -7,22 +7,26 @@ import logo from "../../logo.jpg";
 import classNames from "classnames";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { UserContext } from "../../context/UserContext";
 import { toast } from "react-toastify";
 import { logoutUser } from "../../services/userService";
-import Doctor from "../Hospital/Doctor/Doctor";
-import Falculty from "../Hospital/Falculty/Falculty";
-import Staff from "../Hospital/Staff/Staff";
 import MedicalRecord from "./MedicalRecord/MedicalRecord";
 import ModalDoctor from "../Hospital/Doctor/ModalDoctor";
 import Appointment from "./Appointment/Appointment";
+import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  logoutUserRedux,
+  updateUserRedux,
+} from "../../redux/reducer/user.reducer";
 
 function DoctorManage() {
+  const dispatch = useDispatch();
   const location = useLocation();
   const [isShowModalDoctor, setIsShowModalDoctor] = useState(false);
   const [actionModalDoctor, setActionModalDoctor] = useState("UPDATE");
   const [dataModalDoctor, setDataModalDoctor] = useState({});
-  const { user, logoutContext, updateContext } = useContext(UserContext);
+  const user = useSelector((state) => state.user) || {};
+
   let navigate = useNavigate();
 
   const onHideModalDoctor = async () => {
@@ -38,13 +42,16 @@ function DoctorManage() {
   };
 
   const handleUpdateDoctor = (newDataUser) => {
-    updateContext(newDataUser);
+    dispatch(updateUserRedux(newDataUser));
   };
 
   const handleLogout = async () => {
+    dispatch(setLoading());
     let data = await logoutUser(); // clear cookies
     localStorage.removeItem("jwt"); // clear local storage
-    logoutContext(); // clear user in context
+    localStorage.removeItem("user");
+    logoutUserRedux();
+    dispatch(setUnLoading());
     if (data && +data.EC === 0) {
       toast.success("Logout succeeds...");
       navigate("/login");
@@ -97,7 +104,7 @@ function DoctorManage() {
           </nav>
         </div>
       </div>
-      
+
       <div className={styles.managementContainer}>
         <div className={styles.accountManage}>
           <div className={styles.accountType}>

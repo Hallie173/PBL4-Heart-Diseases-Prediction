@@ -4,11 +4,13 @@ import { useEffect, useState, useContext } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { registerNewUser } from "../../services/userService";
-import { UserContext } from "../../context/UserContext";
 import logo from "../../logo.svg";
+import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
+import { useDispatch, useSelector } from "react-redux";
 
 const SignUp = (props) => {
-  const { user } = useContext(UserContext);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user) || {};
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -92,6 +94,7 @@ const SignUp = (props) => {
     let check = isValidInput();
 
     if (check === true) {
+      dispatch(setLoading());
       let serverData = await registerNewUser(
         firstName,
         lastName,
@@ -100,6 +103,7 @@ const SignUp = (props) => {
         username,
         password
       );
+      dispatch(setUnLoading());
       if (+serverData.EC === 0) {
         toast.success(serverData.EM);
         navigate("/login");

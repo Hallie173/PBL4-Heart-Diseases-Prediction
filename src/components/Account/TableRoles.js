@@ -7,8 +7,11 @@ import { toast } from "react-toastify";
 import ReactPaginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 const TableRoles = forwardRef((props, ref) => {
+  const dispatch = useDispatch();
   const [listRoles, setListRoles] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,7 +33,9 @@ const TableRoles = forwardRef((props, ref) => {
   }));
 
   const getAllRoles = async () => {
+    dispatch(setLoading());
     let data = await fetchAllRolesWithPaging(currentPage, currentLimit);
+    dispatch(setUnLoading());
     if (data && +data.EC === 0) {
       setTotalPages(data.DT.totalPages);
       setListRoles(data.DT.roles);
@@ -38,10 +43,14 @@ const TableRoles = forwardRef((props, ref) => {
   };
 
   const handleDeleteRole = async (role) => {
+    dispatch(setLoading());
     let data = await deleteRole(role);
+    dispatch(setUnLoading());
     if (data && +data.EC === 0) {
       toast.success(data.EM);
+      dispatch(setLoading());
       await getAllRoles();
+      dispatch(setUnLoading());
     }
   };
 

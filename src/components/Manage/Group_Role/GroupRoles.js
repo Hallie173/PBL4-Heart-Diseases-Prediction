@@ -9,8 +9,11 @@ import {
 } from "../../../services/roleService";
 import _, { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 function GroupRoles() {
+  const dispatch = useDispatch();
   const [userGroups, setUserGroups] = useState([]);
   const [listRoles, setListRoles] = useState([]);
   const [selectGroup, setSelectGroup] = useState("");
@@ -23,7 +26,9 @@ function GroupRoles() {
   }, []);
 
   const getGroups = async () => {
+    dispatch(setLoading());
     let res = await fetchGroup();
+    dispatch(setUnLoading());
     if (res && res.EC === 0) {
       setUserGroups(res.DT);
     } else {
@@ -32,7 +37,9 @@ function GroupRoles() {
   };
 
   const getAllRoles = async () => {
+    dispatch(setLoading());
     let data = await fetchAllRoles();
+    dispatch(setUnLoading());
     if (data && +data.EC === 0) {
       setListRoles(data.DT);
     }
@@ -41,7 +48,9 @@ function GroupRoles() {
   const handleOnchangeGroup = async (value) => {
     setSelectGroup(value);
     if (value) {
+      dispatch(setLoading());
       let data = await fetchRolesByGroup(value);
+      dispatch(setUnLoading());
 
       if (data && +data.EC === 0) {
         let result = buildDataRolesByGroup(data.DT, listRoles);
@@ -102,7 +111,9 @@ function GroupRoles() {
 
   const handleSave = async () => {
     let data = buildDataToSave();
+    dispatch(setLoading());
     let res = await assignRolesToGroup(data);
+    dispatch(setUnLoading());
     if (res && res.EC === 0) {
       toast.success(res.EM);
     } else {

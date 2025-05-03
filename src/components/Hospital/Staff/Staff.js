@@ -9,8 +9,11 @@ import ModalDoctor from "./ModalStaff";
 import ModalDelete from "./ModalDelete";
 import { Button } from "react-bootstrap";
 import ModalStaff from "./ModalStaff";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 function Staff({ hospitalID }) {
+  const dispatch = useDispatch();
   const [listStaff, setListStaff] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
@@ -29,11 +32,15 @@ function Staff({ hospitalID }) {
   };
 
   const confirmDeleteUser = async () => {
+    dispatch(setLoading());
     let response = await deleteUser(dataModal);
+    dispatch(setUnLoading());
     console.log(">>Check response: ", response);
     if (response && response.EC === 0) {
       toast.success(response.EM);
+      dispatch(setLoading());
       await fetchUsers();
+      dispatch(setUnLoading());
       setIsShowModalDelete(false);
     } else {
       toast.error(response.EM);
@@ -43,7 +50,9 @@ function Staff({ hospitalID }) {
   const onHideModalDoctor = async () => {
     setIsShowModalStaff(false);
     setDataModalStaff({});
+    dispatch(setLoading());
     await fetchUsers();
+    dispatch(setUnLoading());
   };
 
   const handleEditDoctor = (user) => {
@@ -63,7 +72,9 @@ function Staff({ hospitalID }) {
   };
 
   const fetchUsers = async () => {
+    dispatch(setLoading());
     let response = await fetchAllStaff(hospitalID, currentPage, currentLimit);
+    dispatch(setUnLoading());
 
     if (response && response.EC === 0) {
       console.log(response.DT);

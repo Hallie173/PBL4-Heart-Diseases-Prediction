@@ -7,8 +7,11 @@ import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
 import ModalFaculty from "./ModalFaculty";
 import { fetchHospitalFaculty } from "../../../services/userService";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 function Falculty({ hospitalID }) {
+  const dispatch = useDispatch();
   const [listFaculty, setListFaculty] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
@@ -24,15 +27,19 @@ function Falculty({ hospitalID }) {
   const onHideModalFaculty = async () => {
     setIsShowModalFaculty(false);
     setDataModalFaculty({});
+    dispatch(setLoading());
     await fetchFaculty();
+    dispatch(setUnLoading());
   };
 
   const fetchFaculty = async () => {
+    dispatch(setLoading());
     let response = await fetchHospitalFaculty(
       hospitalID,
       currentPage,
       currentLimit
     );
+    dispatch(setUnLoading());
     if (response && response.EC === 0) {
       setListFaculty(response.DT.faculty);
     }

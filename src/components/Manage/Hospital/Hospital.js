@@ -8,8 +8,11 @@ import { toast } from "react-toastify";
 import ModalDelete from "../Account/ModalDelete";
 import { Button } from "react-bootstrap";
 import ModalHospital from "./ModalHospital";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 function Hospital() {
+  const dispatch = useDispatch();
   const [listUsers, setListUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
@@ -28,11 +31,15 @@ function Hospital() {
   };
 
   const confirmDeleteUser = async () => {
+    dispatch(setLoading());
     let response = await deleteUser(dataModal);
+    dispatch(setUnLoading());
     console.log(">>Check response: ", response);
     if (response && response.EC === 0) {
       toast.success(response.EM);
+      dispatch(setLoading());
       await fetchHospital();
+      dispatch(setUnLoading());
       setIsShowModalDelete(false);
     } else {
       toast.error(response.EM);
@@ -42,7 +49,9 @@ function Hospital() {
   const onHideModalHospital = async () => {
     setIsShowModalHospital(false);
     setDataModalHospital({});
+    dispatch(setLoading());
     await fetchHospital();
+    dispatch(setUnLoading());
   };
 
   const handleEditUser = (user) => {

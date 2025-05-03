@@ -1,6 +1,5 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import { interceptorLoadingElements } from "../utils/formater";
 
 // Create Axios instances
 const instance = axios.create({
@@ -17,7 +16,6 @@ const instancePy = axios.create({
 const applyInterceptors = (axiosInstance) => {
   axiosInstance.interceptors.request.use(
     function (config) {
-      interceptorLoadingElements(true);
       const token = localStorage.getItem("jwt");
       if (token) {
         config.headers["Authorization"] = `Bearer ${token}`;
@@ -31,7 +29,6 @@ const applyInterceptors = (axiosInstance) => {
 
   axiosInstance.interceptors.response.use(
     function (response) {
-      interceptorLoadingElements(false);
       return response.data;
     },
     function (error) {

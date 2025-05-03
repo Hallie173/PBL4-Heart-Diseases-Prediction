@@ -7,8 +7,11 @@ import {
   fetchHospitalFacultyWithPatient,
 } from "../services/userService";
 import { toast } from "react-toastify";
+import { setLoading, setUnLoading } from "../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 const Appointment = ({ patient }) => {
+  const dispatch = useDispatch();
   const [hospital, setHospital] = useState([]);
   const [faculty, setFaculty] = useState([]);
   const [doctor, setDoctor] = useState([]);
@@ -50,7 +53,9 @@ const Appointment = ({ patient }) => {
   };
 
   const handleGetAllHospital = async () => {
+    dispatch(setLoading());
     let response = await fetchAllHospitalWithPatient();
+    dispatch(setUnLoading());
     if (response && +response.EC === 0) {
       setHospital(response.DT);
       setData((prevData) => ({
@@ -61,7 +66,9 @@ const Appointment = ({ patient }) => {
   };
 
   const handleGetAllFaculty = async (hospital_id) => {
+    dispatch(setLoading());
     let response = await fetchHospitalFacultyWithPatient(hospital_id);
+    dispatch(setUnLoading());
     if (response && +response.EC === 0) {
       setFaculty(response.DT);
       setData((prevData) => ({
@@ -72,7 +79,9 @@ const Appointment = ({ patient }) => {
   };
 
   const handleGetAllDoctor = async (faculty_id) => {
+    dispatch(setLoading());
     let response = await fetchDoctorInFaculty(faculty_id);
+    dispatch(setUnLoading());
     if (response && +response.EC === 0) {
       setDoctor(response.DT);
       setData((prevData) => ({
@@ -132,7 +141,9 @@ const Appointment = ({ patient }) => {
 
     setValidData(_validInputs);
     if (isValid) {
+      dispatch(setLoading());
       const response = await createAppointment(data);
+      dispatch(setUnLoading());
       if (response && +response.EC === 0) {
         toast.success("Đặt lịch khám thành công!");
         setData(defaultData);
