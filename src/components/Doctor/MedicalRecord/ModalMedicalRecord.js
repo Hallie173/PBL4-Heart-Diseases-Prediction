@@ -5,8 +5,11 @@ import _ from "lodash";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { createMedicalRecord } from "../../../services/userService";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 const ModalMedicalRecord = (props) => {
+  const dispatch = useDispatch();
   const { dataModalMedicalRecord, create, dataModalAppointment } = props;
   const [data, setData] = useState({});
   const [validInput, setValidInputs] = useState({});
@@ -61,10 +64,12 @@ const ModalMedicalRecord = (props) => {
     if (!isValid) return;
 
     console.log("call API: ", data);
+    dispatch(setLoading());
     let res = await createMedicalRecord({
       ...data,
       patient_id: data.patient_id._id,
     });
+    dispatch(setUnLoading());
 
     if (res && res.EC === 0) {
       props.onHide();

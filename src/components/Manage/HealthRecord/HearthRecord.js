@@ -8,8 +8,11 @@ import { toast } from "react-toastify";
 import { Link, useLocation } from "react-router-dom";
 import classNames from "classnames";
 import styles from "../Manage.module.css";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 function HearthRecord() {
+  const dispatch = useDispatch();
   const location = useLocation();
   const [listUsers, setListUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,7 +20,9 @@ function HearthRecord() {
   const [totalPages, setTotalPages] = useState(0);
 
   const fetchUsers = async () => {
+    dispatch(setLoading());
     let response = await fetchAllUsers(currentPage, currentLimit);
+    dispatch(setUnLoading());
 
     if (response && response.EC === 0) {
       console.log(response.DT);

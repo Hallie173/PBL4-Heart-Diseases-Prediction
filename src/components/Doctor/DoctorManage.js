@@ -16,8 +16,11 @@ import Staff from "../Hospital/Staff/Staff";
 import MedicalRecord from "./MedicalRecord/MedicalRecord";
 import ModalDoctor from "../Hospital/Doctor/ModalDoctor";
 import Appointment from "./Appointment/Appointment";
+import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 function DoctorManage() {
+  const dispatch = useDispatch();
   const location = useLocation();
   const [isShowModalDoctor, setIsShowModalDoctor] = useState(false);
   const [actionModalDoctor, setActionModalDoctor] = useState("UPDATE");
@@ -42,7 +45,9 @@ function DoctorManage() {
   };
 
   const handleLogout = async () => {
+    dispatch(setLoading());
     let data = await logoutUser(); // clear cookies
+    dispatch(setUnLoading());
     localStorage.removeItem("jwt"); // clear local storage
     logoutContext(); // clear user in context
     if (data && +data.EC === 0) {
@@ -97,7 +102,7 @@ function DoctorManage() {
           </nav>
         </div>
       </div>
-      
+
       <div className={styles.managementContainer}>
         <div className={styles.accountManage}>
           <div className={styles.accountType}>

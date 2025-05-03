@@ -1,14 +1,12 @@
-import React, { useContext, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import styles from "./Account.module.css";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import EditProfile from "./EditProfile";
-import { UserContext } from "../../../context/UserContext";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 function Account() {
-  const { user } = useContext(UserContext);
+  const user = useSelector((state) => state.user) || {};
 
   return (
     <div className={styles.infoContainer}>

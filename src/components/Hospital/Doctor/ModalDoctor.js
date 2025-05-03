@@ -8,8 +8,11 @@ import {
 } from "../../../services/userService";
 import { toast } from "react-toastify";
 import _ from "lodash";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 const ModalDoctor = (props) => {
+  const dispatch = useDispatch();
   const { show, action, dataModalDoctor, hospitalID, handleUpdateDoctor } =
     props;
   const defaultUserData = {
@@ -71,7 +74,9 @@ const ModalDoctor = (props) => {
   }, [action, dataModalDoctor]);
 
   const getFaculty = async () => {
+    dispatch(setLoading());
     let res = await fetchFacultyWithNotPagination(hospitalID);
+    dispatch(setUnLoading());
     if (res && res.EC === 0) {
       setFaculty(res.DT);
     } else {
@@ -147,12 +152,16 @@ const ModalDoctor = (props) => {
 
     let res;
     if (action === "CREATE") {
+      dispatch(setLoading());
       res = await createNewDoctor(userData);
+      dispatch(setUnLoading());
     } else if (action === "UPDATE") {
+      dispatch(setLoading());
       res = await updateCurrentUser({
         ...userData,
         groupId: userData["group"],
       });
+      dispatch(setUnLoading());
     }
 
     if (res && res.EC === 0) {

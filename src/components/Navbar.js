@@ -5,13 +5,18 @@ import logo from "../logo.jpg";
 import { UserContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 import { logoutUser } from "../services/userService";
+import { setLoading, setUnLoading } from "../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 function Navbar() {
+  const dispatch = useDispatch();
   const { user, logoutContext } = useContext(UserContext);
   let navigate = useNavigate();
 
   const handleLogout = async () => {
+    dispatch(setLoading());
     let data = await logoutUser(); // clear cookies
+    dispatch(setUnLoading());
     localStorage.removeItem("jwt"); // clear local storage
     logoutContext(); // clear user in context
     if (data && +data.EC === 0) {
@@ -30,7 +35,7 @@ function Navbar() {
   return (
     <div className="navbar-container">
       <nav className="navbar navbar-expand-lg">
-        <div className="container">
+        <div className="container-nav">
           <Link to="/" className="navbar-brand" href="#">
             <img src={logo} />
           </Link>

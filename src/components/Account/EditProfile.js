@@ -4,8 +4,11 @@ import { UserContext } from "../../context/UserContext";
 import _ from "lodash";
 import { updateCurrentUser } from "../../services/userService";
 import { toast } from "react-toastify";
+import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 function EditProfile() {
+  const dispatch = useDispatch();
   const { user, updateContext } = useContext(UserContext);
   const defaultValue = {
     email: user.account.email,
@@ -27,7 +30,9 @@ function EditProfile() {
   };
 
   const updateUser = async () => {
+    dispatch(setLoading());
     let response = await updateCurrentUser(userData);
+    dispatch(setUnLoading());
     if (response && +response.EC === 0) {
       toast.success(response.EM);
       let token = response.DT.access_token;

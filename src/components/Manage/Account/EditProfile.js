@@ -1,12 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./EditProfile.css";
-import { UserContext } from "../../../context/UserContext";
 import _ from "lodash";
 import { updateCurrentUser } from "../../../services/userService";
 import { toast } from "react-toastify";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserRedux } from "../../../redux/reducer/user.reducer";
+import { RootState } from "../../../store";
 
 function EditProfile() {
-  const { user, updateContext } = useContext(UserContext);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user) || {};
+
   const defaultValue = {
     email: user.account.email,
     username: user.account.username,
@@ -28,12 +33,16 @@ function EditProfile() {
   };
 
   const updateUser = async () => {
+    dispatch(setLoading());
     let response = await updateCurrentUser(userData);
+    dispatch(setUnLoading());
     if (response && +response.EC === 0) {
       toast.success(response.EM);
       let token = response.DT.access_token;
       localStorage.setItem("jwt", token);
-      updateContext(userData);
+      console.log("Update User");
+
+      dispatch(updateUserRedux(userData));
     } else toast.error(response.EM);
   };
 

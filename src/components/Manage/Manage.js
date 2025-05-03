@@ -20,17 +20,26 @@ import History from "../HistoryHealthRecord.js/history";
 import EcgHistory from "../HistoryHealthRecord.js/EcgHistory";
 import Graph from "./Statistic/Graph";
 import Hospital from "./Hospital/Hospital";
+import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUserRedux } from "../../redux/reducer/user.reducer";
+import { RootState } from "../../store";
 
 function Manage() {
+  const dispatch = useDispatch();
   const location = useLocation();
 
-  const { user, logoutContext } = useContext(UserContext);
+  const user = useSelector((state) => state.user) || {};
   let navigate = useNavigate();
 
   const handleLogout = async () => {
+    dispatch(setLoading());
     let data = await logoutUser(); // clear cookies
+    dispatch(setUnLoading());
     localStorage.removeItem("jwt"); // clear local storage
-    logoutContext(); // clear user in context
+    dispatch(logoutUserRedux());
+    console.log("call logoutUserRedux");
+
     if (data && +data.EC === 0) {
       toast.success("Logout succeeds...");
       navigate("/login");

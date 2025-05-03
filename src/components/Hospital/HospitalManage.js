@@ -15,8 +15,11 @@ import Doctor from "./Doctor/Doctor";
 import Falculty from "./Falculty/Falculty";
 import Staff from "./Staff/Staff";
 import MedicalRecord from "./MedicalRecord/MedicalRecord";
+import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 function HospitalManage() {
+  const dispatch = useDispatch();
   const location = useLocation();
   const [isShowModalHospital, setIsShowModalHospital] = useState(false);
   const [actionModalHospital, setActionModalHospital] = useState("UPDATE");
@@ -41,7 +44,9 @@ function HospitalManage() {
   };
 
   const handleLogout = async () => {
+    dispatch(setLoading());
     let data = await logoutUser(); // clear cookies
+    dispatch(setUnLoading());
     localStorage.removeItem("jwt"); // clear local storage
     logoutContext(); // clear user in context
     if (data && +data.EC === 0) {

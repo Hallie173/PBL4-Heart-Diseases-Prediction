@@ -5,8 +5,11 @@ import {
   getHistoryHealthRecord,
   getHistoryHealthRecordByAdmin,
 } from "../../services/userService";
+import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 function History() {
+  const dispatch = useDispatch();
   const { id } = useParams();
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [dataList, setDataList] = useState([]);
@@ -20,9 +23,11 @@ function History() {
   };
 
   const fetchHistoryRecord = async () => {
+    dispatch(setLoading());
     let responsive = id
       ? await getHistoryHealthRecordByAdmin(id)
       : await getHistoryHealthRecord();
+    dispatch(setUnLoading());
     if (responsive && +responsive.EC === 0) {
       const dataWithLocalCreated_at = responsive.DT.map((data) => ({
         ...data,

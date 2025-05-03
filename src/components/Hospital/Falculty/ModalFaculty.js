@@ -10,8 +10,11 @@ import {
 } from "../../../services/userService";
 import { toast } from "react-toastify";
 import _ from "lodash";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 const ModalFaculty = (props) => {
+  const dispatch = useDispatch();
   const { action, hospitalID, dataModalFaculty } = props;
   const defaultFacultyData = {
     name: "",
@@ -74,10 +77,12 @@ const ModalFaculty = (props) => {
     // create user
     let check = checkValidateInputs();
     if (check === true) {
+      dispatch(setLoading());
       let res =
         action === "CREATE"
           ? await createNewFaculty(facultyData)
           : await updateCurrentFaculty(facultyData);
+      dispatch(setUnLoading());
       if (res && res.EC === 0) {
         props.onHide();
         setFacultyData(defaultFacultyData);

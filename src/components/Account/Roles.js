@@ -8,8 +8,11 @@ import TableRoles from "./TableRoles";
 import { createRoles } from "../../services/roleService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 function Roles() {
+  const dispatch = useDispatch();
   const dataChildDefault = { url: "", description: "", isValidUrl: true };
 
   const childRef = useRef();
@@ -59,7 +62,9 @@ function Roles() {
     if (!invalidObj) {
       // call api
       let data = buildDataToPersist();
+      dispatch(setLoading());
       let res = await createRoles(data);
+      dispatch(setUnLoading());
       if (res && res.EC === 0) {
         toast.success(res.EM);
         childRef.current.fetListRolesAgain();

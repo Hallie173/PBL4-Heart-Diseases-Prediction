@@ -7,10 +7,13 @@ import { getAppointmentByDoctor } from "../../../services/userService";
 import ModalAppointment from "./ModalAppointment";
 import { toast } from "react-toastify";
 import ModalMedicalRecord from "../MedicalRecord/ModalMedicalRecord";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 const statuses = ["Pending", "Confirmed", "Cancelled", "Done"];
 
 const Appointment = ({ doctorID }) => {
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("Pending");
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
@@ -33,7 +36,9 @@ const Appointment = ({ doctorID }) => {
   const onHideModalAppointment = async () => {
     setIsShowModalAppointment(false);
     setDataModalAppointment({});
+    dispatch(setLoading());
     await handleGetAppointment();
+    dispatch(setUnLoading());
   };
 
   const handleDetailAppointment = (appointment) => {
@@ -46,12 +51,14 @@ const Appointment = ({ doctorID }) => {
   };
 
   const handleGetAppointment = async () => {
+    dispatch(setLoading());
     const response = await getAppointmentByDoctor(
       activeTab,
       doctorID,
       currentPage,
       currentLimit
     );
+    dispatch(setUnLoading());
 
     if (response && response.EC === 0) {
       const appointmentsWithLocalTime = response.DT.Appointment.map(
@@ -74,17 +81,14 @@ const Appointment = ({ doctorID }) => {
 
   return (
     <div className="p-4">
-      <div className="flex space-x-2 mb-4 bg-gray-100 p-1 rounded-lg w-fit">
+      <div className="d-flex justify-content-center mb-3">
         {statuses.map((status) => (
           <button
             key={status}
             onClick={() => setActiveTab(status)}
-            className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200
-        ${
-          activeTab === status
-            ? "bg-white shadow text-blue-600"
-            : "text-gray-600 hover:text-blue-600 hover:bg-white"
-        }`}
+            className={`bg-transparent border-0 px-3 py-2 text-body fw-medium position-relative
+        ${activeTab === status ? "text-primary active-tab" : "text-secondary"}
+      `}
           >
             {status}
           </button>

@@ -24,7 +24,7 @@
   background: var(--color4);
 }
 
-.container {
+.container-nav {
   display: flex;
   justify-content: center;
   align-items: center;

@@ -7,8 +7,11 @@ import ReactPaginate from "react-paginate";
 import { toast } from "react-toastify";
 import ModalUser from "./ModalUser";
 import ModalDelete from "./ModalDelete";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { useDispatch } from "react-redux";
 
 function User() {
+  const dispatch = useDispatch();
   const [listUsers, setListUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
@@ -27,11 +30,14 @@ function User() {
   };
 
   const confirmDeleteUser = async () => {
+    dispatch(setLoading());
     let response = await deleteUser(dataModal);
-    console.log(">>Check response: ", response);
+    dispatch(setUnLoading());
     if (response && response.EC === 0) {
       toast.success(response.EM);
+      dispatch(setLoading());
       await fetchUsers();
+      dispatch(setUnLoading());
       setIsShowModalDelete(false);
     } else {
       toast.error(response.EM);
@@ -41,7 +47,9 @@ function User() {
   const onHideModalUser = async () => {
     setIsShowModalUser(false);
     setDataModalUser({});
+    dispatch(setLoading());
     await fetchUsers();
+    dispatch(setUnLoading());
   };
 
   const handleEditUser = (user) => {
@@ -56,7 +64,9 @@ function User() {
   };
 
   const fetchUsers = async () => {
+    dispatch(setLoading());
     let response = await fetchAllUsers(currentPage, currentLimit);
+    dispatch(setUnLoading());
 
     if (response && response.EC === 0) {
       console.log(response.DT);
