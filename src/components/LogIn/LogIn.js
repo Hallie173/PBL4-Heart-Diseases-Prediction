@@ -76,10 +76,11 @@ const LogIn = (props) => {
       };
 
       localStorage.setItem("jwt", token);
+      localStorage.setItem('user', JSON.stringify(data));
       dispatch(loginUserRedux(data));
       switch (groupWithRoles?.name) {
         case "admin":
-          console.log("Đã vào switch case");
+          console.log("Đã vào switch case admin");
           navigate("/manage");
           break;
         case "hospital":
@@ -108,12 +109,6 @@ const LogIn = (props) => {
       handleLogin();
     }
   };
-
-  useEffect(() => {
-    if (user && user.isAuthenticated) {
-      window.history.back();
-    }
-  }, [user]);
 
   return (
     <>

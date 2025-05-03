@@ -4,14 +4,13 @@ import { useEffect, useState, useContext } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { registerNewUser } from "../../services/userService";
-import { UserContext } from "../../context/UserContext";
 import logo from "../../logo.svg";
 import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const SignUp = (props) => {
   const dispatch = useDispatch();
-  const { user } = useContext(UserContext);
+  const user = useSelector((state) => state.user) || {};
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");

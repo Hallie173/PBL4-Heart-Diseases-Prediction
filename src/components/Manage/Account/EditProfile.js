@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserRedux } from "../../../redux/reducer/user.reducer";
-import { RootState } from "../../../store";
 
 function EditProfile() {
   const dispatch = useDispatch();
@@ -32,7 +31,7 @@ function EditProfile() {
     setUserData(_userData);
   };
 
-  const updateUser = async () => {
+  const updateUser = async (getState) => {
     dispatch(setLoading());
     let response = await updateCurrentUser(userData);
     dispatch(setUnLoading());
@@ -40,7 +39,6 @@ function EditProfile() {
       toast.success(response.EM);
       let token = response.DT.access_token;
       localStorage.setItem("jwt", token);
-      console.log("Update User");
 
       dispatch(updateUserRedux(userData));
     } else toast.error(response.EM);

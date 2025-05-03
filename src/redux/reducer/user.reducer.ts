@@ -1,11 +1,23 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
 import { userState } from "../types/user.type";
 
-const initialState: userState = {
-  isAuthenticated: false,
-  token: "",
-  account: {},
-};
+let userFromStorage: userState;
+
+try {
+  userFromStorage = JSON.parse(localStorage.getItem("user") || "null") || {
+    isAuthenticated: false,
+    token: "",
+    account: {},
+  };
+} catch (error) {
+  userFromStorage = {
+    isAuthenticated: false,
+    token: "",
+    account: {},
+  };
+}
+
+const initialState: userState = userFromStorage;
 
 export const loginUserRedux = createAction<userState>("user/loginUser");
 export const updateUserRedux = createAction<userState>("user/updateUser");

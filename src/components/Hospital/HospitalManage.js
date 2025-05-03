@@ -7,7 +7,6 @@ import logo from "../../logo.jpg";
 import classNames from "classnames";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { UserContext } from "../../context/UserContext";
 import { toast } from "react-toastify";
 import { logoutUser } from "../../services/userService";
 import ModalHospital from "../Manage/Hospital/ModalHospital";
@@ -16,7 +15,11 @@ import Falculty from "./Falculty/Falculty";
 import Staff from "./Staff/Staff";
 import MedicalRecord from "./MedicalRecord/MedicalRecord";
 import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  logoutUserRedux,
+  updateUserRedux,
+} from "../../redux/reducer/user.reducer";
 
 function HospitalManage() {
   const dispatch = useDispatch();
@@ -24,7 +27,8 @@ function HospitalManage() {
   const [isShowModalHospital, setIsShowModalHospital] = useState(false);
   const [actionModalHospital, setActionModalHospital] = useState("UPDATE");
   const [dataModalHospital, setDataModalHospital] = useState({});
-  const { user, logoutContext, updateContext } = useContext(UserContext);
+  const user = useSelector((state) => state.user) || {};
+
   let navigate = useNavigate();
 
   const onHideModalHospital = async () => {
@@ -40,15 +44,16 @@ function HospitalManage() {
   };
 
   const handleUpdateHospital = (newDataUser) => {
-    updateContext(newDataUser);
+    dispatch(updateUserRedux(newDataUser));
   };
 
   const handleLogout = async () => {
     dispatch(setLoading());
     let data = await logoutUser(); // clear cookies
-    dispatch(setUnLoading());
     localStorage.removeItem("jwt"); // clear local storage
-    logoutContext(); // clear user in context
+    localStorage.removeItem("user");
+    logoutUserRedux();
+    dispatch(setUnLoading());
     if (data && +data.EC === 0) {
       toast.success("Logout succeeds...");
       navigate("/login");

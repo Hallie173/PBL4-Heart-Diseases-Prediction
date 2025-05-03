@@ -13,7 +13,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Roles from "./Role/Roles";
 import User from "./Account/User";
 import EditProfile from "./Account/EditProfile";
-import { UserContext } from "../../context/UserContext";
 import { toast } from "react-toastify";
 import { logoutUser } from "../../services/userService";
 import History from "../HistoryHealthRecord.js/history";
@@ -23,7 +22,6 @@ import Hospital from "./Hospital/Hospital";
 import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUserRedux } from "../../redux/reducer/user.reducer";
-import { RootState } from "../../store";
 
 function Manage() {
   const dispatch = useDispatch();
@@ -35,11 +33,11 @@ function Manage() {
   const handleLogout = async () => {
     dispatch(setLoading());
     let data = await logoutUser(); // clear cookies
-    dispatch(setUnLoading());
     localStorage.removeItem("jwt"); // clear local storage
+    localStorage.removeItem("user"); // clear local storage
     dispatch(logoutUserRedux());
     console.log("call logoutUserRedux");
-
+    dispatch(setUnLoading());
     if (data && +data.EC === 0) {
       toast.success("Logout succeeds...");
       navigate("/login");

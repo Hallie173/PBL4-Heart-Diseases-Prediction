@@ -15,20 +15,16 @@ import Footer from "./components/Footer";
 import Heartrate from "./components/heartrate";
 import History from "./components/HistoryHealthRecord.js/history";
 import MeasurePrepare from "./components/NewMeasure/MeasurePrepare";
-import MeasureStart from "./components/NewMeasure/MeasureStart";
 import Account from "./components/Manage/Account/Account";
 import Guide from "./components/Guide/Guide";
 import Manage from "./components/Manage/Manage";
 import LookUp from "./components/LookUp/LookUp";
 import EcgHistory from "./components/HistoryHealthRecord.js/EcgHistory";
-import { UserContext } from "./context/UserContext";
-import Statistic from "./components/Manage/Statistic/Statistic";
 import HospitalManage from "./components/Hospital/HospitalManage";
 import DoctorManage from "./components/Doctor/DoctorManage";
 import Appointment from "./components/Appointment";
 import { RotatingTriangles } from "react-loader-spinner";
 import { useSelector } from "react-redux";
-import { RootState } from "./store";
 import Page404 from "./components/Page404/Page404";
 
 function App() {
@@ -37,6 +33,9 @@ function App() {
   const isLoading = useSelector((state) => state.loading.isLoading) || false;
 
   useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    } else navigate("/login");
     switch (user?.account?.groupWithRoles?.name) {
       case "admin":
         navigate("/manage");
@@ -202,7 +201,6 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="*" element={<Page404 />} />;
       </Routes>
-      {/* </Router> */}
       <ToastContainer
         position="bottom-center"
         autoClose={3000}

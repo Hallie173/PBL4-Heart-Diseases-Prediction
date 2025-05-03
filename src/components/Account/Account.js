@@ -10,10 +10,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Roles from "./Roles";
 import User from "./User";
 import EditProfile from "./EditProfile";
-import { UserContext } from "../../context/UserContext";
+import { useSelector } from "react-redux";
 
 function Account() {
-  const { user } = useContext(UserContext);
+  const user = useSelector((state) => state.user) || {};
+
   const location = useLocation();
 
   return (
@@ -66,8 +67,9 @@ function Account() {
         <ul class="nav nav-tabs">
           <li className="nav-item">
             <Link
-              className={`nav-link manage-item user-link ${location.pathname.endsWith("/user") ? "active" : ""
-                }`}
+              className={`nav-link manage-item user-link ${
+                location.pathname.endsWith("/user") ? "active" : ""
+              }`}
               to="user"
             >
               User
@@ -75,8 +77,9 @@ function Account() {
           </li>
           <li className="nav-item">
             <Link
-              className={`nav-link manage-item role-link ${location.pathname.endsWith("/roles") ? "active" : ""
-                }`}
+              className={`nav-link manage-item role-link ${
+                location.pathname.endsWith("/roles") ? "active" : ""
+              }`}
               to="roles"
             >
               Role
@@ -84,8 +87,9 @@ function Account() {
           </li>
           <li className="nav-item">
             <Link
-              className={`nav-link manage-item grouprole-link ${location.pathname.endsWith("/group-roles") ? "active" : ""
-                }`}
+              className={`nav-link manage-item grouprole-link ${
+                location.pathname.endsWith("/group-roles") ? "active" : ""
+              }`}
               to="group-roles"
             >
               Group-role
@@ -93,8 +97,9 @@ function Account() {
           </li>
           <li className="nav-item">
             <Link
-              className={`nav-link manage-item statistic-link ${location.pathname.endsWith("/statistic") ? "active" : ""
-                }`}
+              className={`nav-link manage-item statistic-link ${
+                location.pathname.endsWith("/statistic") ? "active" : ""
+              }`}
               to="statistic"
             >
               Statistic
