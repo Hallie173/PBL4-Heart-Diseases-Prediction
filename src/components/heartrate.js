@@ -3,7 +3,7 @@ import ECG from "./ECG/ECG";
 import { Link } from "react-router-dom";
 import "./heartrate.css";
 
-function Heartrate({ onShowHistory }) {
+function Heartrate() {
   const [ecgType, setEcgType] = useState(null); // Lưu dữ liệu chẩn đoán ECG
 
   const predicted_label = [

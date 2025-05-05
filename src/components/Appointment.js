@@ -7,7 +7,7 @@ import {
   fetchHospitalFacultyWithPatient,
 } from "../services/userService";
 import { toast } from "react-toastify";
-import { setLoading, setUnLoading } from "../redux/reducer/loading.ts";
+import { setLoading, setUnLoading } from "../redux/reducer/loading";
 import { useDispatch } from "react-redux";
 
 const Appointment = ({ patient }) => {
@@ -195,7 +195,7 @@ const Appointment = ({ patient }) => {
                 Tên Khoa
               </label>
               <select
-                class="form-select"
+                className="form-select"
                 id="departmentSelect"
                 value={data.faculty}
                 onChange={(e) => handleOnChangeInput(e.target.value, "faculty")}

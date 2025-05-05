@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -26,6 +26,7 @@ import Appointment from "./components/Appointment";
 import { RotatingTriangles } from "react-loader-spinner";
 import { useSelector } from "react-redux";
 import Page404 from "./components/Page404/Page404";
+import AppRoutes from "./Routes/appRoutes";
 
 function App() {
   const navigate = useNavigate();
@@ -46,161 +47,146 @@ function App() {
       case "doctor":
         navigate("/doctor");
         break;
+      case "user":
+        navigate("/");
+        break;
       default:
         navigate("/login");
         break;
     }
   }, [user]);
 
-  const adminRoutes = (
-    <>
-      <Route
-        path="/manage/*"
-        element={
-          <>
-            <Manage />
-            <Footer />
-          </>
-        }
-      />
-    </>
-  );
+  // const adminRoutes = (
+  //   <>
+  //     <Route
+  //       path="/manage/*"
+  //       element={
+  //         <>
+  //           <Manage />
+  //           <Footer />
+  //         </>
+  //       }
+  //     />
+  //   </>
+  // );
 
-  const hospitalRoutes = (
-    <>
-      <Route
-        path="/hospital/*"
-        element={
-          <>
-            <HospitalManage />
-            <Footer />
-          </>
-        }
-      />
-    </>
-  );
+  // const hospitalRoutes = (
+  //   <>
+  //     <Route
+  //       path="/hospital/*"
+  //       element={
+  //         <>
+  //           <HospitalManage />
+  //           <Footer />
+  //         </>
+  //       }
+  //     />
+  //   </>
+  // );
 
-  const doctorRoutes = (
-    <>
-      <Route
-        path="/doctor/*"
-        element={
-          <>
-            <DoctorManage />
-            <Footer />
-          </>
-        }
-      />
-    </>
-  );
+  // const doctorRoutes = (
+  //   <>
+  //     <Route
+  //       path="/doctor/*"
+  //       element={
+  //         <>
+  //           <DoctorManage />
+  //           <Footer />
+  //         </>
+  //       }
+  //     />
+  //   </>
+  // );
 
-  const userRoutes = (
-    <>
-      <Route
-        path="/guide"
-        element={
-          <>
-            <Navbar />
-            <Guide />
-            <Footer />
-          </>
-        }
-      />
-      <Route
-        path="/appointment"
-        element={
-          <>
-            <Navbar />
-            <Appointment patient={user.account} />
-            <Footer />
-          </>
-        }
-      />
-      <Route
-        path="/look-up"
-        element={
-          <>
-            <Navbar />
-            <LookUp />
-            <Footer />
-          </>
-        }
-      />
-      <Route
-        path="/"
-        element={
-          <>
-            <Navbar />
-            <Heartrate />
-            <Footer />
-          </>
-        }
-      />
-      <Route
-        path="/history"
-        element={
-          <>
-            <Navbar />
-            <History />
-            <Footer />
-          </>
-        }
-      />
-      <Route
-        path="/ecg-history"
-        element={
-          <>
-            <Navbar />
-            <EcgHistory />
-            <Footer />
-          </>
-        }
-      />
-      <Route
-        path="/account/*"
-        element={
-          <>
-            <Navbar />
-            <Account />
-            <Footer />
-          </>
-        }
-      />
-      <Route
-        path="/measure-prepare"
-        element={
-          <>
-            <Navbar />
-            <MeasurePrepare />
-            <Footer />
-          </>
-        }
-      />
-    </>
-  );
+  // const userRoutes = (
+  //   <>
+  //     <Route
+  //       path="/guide"
+  //       element={
+  //         <>
+  //           <Navbar />
+  //           <Guide />
+  //           <Footer />
+  //         </>
+  //       }
+  //     />
+  //     <Route
+  //       path="/appointment"
+  //       element={
+  //         <>
+  //           <Navbar />
+  //           <Appointment patient={user.account} />
+  //           <Footer />
+  //         </>
+  //       }
+  //     />
+  //     <Route
+  //       path="/look-up"
+  //       element={
+  //         <>
+  //           <Navbar />
+  //           <LookUp />
+  //           <Footer />
+  //         </>
+  //       }
+  //     />
+  //     <Route
+  //       path="/"
+  //       element={
+  //         <>
+  //           <Navbar />
+  //           <Heartrate />
+  //           <Footer />
+  //         </>
+  //       }
+  //     />
+  //     <Route
+  //       path="/history"
+  //       element={
+  //         <>
+  //           <Navbar />
+  //           <History />
+  //           <Footer />
+  //         </>
+  //       }
+  //     />
+  //     <Route
+  //       path="/ecg-history"
+  //       element={
+  //         <>
+  //           <Navbar />
+  //           <EcgHistory />
+  //           <Footer />
+  //         </>
+  //       }
+  //     />
+  //     <Route
+  //       path="/account/*"
+  //       element={
+  //         <>
+  //           <Navbar />
+  //           <Account />
+  //           <Footer />
+  //         </>
+  //       }
+  //     />
+  //     <Route
+  //       path="/measure-prepare"
+  //       element={
+  //         <>
+  //           <Navbar />
+  //           <MeasurePrepare />
+  //           <Footer />
+  //         </>
+  //       }
+  //     />
+  //   </>
+  // );
 
   return (
     <>
       {/* <Router> */}
-      <Routes>
-        {(() => {
-          switch (user?.account?.groupWithRoles?.name) {
-            case "admin":
-              return adminRoutes;
-            case "hospital":
-              return hospitalRoutes;
-            case "doctor":
-              return doctorRoutes;
-            case "user":
-              return userRoutes;
-            // default:
-            //   return <Route path="*" element={<Page404 />} />;
-          }
-        })()}
-        <Route path="/login" element={<LogIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="*" element={<Page404 />} />;
-      </Routes>
+      <AppRoutes user={user} />
       <ToastContainer
         position="bottom-center"
         autoClose={3000}

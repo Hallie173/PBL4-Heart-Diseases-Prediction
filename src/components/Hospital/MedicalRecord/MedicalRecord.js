@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { fetchAllMedicalRecord } from "../../../services/userService";
 import ModalMedicalRecord from "./ModalMedicalRecord";
-import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
+import { setLoading, setUnLoading } from "../../../redux/reducer/loading";
 import { useDispatch } from "react-redux";
 
 const MedicalRecord = ({ hospitalID }) => {
