@@ -191,6 +191,19 @@ const createMedicalRecord = (data) => {
   return instance.post("/api/v1/doctor/create-medicalRecord", data);
 };
 
+const getAllMessage = (userA, userB) => {
+  return instance.get("/api/v1/messages", {
+    params: {
+      userA,
+      userB,
+    },
+  });
+};
+
+const sendMessageBetweenUser = (newMsg) => {
+  return instance.post("/api/v1/messages/send", newMsg);
+};
+
 export {
   registerNewUser,
   loginUser,
@@ -227,4 +240,6 @@ export {
   getAppointmentByDoctor,
   updateAppointment,
   createMedicalRecord,
+  getAllMessage,
+  sendMessageBetweenUser,
 };
