@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import {
   getAllMessage,
@@ -13,6 +13,7 @@ import {
   faPaperclip,
   faPaperPlane,
   faPhone,
+  faSearch,
   faUserCircle,
   faVideo,
 } from "@fortawesome/free-solid-svg-icons";
@@ -26,6 +27,16 @@ function ChatPage({ userA, userB }) {
 
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Gọi scroll sau khi message thay đổi
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const fetchAllMessage = async () => {
     const response = await getAllMessage(userA, userB);
@@ -59,60 +70,6 @@ function ChatPage({ userA, userB }) {
   };
 
   return (
-    // <div className="container mt-4">
-    //   <div className="card shadow rounded">
-    //     <div className="card-header bg-primary text-white">
-    //       <h5 className="mb-0">💬 Chat with User</h5>
-    //     </div>
-
-    //     <div
-    //       className="card-body"
-    //       style={{
-    //         height: "400px",
-    //         overflowY: "scroll",
-    //         backgroundColor: "#f8f9fa",
-    //       }}
-    //     >
-    //       {messages.map((msg, idx) => (
-    //         <div
-    //           key={idx}
-    //           className={`d-flex ${
-    //             msg.sender === userID
-    //               ? "justify-content-end"
-    //               : "justify-content-start"
-    //           } mb-2`}
-    //         >
-    //           <div
-    //             className="p-2 rounded bg-primary text-white"
-    //             style={{ maxWidth: "70%" }}
-    //           >
-    //             <div>{msg.message}</div>
-    //             <small
-    //               className="d-block text-muted"
-    //               style={{ fontSize: "0.75rem" }}
-    //             >
-    //               {new Date(msg.created_at).toLocaleTimeString()}
-    //             </small>
-    //           </div>
-    //         </div>
-    //       ))}
-    //     </div>
-
-    //     <div className="card-footer d-flex">
-    //       <input
-    //         type="text"
-    //         className="form-control me-2"
-    //         placeholder="Nhập tin nhắn..."
-    //         value={text}
-    //         onChange={(e) => setText(e.target.value)}
-    //         onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-    //       />
-    //       <button className="btn btn-primary" onClick={sendMessage}>
-    //         Gửi
-    //       </button>
-    //     </div>
-    //   </div>
-    // </div>
     <>
       <div class="container-fluid h-100">
         <div class="row justify-content-center h-100">
@@ -128,7 +85,10 @@ function ChatPage({ userA, userB }) {
                   />
                   <div class="input-group-prepend">
                     <span class="input-group-text search_btn">
-                      <i class="fas fa-search"></i>
+                      <FontAwesomeIcon
+                        icon={faSearch}
+                        className="plus-circle-icon mx-2 my-2"
+                      ></FontAwesomeIcon>
                     </span>
                   </div>
                 </div>
@@ -248,32 +208,6 @@ function ChatPage({ userA, userB }) {
                     </span>
                   </div>
                 </div>
-                {/* <span id="action_menu_btn">
-                  <FontAwesomeIcon
-                    icon={faEllipsisV}
-                    className="plus-circle-icon mx-2"
-                  ></FontAwesomeIcon>
-                </span>
-                <div class="action_menu">
-                  <ul>
-                    <li>
-                      <FontAwesomeIcon
-                        icon={faUserCircle}
-                        className="plus-circle-icon mx-2"
-                      ></FontAwesomeIcon>{" "}
-                      View profile
-                    </li>
-                    <li>
-                      <i class="fas fa-users"></i> Add to close friends
-                    </li>
-                    <li>
-                      <i class="fas fa-plus"></i> Add to group
-                    </li>
-                    <li>
-                      <i class="fas fa-ban"></i> Block
-                    </li>
-                  </ul>
-                </div> */}
               </div>
               <div class="card-body msg_card_body">
                 {messages.map((msg, idx) => (
@@ -318,6 +252,8 @@ function ChatPage({ userA, userB }) {
                     )}
                   </>
                 ))}
+
+                <div ref={messagesEndRef} />
               </div>
               <div class="card-footer">
                 <div class="input-group">
@@ -330,14 +266,6 @@ function ChatPage({ userA, userB }) {
                       ></FontAwesomeIcon>
                     </span>
                   </div>
-                  {/* <textarea
-                    name=""
-                    class="form-control type_msg"
-                    placeholder="Type your message..."
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                  ></textarea> */}
                   <input
                     type="text"
                     className="form-control type_msg"

@@ -85,9 +85,10 @@
 .chat {
   margin-top: auto;
   margin-bottom: auto;
+  height: 100vh !important;
 }
 .card {
-  height: 500px;
+  height: 98%;
   border-radius: 15px !important;
   background-color: rgba(0, 0, 0, 0.4) !important;
 }
@@ -95,9 +96,26 @@
   padding: 0.75rem 0 !important;
   overflow-y: auto;
   white-space: nowrap;
+
+  /* Ẩn scrollbar nhưng vẫn cuộn được */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
 }
+.contacts_body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
 .msg_card_body {
   overflow-y: auto;
+  height: 400px;
+
+  /* Ẩn scrollbar nhưng vẫn cuộn được */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.msg_card_body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
 .card-header {
   border-radius: 15px 15px 0 0 !important;
