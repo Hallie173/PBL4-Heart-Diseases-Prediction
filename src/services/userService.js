@@ -204,6 +204,10 @@ const sendMessageBetweenUser = (newMsg) => {
   return instance.post("/api/v1/messages/send", newMsg);
 };
 
+const fetchAllUsersChatting = (userId) => {
+  return instance.get(`/api/v1/messages/read-user?userId=${userId}`);
+};
+
 export {
   registerNewUser,
   loginUser,
@@ -242,4 +246,5 @@ export {
   createMedicalRecord,
   getAllMessage,
   sendMessageBetweenUser,
+  fetchAllUsersChatting,
 };

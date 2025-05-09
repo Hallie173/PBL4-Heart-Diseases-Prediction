@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import {
+  fetchAllUsersChatting,
   getAllMessage,
   sendMessageBetweenUser,
 } from "../../services/userService";
@@ -8,29 +9,34 @@ import { io } from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faEllipsisV,
   faLocationArrow,
   faPaperclip,
-  faPaperPlane,
   faPhone,
   faSearch,
-  faUserCircle,
   faVideo,
 } from "@fortawesome/free-solid-svg-icons";
+import { setLoading, setUnLoading } from "../../redux/reducer/loading";
+import { toast } from "react-toastify";
 
 const socket = io("http://localhost:3001");
 
-function ChatPage({ userA, userB }) {
+function ChatPage({ userB }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user) || {};
   const userID = user.account.id;
 
+  const [listUsersChatting, setlistUsersChatting] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
+  const [searchData, setSearchData] = useState("");
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest", // ngăn scroll toàn trang
+    });
   };
 
   // Gọi scroll sau khi message thay đổi
@@ -38,8 +44,10 @@ function ChatPage({ userA, userB }) {
     scrollToBottom();
   }, [messages]);
 
-  const fetchAllMessage = async () => {
-    const response = await getAllMessage(userA, userB);
+  const fetchAllMessage = async (receiverID) => {
+    dispatch(setLoading());
+    const response = await getAllMessage(userID, receiverID);
+    dispatch(setUnLoading());
     if (response && response.EC === 0) {
       setMessages(response.DT);
     }
@@ -47,18 +55,38 @@ function ChatPage({ userA, userB }) {
 
   // Lấy tin nhắn
   useEffect(() => {
-    fetchAllMessage();
+    if (!selectedUser) return;
 
     socket.on("receive_message", (data) => {
-      setMessages((prev) => [...prev, data]);
+      // chỉ thêm nếu tin nhắn liên quan đến selected user
+      if (
+        (data.sender === selectedUser._id && data.receiver === userID) ||
+        (data.sender === userID && data.receiver === selectedUser._id)
+      ) {
+        setMessages((prev) => [...prev, data]);
+      }
     });
 
     return () => socket.off("receive_message");
-  }, []);
+  }, [selectedUser]);
+  // useEffect(() => {
+  //   fetchAllMessage();
+
+  //   socket.on("receive_message", (data) => {
+  //     setMessages((prev) => [...prev, data]);
+  //   });
+
+  //   return () => socket.off("receive_message");
+  // }, []);
 
   const sendMessage = async () => {
-    if (!text.trim()) return;
-    const newMsg = { sender: userA, receiver: userB, message: text };
+    if (!text.trim() || !selectedUser) return;
+
+    const newMsg = {
+      sender: userID,
+      receiver: selectedUser._id,
+      message: text,
+    };
 
     try {
       sendMessageBetweenUser(newMsg);
@@ -69,9 +97,31 @@ function ChatPage({ userA, userB }) {
     }
   };
 
+  const fetchUsers = async () => {
+    dispatch(setLoading());
+    let response = await fetchAllUsersChatting(userID);
+    dispatch(setUnLoading());
+
+    if (response && response.EC === 0) {
+      console.log(response.DT);
+      setlistUsersChatting(response.DT);
+      setSelectedUser(response.DT[0]);
+      fetchAllMessage(response.DT[0]._id);
+    }
+  };
+
+  const searchUser = () => {
+    if (searchData === "") toast.error("Điền thông tin user");
+    else toast.success(searchData);
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [user]);
+
   return (
     <>
-      <div class="container-fluid h-100">
+      <div class="container-fluid h-100 my-3">
         <div class="row justify-content-center h-100">
           <div class="col-md-4 col-xl-3 chat">
             <div class="card mb-sm-3 mb-md-0 contacts_card">
@@ -82,9 +132,15 @@ function ChatPage({ userA, userB }) {
                     placeholder="Search..."
                     name=""
                     class="form-control search"
+                    value={searchData}
+                    onChange={(e) => setSearchData(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && searchUser()}
                   />
                   <div class="input-group-prepend">
-                    <span class="input-group-text search_btn">
+                    <span
+                      class="input-group-text search_btn"
+                      onClick={() => searchUser()}
+                    >
                       <FontAwesomeIcon
                         icon={faSearch}
                         className="plus-circle-icon mx-2 my-2"
@@ -94,82 +150,33 @@ function ChatPage({ userA, userB }) {
                 </div>
               </div>
               <div class="card-body contacts_body">
-                <ui class="contacts">
-                  <li class="active">
-                    <div class="d-flex bd-highlight">
-                      <div class="img_cont">
-                        <img
-                          src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-                          class="rounded-circle user_img"
-                        />
-                        <span class="online_icon"></span>
+                <ui className="contacts">
+                  {listUsersChatting.map((userChatting, idx) => (
+                    <li
+                      key={userChatting.id}
+                      className={`user-item ${
+                        selectedUser?._id === userChatting._id ? "active" : ""
+                      }`}
+                      onClick={() => {
+                        setSelectedUser(userChatting);
+                        fetchAllMessage(userChatting._id);
+                      }}
+                    >
+                      <div className="d-flex bd-highlight">
+                        <div className="img_cont">
+                          <img
+                            src={userChatting.avatar}
+                            className="rounded-circle user_img"
+                          />
+                          <span className="online_icon"></span>
+                        </div>
+                        <div className="user_info">
+                          <span>{userChatting.username}</span>
+                          <p>{userChatting.username} is online</p>
+                        </div>
                       </div>
-                      <div class="user_info">
-                        <span>Khalid</span>
-                        <p>Kalid is online</p>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="d-flex bd-highlight">
-                      <div class="img_cont">
-                        <img
-                          src="https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg"
-                          class="rounded-circle user_img"
-                        />
-                        <span class="online_icon offline"></span>
-                      </div>
-                      <div class="user_info">
-                        <span>Taherah Big</span>
-                        <p>Taherah left 7 mins ago</p>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="d-flex bd-highlight">
-                      <div class="img_cont">
-                        <img
-                          src="https://i.pinimg.com/originals/ac/b9/90/acb990190ca1ddbb9b20db303375bb58.jpg"
-                          class="rounded-circle user_img"
-                        />
-                        <span class="online_icon"></span>
-                      </div>
-                      <div class="user_info">
-                        <span>Sami Rafi</span>
-                        <p>Sami is online</p>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="d-flex bd-highlight">
-                      <div class="img_cont">
-                        <img
-                          src="http://profilepicturesdp.com/wp-content/uploads/2018/07/sweet-girl-profile-pictures-9.jpg"
-                          class="rounded-circle user_img"
-                        />
-                        <span class="online_icon offline"></span>
-                      </div>
-                      <div class="user_info">
-                        <span>Nargis Hawa</span>
-                        <p>Nargis left 30 mins ago</p>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="d-flex bd-highlight">
-                      <div class="img_cont">
-                        <img
-                          src="https://static.turbosquid.com/Preview/001214/650/2V/boy-cartoon-3D-model_D.jpg"
-                          class="rounded-circle user_img"
-                        />
-                        <span class="online_icon offline"></span>
-                      </div>
-                      <div class="user_info">
-                        <span>Rashid Samim</span>
-                        <p>Rashid left 50 mins ago</p>
-                      </div>
-                    </div>
-                  </li>
+                    </li>
+                  ))}
                 </ui>
               </div>
               <div class="card-footer"></div>
@@ -183,14 +190,18 @@ function ChatPage({ userA, userB }) {
                   <div class="d-flex align-items-center justify-content-center">
                     <div class="img_cont">
                       <img
-                        src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
+                        src={selectedUser?.avatar}
                         class="rounded-circle user_img"
                       />
                       <span class="online_icon"></span>
                     </div>
                     <div class="user_info">
-                      <span>Chat with Khalid</span>
-                      <p>1767 Messages</p>
+                      <span>
+                        {selectedUser
+                          ? selectedUser.username
+                          : "Chọn người để chat"}
+                      </span>
+                      <p></p>
                     </div>
                   </div>
                   <div class="video_cam">
@@ -252,7 +263,6 @@ function ChatPage({ userA, userB }) {
                     )}
                   </>
                 ))}
-
                 <div ref={messagesEndRef} />
               </div>
               <div class="card-footer">

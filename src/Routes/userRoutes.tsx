@@ -8,6 +8,7 @@ import EcgHistory from "../components/HistoryHealthRecord.js/EcgHistory";
 import Account from "../components/Account/Account";
 import MeasurePrepare from "../components/NewMeasure/MeasurePrepare";
 import { userState } from "../redux/types/user.type";
+import ChatPage from "../components/Chat/ChatPage";
 
 const userRoutes = (Layouts: () => React.JSX.Element, user: userState) => {
   /* User Routes */
@@ -24,6 +25,14 @@ const userRoutes = (Layouts: () => React.JSX.Element, user: userState) => {
       <Route path="ecg-history" element={<EcgHistory />} />
       <Route path="account/*" element={<Account />} />
       <Route path="measure-prepare" element={<MeasurePrepare />} />
+      <Route
+        path="chat"
+        element={
+          <ChatPage
+            userB="67f47b8d62af3aca126d0efc"
+          />
+        }
+      />
     </Route>
   );
 };

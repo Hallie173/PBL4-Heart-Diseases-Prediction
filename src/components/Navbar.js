@@ -37,21 +37,10 @@ function Navbar() {
   return (
     <div className="navbar-container">
       <nav className="navbar navbar-expand-lg">
-        <div className="container-nav">
+        <div className="container">
           <Link to="/" className="navbar-brand" href="#">
             <img src={logo} />
           </Link>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item">
@@ -67,6 +56,11 @@ function Navbar() {
               <li className="nav-item">
                 <Link to="/appointment" className="nav-link">
                   Đặt lịch khám
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/chat" className="nav-link">
+                  Tin Nhắn
                 </Link>
               </li>
             </ul>

@@ -12,7 +12,6 @@ import userRoutes from "./userRoutes";
 import LogIn from "../components/LogIn/LogIn";
 import SignUp from "../components/SignUp/SignUp";
 import Page404 from "../components/Page404/Page404";
-import ChatPage from "../components/Chat/ChatPage";
 
 interface AppRoutesProps {
   user: userState;
@@ -23,7 +22,6 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ user }) => (
     {(() => {
       switch (user?.account?.groupWithRoles?.name) {
         case "admin":
-          console.log("app routes", user);
           return adminRoutes(AdminLayout);
         case "hospital":
           return hospitalRoutes(HospitalLayout, user);
@@ -35,15 +33,6 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ user }) => (
     })()}
     <Route path="/login" element={<LogIn />} />
     <Route path="/signup" element={<SignUp />} />
-    <Route
-      path="/chat"
-      element={
-        <ChatPage
-          userA={"673f3165ce54e425175a07c5"}
-          userB="67f47b8d62af3aca126d0efc"
-        />
-      }
-    />
     <Route path="*" element={<Page404 />} />;
   </Routes>
 );
