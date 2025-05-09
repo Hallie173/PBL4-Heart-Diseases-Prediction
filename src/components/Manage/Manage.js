@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import styles from "./Manage.module.css";
 import "../Navbar.css";
@@ -233,17 +233,7 @@ function Manage() {
             </li>
           </ul>
           <div className={styles.tabContent}>
-            <Routes>
-              <Route path="user" element={<User />} />
-              <Route path="roles" element={<Roles />} />
-              <Route path="group-roles" element={<GroupRoles />} />
-              <Route path="heart-record" element={<HearthRecord />} />
-              <Route path="heart-record/:id" element={<History />} />
-              <Route path="statistic" element={<Statistic />} />
-              <Route path="statistic/:id" element={<Graph />} />
-              <Route path="ecg-history" element={<EcgHistory />} />
-              <Route path="hospital" element={<Hospital />} />
-            </Routes>
+            <Outlet />
           </div>
         </div>
 

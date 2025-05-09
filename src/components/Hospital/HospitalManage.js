@@ -10,10 +10,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
 import { logoutUser } from "../../services/userService";
 import ModalHospital from "../Manage/Hospital/ModalHospital";
-import Doctor from "./Doctor/Doctor";
-import Falculty from "./Falculty/Falculty";
-import Staff from "./Staff/Staff";
-import MedicalRecord from "./MedicalRecord/MedicalRecord";
 import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -203,7 +199,7 @@ function HospitalManage() {
             </li>
           </ul>
           <div className={styles.tabContent}>
-            <Routes>
+            {/* <Routes>
               <Route
                 path="doctor"
                 element={<Doctor hospitalID={user.account.id} />}
@@ -220,7 +216,7 @@ function HospitalManage() {
                 path="medical-record"
                 element={<MedicalRecord hospitalID={user.account.id} />}
               />
-            </Routes>
+            </Routes> */}
           </div>
         </div>
 

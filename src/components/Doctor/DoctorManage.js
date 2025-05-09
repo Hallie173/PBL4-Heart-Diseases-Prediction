@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import styles from "../Manage/Manage.module.css";
 import "../Navbar.css";
@@ -76,21 +76,14 @@ function DoctorManage() {
               <Link to="/" className="navbar-brand" href="#">
                 <img src={logo} />
               </Link>
-              <button
-                className="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNav"
-                aria-controls="navbarNav"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-              >
-                <span className="navbar-toggler-icon"></span>
-              </button>
               <div className="collapse navbar-collapse" id="navbarNav">
+                <Link className="log-out" to="/doctor/chat">
+                  <button className="btn btn-outline-success">Chat</button>
+                </Link>
                 <Link className="log-out">
                   <button
                     className="btn btn-outline-secondary"
+                    to="/"
                     onClick={() => handleLogout()}
                   >
                     Log out
@@ -140,35 +133,35 @@ function DoctorManage() {
         <div className={styles.rolesManage}>
           <ul class={classNames(styles.nav, styles.navTabs)}>
             {/* <li className={styles.navItem}>
-              <Link
-                className={classNames(
-                  styles.navLink,
-                  styles.manageItem,
-                  styles.userLink,
-                  {
-                    [styles.active]: location.pathname.endsWith("/doctor"),
-                  }
-                )}
-                to="doctor"
-              >
-                Doctor
-              </Link>
-            </li>
-            <li className={styles.navItem}>
-              <Link
-                className={classNames(
-                  styles.navLink,
-                  styles.manageItem,
-                  styles.roleLink,
-                  {
-                    [styles.active]: location.pathname.endsWith("/staff"),
-                  }
-                )}
-                to="staff"
-              >
-                Staff
-              </Link>
-            </li> */}
+                <Link
+                  className={classNames(
+                    styles.navLink,
+                    styles.manageItem,
+                    styles.userLink,
+                    {
+                      [styles.active]: location.pathname.endsWith("/doctor"),
+                    }
+                  )}
+                  to="doctor"
+                >
+                  Doctor
+                </Link>
+              </li>
+              <li className={styles.navItem}>
+                <Link
+                  className={classNames(
+                    styles.navLink,
+                    styles.manageItem,
+                    styles.roleLink,
+                    {
+                      [styles.active]: location.pathname.endsWith("/staff"),
+                    }
+                  )}
+                  to="staff"
+                >
+                  Staff
+                </Link>
+              </li> */}
             <li className={styles.navItem}>
               <Link
                 className={classNames(
@@ -202,16 +195,7 @@ function DoctorManage() {
             </li>
           </ul>
           <div className={styles.tabContent}>
-            <Routes>
-              <Route
-                path="appointment"
-                element={<Appointment doctorID={user.account.id} />}
-              />
-              <Route
-                path="medical-record"
-                element={<MedicalRecord doctorID={user.account.id} />}
-              />
-            </Routes>
+            <Outlet />
           </div>
         </div>
 

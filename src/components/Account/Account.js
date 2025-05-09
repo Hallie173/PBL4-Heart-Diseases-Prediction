@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./Account.css";
 import GroupRoles from "./GroupRoles";
-import Statistic from "../Manage/Statistic";
+import Statistic from "../Manage/Statistic/Statistic";
 import avatar from "../../avatar.png";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

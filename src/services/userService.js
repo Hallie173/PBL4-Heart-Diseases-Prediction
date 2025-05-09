@@ -79,6 +79,10 @@ const getUserByEmail = (email) => {
   return instance.get(`/api/v1/user/read-info-user?email=${email}`);
 };
 
+const getUserByIDs = (partnerIds) => {
+  return instance.post(`/api/v1/user/read-info-userIds`, { ids: partnerIds });
+};
+
 const updateUser = (userData) => {
   return instance.put("/api/v1/user/update-info-user", {
     ...userData,
@@ -191,6 +195,23 @@ const createMedicalRecord = (data) => {
   return instance.post("/api/v1/doctor/create-medicalRecord", data);
 };
 
+const getAllMessage = (userA, userB) => {
+  return instance.get("/api/v1/messages", {
+    params: {
+      userA,
+      userB,
+    },
+  });
+};
+
+const sendMessageBetweenUser = (newMsg) => {
+  return instance.post("/api/v1/messages/send", newMsg);
+};
+
+const fetchAllUsersChatting = (userId) => {
+  return instance.get(`/api/v1/messages/read-user?userId=${userId}`);
+};
+
 export {
   registerNewUser,
   loginUser,
@@ -202,6 +223,7 @@ export {
   getUserAccount,
   logoutUser,
   getUserByEmail,
+  getUserByIDs,
   updateUser,
   ChangePassword,
   getDataHealth,
@@ -227,4 +249,7 @@ export {
   getAppointmentByDoctor,
   updateAppointment,
   createMedicalRecord,
+  getAllMessage,
+  sendMessageBetweenUser,
+  fetchAllUsersChatting,
 };

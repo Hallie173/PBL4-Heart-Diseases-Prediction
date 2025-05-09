@@ -4,7 +4,7 @@ import _ from "lodash";
 import { updateCurrentUser } from "../../services/userService";
 import { toast } from "react-toastify";
 import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateUserRedux } from "../../redux/reducer/user.reducer";
 
 function EditProfile() {

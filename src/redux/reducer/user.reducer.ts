@@ -13,7 +13,22 @@ try {
   userFromStorage = {
     isAuthenticated: false,
     token: "",
-    account: {},
+    account: {
+      groupWithRoles: {
+        _id: "",
+        name: "",
+        description: "",
+      },
+      id: "",
+      email: "",
+      username: "",
+      firstName: "",
+      lastName: "",
+      phone: "",
+      gender: "",
+      avatar: "",
+      address: "",
+    },
   };
 }
 
