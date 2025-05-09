@@ -33,6 +33,7 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ user }) => (
     })()}
     <Route path="/login" element={<LogIn />} />
     <Route path="/signup" element={<SignUp />} />
+    {/* <Route path="/chat" element={<Chat userId={user.account.id}/>} /> */}
     <Route path="*" element={<Page404 />} />;
   </Routes>
 );

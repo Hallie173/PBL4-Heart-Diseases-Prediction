@@ -25,14 +25,7 @@ const userRoutes = (Layouts: () => React.JSX.Element, user: userState) => {
       <Route path="ecg-history" element={<EcgHistory />} />
       <Route path="account/*" element={<Account />} />
       <Route path="measure-prepare" element={<MeasurePrepare />} />
-      <Route
-        path="chat"
-        element={
-          <ChatPage
-            userB="67f47b8d62af3aca126d0efc"
-          />
-        }
-      />
+      <Route path="chat" element={<ChatPage />} />
     </Route>
   );
 };

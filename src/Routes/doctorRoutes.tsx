@@ -20,14 +20,7 @@ const doctorRoutes = (Layouts: () => React.JSX.Element, user: userState) => {
           path="medical-record"
           element={<MedicalRecord doctorID={doctorID} />}
         />
-        <Route
-          path="chat"
-          element={
-            <ChatPage
-              userB="67f47b8d62af3aca126d0efc"
-            />
-          }
-        />
+        <Route path="chat" element={<ChatPage />} />
       </Route>
     </Route>
   );

@@ -1,66 +1,124 @@
-import React, { useEffect, useState } from "react";
-import io from "socket.io-client";
-import axios from "axios";
-import { getAllMessage } from "../../services/userService";
+import React, { useState, useEffect } from "react";
+import { db } from "../../setup/firebase";
+import { ref, push, onValue } from "firebase/database";
 
-const socket = io("http://localhost:3001");
+function Chat({ userId }) {
+  const [channels, setChannels] = useState([]);
+  const [selectedChannel, setSelectedChannel] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [text, setText] = useState("");
 
-function Chat() {
-  const [username, setUsername] = useState(
-    "User" + Math.floor(Math.random() * 1000)
-  );
-  const [message, setMessage] = useState("");
-  const [chat, setChat] = useState([]);
-
-  const fetchAllMessage = async () => {
-    const response = await getAllMessage();
-    if (response && response.EC === 0) {
-      setChat(response.DT);
-    }
-  };
-
+  // Lấy các channel mà user tham gia
   useEffect(() => {
-    fetchAllMessage();
-
-    socket.on("receive_message", (data) => {
-      setChat((prev) => [...prev, data]);
+    const channelsRef = ref(db, "channels");
+    onValue(channelsRef, (snapshot) => {
+      const data = snapshot.val() || {};
+      const myChannels = Object.entries(data)
+        .filter(([_, value]) => value.members && value.members[userId])
+        .map(([key, value]) => ({ id: key, ...value }));
+      setChannels(myChannels);
     });
+  }, [userId]);
 
-    return () => socket.off("receive_message");
-  }, []);
+  // Lấy tin nhắn của channel được chọn
+  useEffect(() => {
+    if (!selectedChannel) return;
+    const messagesRef = ref(db, `channels/${selectedChannel}/messages`);
+    onValue(messagesRef, (snapshot) => {
+      const data = snapshot.val() || {};
+      const msgList = Object.entries(data)
+        .map(([id, val]) => ({ id, ...val }))
+        .sort((a, b) => a.timestamp - b.timestamp);
+      setMessages(msgList);
+    });
+  }, [selectedChannel]);
 
-  const sendMessage = () => {
-    if (message.trim()) {
-      const newMessage = { username, message };
-      socket.emit("send_message", newMessage);
-      setMessage("");
-    }
+  const handleSend = async () => {
+    if (!text.trim() || !selectedChannel) return;
+    const newMsg = {
+      sender: userId,
+      text,
+      timestamp: Date.now(),
+    };
+    await push(ref(db, `channels/${selectedChannel}/messages`), newMsg);
+    setText("");
   };
 
   return (
-    <div style={{ maxWidth: "500px", margin: "auto" }}>
-      <h2>Chat</h2>
+    <div style={{ display: "flex", height: "90vh" }}>
+      {/* DANH SÁCH CHANNEL */}
       <div
-        style={{
-          height: 300,
-          overflowY: "scroll",
-          border: "1px solid #ccc",
-          padding: 10,
-        }}
+        style={{ width: "25%", borderRight: "1px solid #ccc", padding: "10px" }}
       >
-        {chat.map((msg, i) => (
-          <p key={i}>
-            <strong>{msg.username}:</strong> {msg.message}
-          </p>
+        <h4>Your Channels</h4>
+        {channels.map((ch) => (
+          <div
+            key={ch.id}
+            onClick={() => setSelectedChannel(ch.id)}
+            style={{
+              padding: "10px",
+              backgroundColor: ch.id === selectedChannel ? "#eee" : "#fff",
+              cursor: "pointer",
+            }}
+          >
+            Channel: {ch.id}
+          </div>
         ))}
       </div>
-      <input
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-      />
-      <button onClick={sendMessage}>Send</button>
+
+      {/* KHUNG CHAT */}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          padding: "10px",
+        }}
+      >
+        <div
+          style={{
+            flex: 1,
+            overflowY: "scroll",
+            borderBottom: "1px solid #ccc",
+          }}
+        >
+          {messages.map((msg) => (
+            <div
+              key={msg.id}
+              style={{
+                textAlign: msg.sender === userId ? "right" : "left",
+                margin: "5px 0",
+              }}
+            >
+              <div
+                style={{
+                  display: "inline-block",
+                  padding: "8px 12px",
+                  borderRadius: "10px",
+                  backgroundColor:
+                    msg.sender === userId ? "#007bff" : "#e4e6eb",
+                  color: msg.sender === userId ? "#fff" : "#000",
+                }}
+              >
+                {msg.text}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: "flex", marginTop: "10px" }}>
+          <input
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            placeholder="Type a message..."
+            style={{ flex: 1, padding: "10px" }}
+          />
+          <button onClick={handleSend} style={{ marginLeft: "10px" }}>
+            Send
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

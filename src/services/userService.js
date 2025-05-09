@@ -79,6 +79,10 @@ const getUserByEmail = (email) => {
   return instance.get(`/api/v1/user/read-info-user?email=${email}`);
 };
 
+const getUserByIDs = (partnerIds) => {
+  return instance.post(`/api/v1/user/read-info-userIds`, { ids: partnerIds });
+};
+
 const updateUser = (userData) => {
   return instance.put("/api/v1/user/update-info-user", {
     ...userData,
@@ -219,6 +223,7 @@ export {
   getUserAccount,
   logoutUser,
   getUserByEmail,
+  getUserByIDs,
   updateUser,
   ChangePassword,
   getDataHealth,
