@@ -6,8 +6,8 @@ import GroupRoles from "../components/Account/GroupRoles";
 import HearthRecord from "../components/Manage/HealthRecord/HearthRecord";
 import Statistic from "../components/Manage/Statistic/Statistic";
 import Graph from "../components/Manage/Statistic/Graph";
-import History from "../components/history";
-import EcgHistory from "../components/HistoryHealthRecord.js/EcgHistory";
+import History from "../components/HistoryHealthRecord/history";
+import EcgHistory from "../components/HistoryHealthRecord/EcgHistory";
 import Hospital from "../components/Manage/Hospital/Hospital";
 
 const adminRoutes = (Layouts: () => React.JSX.Element) => {

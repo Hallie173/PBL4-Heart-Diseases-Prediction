@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import ModalMedicalRecord from "../MedicalRecord/ModalMedicalRecord";
 import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
 import { useDispatch } from "react-redux";
+import { Skeleton } from "@mui/material";
 
 const statuses = ["Pending", "Confirmed", "Cancelled", "Done"];
 
@@ -21,9 +22,9 @@ const Appointment = ({ doctorID }) => {
   const [appointments, setAppointments] = useState([]);
   const [isShowModalAppointment, setIsShowModalAppointment] = useState(false);
   const [dataModalAppointment, setDataModalAppointment] = useState({});
-
   const [isShowModalMedicalRecord, setIsShowModalMedicalRecord] =
     useState(false);
+  const [loadingAppointments, setLoadingAppointments] = useState(true);
 
   const onHideModalMedicalRecord = async () => {
     setIsShowModalMedicalRecord(false);
@@ -51,14 +52,13 @@ const Appointment = ({ doctorID }) => {
   };
 
   const handleGetAppointment = async () => {
-    dispatch(setLoading());
+    setLoadingAppointments(true);
     const response = await getAppointmentByDoctor(
       activeTab,
       doctorID,
       currentPage,
       currentLimit
     );
-    dispatch(setUnLoading());
 
     if (response && response.EC === 0) {
       const appointmentsWithLocalTime = response.DT.Appointment.map(
@@ -73,6 +73,7 @@ const Appointment = ({ doctorID }) => {
       setTotalPages(response.DT.totalPages);
       setAppointments(appointmentsWithLocalTime);
     }
+    setLoadingAppointments(false);
   };
 
   useEffect(() => {
@@ -109,7 +110,30 @@ const Appointment = ({ doctorID }) => {
             </tr>
           </thead>
           <tbody>
-            {appointments && appointments.length > 0 ? (
+            {loadingAppointments ? (
+              Array.from({ length: 5 }).map((_, index) => (
+                <tr key={index} className="border-t">
+                  <td className="px-4 py-2">
+                    <Skeleton variant="text" width={20} />
+                  </td>
+                  <td className="px-4 py-2">
+                    <Skeleton variant="text" width={100} />
+                  </td>
+                  <td className="px-4 py-2">
+                    <Skeleton variant="text" width={120} />
+                  </td>
+                  <td className="px-4 py-2">
+                    <Skeleton variant="text" width={80} />
+                  </td>
+                  <td className="px-4 py-2">
+                    <Skeleton variant="text" width={160} />
+                  </td>
+                  <td className="px-4 py-2">
+                    <Skeleton variant="circular" width={24} height={24} />
+                  </td>
+                </tr>
+              ))
+            ) : appointments && appointments.length > 0 ? (
               appointments.map((a, index) => (
                 <tr key={a.id} className="border-t">
                   <td className="px-4 py-2">{index + 1}</td>
@@ -124,23 +148,18 @@ const Appointment = ({ doctorID }) => {
                         className="edit-icon"
                         onClick={() => handleDetailAppointment(a)}
                       ></FontAwesomeIcon>
-                      {/* {activeTab === "Done" && (
-                        <FontAwesomeIcon
-                          icon={faEye}
-                          className="edit-icon"
-                          onClick={() => handleDetailMedicalRecord()}
-                        ></FontAwesomeIcon>
-                      )} */}
                     </div>
                   </td>
                 </tr>
               ))
             ) : (
-              <tr>
-                <td colSpan="6" className="text-center py-4 text-gray-500">
-                  No appointments found.
-                </td>
-              </tr>
+              <>
+                <tr>
+                  <td colSpan="6" className="text-center py-4 text-gray-500">
+                    No appointments found.
+                  </td>
+                </tr>
+              </>
             )}
           </tbody>
         </table>

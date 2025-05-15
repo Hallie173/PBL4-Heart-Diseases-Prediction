@@ -7,11 +7,9 @@ import ReactPaginate from "react-paginate";
 import { toast } from "react-toastify";
 import ModalUser from "./ModalUser";
 import ModalDelete from "./ModalDelete";
-import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
+import { Skeleton } from "@mui/material";
 
 function User() {
-  const dispatch = useDispatch();
   const [listUsers, setListUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
@@ -24,32 +22,31 @@ function User() {
   const [actionModalUser, setActionModalUser] = useState("CREATE");
   const [dataModalUser, setDataModalUser] = useState({});
 
+  const [loadingUserList, setLoadingUserList] = useState(true);
+
   const handleClose = () => {
     setIsShowModalDelete(false);
     setDataModal({});
   };
 
   const confirmDeleteUser = async () => {
-    dispatch(setLoading());
+    setLoadingUserList(true);
     let response = await deleteUser(dataModal);
-    dispatch(setUnLoading());
     if (response && response.EC === 0) {
       toast.success(response.EM);
-      dispatch(setLoading());
       await fetchUsers();
-      dispatch(setUnLoading());
-      setIsShowModalDelete(false);
     } else {
       toast.error(response.EM);
     }
+    setLoadingUserList(false);
   };
 
   const onHideModalUser = async () => {
     setIsShowModalUser(false);
     setDataModalUser({});
-    dispatch(setLoading());
+    setLoadingUserList(true);
     await fetchUsers();
-    dispatch(setUnLoading());
+    setLoadingUserList(false);
   };
 
   const handleEditUser = (user) => {
@@ -64,15 +61,15 @@ function User() {
   };
 
   const fetchUsers = async () => {
-    dispatch(setLoading());
+    setLoadingUserList(true);
     let response = await fetchAllUsers(currentPage, currentLimit);
-    dispatch(setUnLoading());
 
     if (response && response.EC === 0) {
       console.log(response.DT);
       setTotalPages(response.DT.totalPages);
       setListUsers(response.DT.users);
     }
+    setLoadingUserList(false);
   };
 
   const handlePageClick = async (event) => {
@@ -109,56 +106,73 @@ function User() {
           </tr>
         </thead>
         <tbody>
-          {listUsers && listUsers.length > 0 ? (
-            <>
-              {listUsers.map((item, index) => {
-                return (
-                  <tr class="border-bottom" key={`row-${index}`}>
-                    <td>
-                      <div class="p-2">
-                        {(currentPage - 1) * currentLimit + index + 1}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2 d-flex flex-row align-items-center mb-2">
-                        {item._id}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2">{item.username}</div>
-                    </td>
-                    <td>
-                      <div class="p-2 d-flex flex-column">{item.email}</div>
-                    </td>
-                    <td>
-                      <div class="p-2">
-                        {item.groupId ? item.groupId.name : ""}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2 icons">
-                        <FontAwesomeIcon
-                          icon={faPenToSquare}
-                          className="edit-icon"
-                          onClick={() => handleEditUser(item)}
-                        ></FontAwesomeIcon>
-                        <FontAwesomeIcon
-                          icon={faTrashCan}
-                          className="trash-icon"
-                          onClick={() => handleDeleteUser(item)}
-                        ></FontAwesomeIcon>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </>
-          ) : (
-            <>
-              <tr>
-                <td>Not Found User</td>
+          {loadingUserList ? (
+            Array.from({ length: 10 }).map((_, index) => (
+              <tr className="border-bottom" key={`skeleton-${index}`}>
+                <td>
+                  <Skeleton variant="text" width={20} />
+                </td>
+                <td>
+                  <Skeleton variant="text" width={120} />
+                </td>
+                <td>
+                  <Skeleton variant="text" width={100} />
+                </td>
+                <td>
+                  <Skeleton variant="text" width={160} />
+                </td>
+                <td>
+                  <Skeleton variant="text" width={80} />
+                </td>
+                <td>
+                  <Skeleton variant="circular" width={24} height={24} />
+                </td>
               </tr>
-            </>
+            ))
+          ) : listUsers && listUsers.length > 0 ? (
+            listUsers.map((item, index) => (
+              <tr className="border-bottom" key={`row-${index}`}>
+                <td>
+                  <div className="p-2">
+                    {(currentPage - 1) * currentLimit + index + 1}
+                  </div>
+                </td>
+                <td>
+                  <div className="p-2 d-flex flex-row align-items-center mb-2">
+                    {item._id}
+                  </div>
+                </td>
+                <td>
+                  <div className="p-2">{item.username}</div>
+                </td>
+                <td>
+                  <div className="p-2 d-flex flex-column">{item.email}</div>
+                </td>
+                <td>
+                  <div className="p-2">
+                    {item.groupId ? item.groupId.name : ""}
+                  </div>
+                </td>
+                <td>
+                  <div className="p-2 icons">
+                    <FontAwesomeIcon
+                      icon={faPenToSquare}
+                      className="edit-icon"
+                      onClick={() => handleEditUser(item)}
+                    />
+                    <FontAwesomeIcon
+                      icon={faTrashCan}
+                      className="trash-icon"
+                      onClick={() => handleDeleteUser(item)}
+                    />
+                  </div>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={6}>Not Found User</td>
+            </tr>
           )}
         </tbody>
       </table>

@@ -67,9 +67,7 @@ const ModalUser = (props) => {
   }, [action]);
 
   const getGroups = async () => {
-    dispatch(setLoading());
     let res = await fetchGroup();
-    dispatch(setUnLoading());
     if (res && res.EC === 0) {
       setUserGroups(res.DT);
       if (res.DT && res.DT.length > 0) {
@@ -112,7 +110,6 @@ const ModalUser = (props) => {
     // create user
     let check = checkValidateInputs();
     if (check === true) {
-      dispatch(setLoading());
       let res =
         action === "CREATE"
           ? await createNewUser({
@@ -123,7 +120,6 @@ const ModalUser = (props) => {
               ...userData,
               groupId: userData["group"],
             });
-      dispatch(setUnLoading());
       if (res && res.EC === 0) {
         props.onHide();
         setUserData({

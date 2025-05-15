@@ -7,16 +7,16 @@ import { toast } from "react-toastify";
 import ReactPaginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
+import { Skeleton } from "@mui/material";
 
 const TableRoles = forwardRef((props, ref) => {
-  const dispatch = useDispatch();
   const [listRoles, setListRoles] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
   const [totalPages, setTotalPages] = useState(0);
+
+  const [loadingRoles, setLoadingRoles] = useState(true);
 
   const handlePageClick = async (event) => {
     setCurrentPage(+event.selected + 1);
@@ -33,25 +33,23 @@ const TableRoles = forwardRef((props, ref) => {
   }));
 
   const getAllRoles = async () => {
-    dispatch(setLoading());
+    setLoadingRoles(true);
     let data = await fetchAllRolesWithPaging(currentPage, currentLimit);
-    dispatch(setUnLoading());
     if (data && +data.EC === 0) {
       setTotalPages(data.DT.totalPages);
       setListRoles(data.DT.roles);
     }
+    setLoadingRoles(false);
   };
 
   const handleDeleteRole = async (role) => {
-    dispatch(setLoading());
+    setLoadingRoles(true);
     let data = await deleteRole(role);
-    dispatch(setUnLoading());
     if (data && +data.EC === 0) {
       toast.success(data.EM);
-      dispatch(setLoading());
       await getAllRoles();
-      dispatch(setUnLoading());
     }
+    setLoadingRoles(false);
   };
 
   return (
@@ -75,46 +73,58 @@ const TableRoles = forwardRef((props, ref) => {
             </tr>
           </thead>
           <tbody>
-            {listRoles && listRoles.length > 0 ? (
+            {loadingRoles ? (
+              // 👇 Hiện skeleton khi đang loading
               <>
-                {listRoles.map((item, index) => {
-                  return (
-                    <tr class="border-bottom" key={`row-${index}`}>
-                      <td>
-                        <div class=" d-flex flex-row align-items-center mb-2">
-                          {item._id}
-                        </div>
-                      </td>
-                      <td>
-                        <div class="d-flex">{item.url}</div>
-                      </td>
-                      <td>
-                        <div class=" d-flex flex-column">
-                          {item.description}
-                        </div>
-                      </td>
-                      <td>
-                        <span
-                          title="Delete"
-                          className="delete"
-                          onClick={() => handleDeleteRole(item)}
-                        >
-                          <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="trash-icon"
-                          ></FontAwesomeIcon>
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {[...Array(10)].map((_, idx) => (
+                  <tr key={`skeleton-${idx}`}>
+                    <td>
+                      <Skeleton variant="text" width={100} height={20} />
+                    </td>
+                    <td>
+                      <Skeleton variant="text" width={150} height={20} />
+                    </td>
+                    <td>
+                      <Skeleton variant="text" width={200} height={20} />
+                    </td>
+                    <td>
+                      <Skeleton variant="circular" width={30} height={30} />
+                    </td>
+                  </tr>
+                ))}
               </>
-            ) : (
-              <>
-                <tr>
-                  <td colSpan={4}>Not Found Roles</td>{" "}
+            ) : listRoles && listRoles.length > 0 ? (
+              listRoles.map((item, index) => (
+                <tr className="border-bottom" key={`row-${index}`}>
+                  <td>
+                    <div className="d-flex flex-row align-items-center mb-2">
+                      {item._id}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="d-flex">{item.url}</div>
+                  </td>
+                  <td>
+                    <div className="d-flex flex-column">{item.description}</div>
+                  </td>
+                  <td>
+                    <span
+                      title="Delete"
+                      className="delete"
+                      onClick={() => handleDeleteRole(item)}
+                    >
+                      <FontAwesomeIcon
+                        icon={faTrashCan}
+                        className="trash-icon"
+                      />
+                    </span>
+                  </td>
                 </tr>
-              </>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4}>No roles found.</td>
+              </tr>
             )}
           </tbody>
         </table>
