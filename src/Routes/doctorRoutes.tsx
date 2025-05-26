@@ -3,7 +3,7 @@ import DoctorManage from "../components/Doctor/DoctorManage";
 import Appointment from "../components/Doctor/Appointment/Appointment";
 import MedicalRecord from "../components/Doctor/MedicalRecord/MedicalRecord";
 import { userState } from "../redux/types/user.type";
-import ChatPage from "../components/Chat/ChatPage";
+import Chat from "../components/Chat/Chat";
 
 const doctorRoutes = (Layouts: () => React.JSX.Element, user: userState) => {
   /* Doctor Routes */
@@ -20,7 +20,7 @@ const doctorRoutes = (Layouts: () => React.JSX.Element, user: userState) => {
           path="medical-record"
           element={<MedicalRecord doctorID={doctorID} />}
         />
-        <Route path="chat" element={<ChatPage />} />
+        <Route path="chat" element={<Chat />} />
       </Route>
     </Route>
   );

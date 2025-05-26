@@ -6,6 +6,14 @@ import { RotatingTriangles } from "react-loader-spinner";
 import { useDispatch, useSelector } from "react-redux";
 import AppRoutes from "./Routes/appRoutes";
 import { setLoading, setUnLoading } from "./redux/reducer/loading";
+import { Buffer } from "buffer";
+import process from "process";
+
+window.Buffer = Buffer;
+
+if (typeof global === "undefined") {
+  window.global = window;
+}
 
 function App() {
   const dispatch = useDispatch();

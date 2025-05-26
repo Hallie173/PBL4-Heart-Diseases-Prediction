@@ -323,3 +323,56 @@
     margin-bottom: 15px !important;
   }
 }
+
+.video-call-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.remote-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #333;
+}
+
+.local-video {
+  position: absolute !important;
+  top: 20px !important;
+  right: 20px !important;
+  width: 200px !important;
+  height: 150px !important;
+  object-fit: cover !important;
+  border: 2px solid #fff !important;
+  border-radius: 8px !important;
+  background: #000 !important;
+  z-index: 1000 !important;
+}
+
+.call-controls {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001;
+}
+
+.end-call-btn {
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 50px;
+}
