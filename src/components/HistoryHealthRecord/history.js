@@ -5,14 +5,14 @@ import {
   getHistoryHealthRecord,
   getHistoryHealthRecordByAdmin,
 } from "../../services/userService";
-import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
+import { Skeleton } from "@mui/material";
 
 function History() {
-  const dispatch = useDispatch();
   const { id } = useParams();
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [dataList, setDataList] = useState([]);
+
+  const [loading, setLoading] = useState(true);
 
   const toggleInfo = (index) => {
     if (selectedIndex === index) {
@@ -23,11 +23,10 @@ function History() {
   };
 
   const fetchHistoryRecord = async () => {
-    dispatch(setLoading());
+    setLoading(true);
     let responsive = id
       ? await getHistoryHealthRecordByAdmin(id)
       : await getHistoryHealthRecord();
-    dispatch(setUnLoading());
     if (responsive && +responsive.EC === 0) {
       const dataWithLocalCreated_at = responsive.DT.map((data) => ({
         ...data,
@@ -37,43 +36,45 @@ function History() {
       }));
       setDataList(dataWithLocalCreated_at);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
+    console.log(id);
+
     fetchHistoryRecord();
   }, []);
-
-  // const dataList = [
-  //   { date: "30/10/2024", info: "120bmp" },
-  //   { date: "15/10/2024", info: "115bmp" },
-  //   { date: "28/09/2024", info: "118bmp" },
-  //   { date: "20/09/2024", info: "122bmp" },
-  //   { date: "10/09/2024", info: "110bmp" },
-  // ];
   return (
     <div className="history">
       <h2 className="your-history">Lần đo gần đây</h2>
       <div className="result-list">
         <ul className="list">
-          {dataList.map((item, index) => (
-            <li key={index} onClick={() => toggleInfo(index)}>
-              <span>
-                {item.created_at}
-                {selectedIndex === index && (
-                  <div className="info-box">{item.info}</div>
-                )}
-              </span>
-              <span className="show-detail">
-                <Link
-                  to={id ? "/manage/ecg-history" : "/ecg-history"}
-                  state={{ ecgData: item }}
-                  className="show-date-detail"
-                >
-                  Xem chi tiết
-                </Link>
-              </span>
-            </li>
-          ))}
+          {loading
+            ? Array.from({ length: 10 }).map((_, index) => (
+                <li key={index}>
+                  <Skeleton variant="text" width="60%" height={20} />
+                  <Skeleton variant="text" width="30%" height={20} />
+                </li>
+              ))
+            : dataList.map((item, index) => (
+                <li key={index} onClick={() => toggleInfo(index)}>
+                  <span>
+                    {item.created_at}
+                    {selectedIndex === index && (
+                      <div className="info-box">{item.info}</div>
+                    )}
+                  </span>
+                  <span className="show-detail">
+                    <Link
+                      to={id ? "/manage/ecg-history" : "/ecg-history"}
+                      state={{ ecgData: item }}
+                      className="show-date-detail"
+                    >
+                      Xem chi tiết
+                    </Link>
+                  </span>
+                </li>
+              ))}
         </ul>
       </div>
       <Link

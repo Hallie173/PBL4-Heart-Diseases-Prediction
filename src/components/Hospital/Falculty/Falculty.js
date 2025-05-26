@@ -7,11 +7,9 @@ import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
 import ModalFaculty from "./ModalFaculty";
 import { fetchHospitalFaculty } from "../../../services/userService";
-import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
+import { Skeleton } from "@mui/material";
 
 function Falculty({ hospitalID }) {
-  const dispatch = useDispatch();
   const [listFaculty, setListFaculty] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
@@ -24,25 +22,25 @@ function Falculty({ hospitalID }) {
   const [actionModalFaculty, setActionModalFaculty] = useState("CREATE");
   const [dataModalFaculty, setDataModalFaculty] = useState({});
 
+  const [loadingFaculty, setLoadingFaculty] = useState(true);
+
   const onHideModalFaculty = async () => {
     setIsShowModalFaculty(false);
     setDataModalFaculty({});
-    dispatch(setLoading());
     await fetchFaculty();
-    dispatch(setUnLoading());
   };
 
   const fetchFaculty = async () => {
-    dispatch(setLoading());
+    setLoadingFaculty(true);
     let response = await fetchHospitalFaculty(
       hospitalID,
       currentPage,
       currentLimit
     );
-    dispatch(setUnLoading());
     if (response && response.EC === 0) {
       setListFaculty(response.DT.faculty);
     }
+    setLoadingFaculty(false);
   };
 
   const handleCreateFaculty = () => {
@@ -86,46 +84,59 @@ function Falculty({ hospitalID }) {
           </tr>
         </thead>
         <tbody>
-          {listFaculty && listFaculty.length > 0 ? (
-            <>
-              {listFaculty.map((item, index) => {
-                return (
-                  <tr class="border-bottom" key={`row-${index}`}>
-                    <td>
-                      <div class="p-2">
-                        {(currentPage - 1) * currentLimit + index + 1}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2 d-flex flex-row align-items-center mb-2">
-                        {item._id}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2">{item.name}</div>
-                    </td>
-                    <td>
-                      <div class="p-2 icons">
-                        <FontAwesomeIcon
-                          icon={faPenToSquare}
-                          className="edit-icon"
-                          onClick={() => handleEditFaculty(item)}
-                        ></FontAwesomeIcon>
-                        <FontAwesomeIcon
-                          icon={faTrashCan}
-                          className="trash-icon"
-                          //   onClick={() => handleDeleteUser(item)}
-                        ></FontAwesomeIcon>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </>
+          {loadingFaculty ? (
+            Array.from({ length: 10 }).map((_, index) => (
+              <tr className="border-bottom" key={`skeleton-${index}`}>
+                <td>
+                  <Skeleton variant="text" width={40} />
+                </td>
+                <td>
+                  <Skeleton variant="text" width={120} />
+                </td>
+                <td>
+                  <Skeleton variant="text" width={100} />
+                </td>
+                <td>
+                  <Skeleton variant="rectangular" height={24} width={60} />
+                </td>
+              </tr>
+            ))
+          ) : listFaculty && listFaculty.length > 0 ? (
+            listFaculty.map((item, index) => (
+              <tr className="border-bottom" key={`row-${index}`}>
+                <td>
+                  <div className="p-2">
+                    {(currentPage - 1) * currentLimit + index + 1}
+                  </div>
+                </td>
+                <td>
+                  <div className="p-2 d-flex flex-row align-items-center mb-2">
+                    {item._id}
+                  </div>
+                </td>
+                <td>
+                  <div className="p-2">{item.name}</div>
+                </td>
+                <td>
+                  <div className="p-2 icons">
+                    <FontAwesomeIcon
+                      icon={faPenToSquare}
+                      className="edit-icon"
+                      onClick={() => handleEditFaculty(item)}
+                    />
+                    <FontAwesomeIcon
+                      icon={faTrashCan}
+                      className="trash-icon"
+                      // onClick={() => handleDeleteUser(item)}
+                    />
+                  </div>
+                </td>
+              </tr>
+            ))
           ) : (
-            <>
-              <tr>Not Found User</tr>
-            </>
+            <tr>
+              <td colSpan={4}>Not Found User</td>
+            </tr>
           )}
         </tbody>
       </table>

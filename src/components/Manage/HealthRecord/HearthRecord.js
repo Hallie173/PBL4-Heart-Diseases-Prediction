@@ -4,31 +4,28 @@ import { faClockRotateLeft } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { fetchAllUsers } from "../../../services/userService";
 import ReactPaginate from "react-paginate";
-import { toast } from "react-toastify";
 import { Link, useLocation } from "react-router-dom";
-import classNames from "classnames";
-import styles from "../Manage.module.css";
-import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
+import { Skeleton } from "@mui/material";
 
 function HearthRecord() {
-  const dispatch = useDispatch();
   const location = useLocation();
   const [listUsers, setListUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
   const [totalPages, setTotalPages] = useState(0);
 
+  const [loadingUsers, setLoadingUsers] = useState(true);
+
   const fetchUsers = async () => {
-    dispatch(setLoading());
+    setLoadingUsers(true);
     let response = await fetchAllUsers(currentPage, currentLimit);
-    dispatch(setUnLoading());
 
     if (response && response.EC === 0) {
       console.log(response.DT);
       setTotalPages(response.DT.totalPages);
       setListUsers(response.DT.users);
     }
+    setLoadingUsers(false);
   };
 
   const handlePageClick = async (event) => {
@@ -65,52 +62,63 @@ function HearthRecord() {
           </tr>
         </thead>
         <tbody>
-          {listUsers && listUsers.length > 0 ? (
+          {loadingUsers ? (
+            // Hiển thị skeleton khi đang tải dữ liệu
             <>
-              {listUsers.map((item, index) => {
-                return (
-                  <tr class="border-bottom" key={`row-${index}`}>
-                    <td>
-                      <div class="p-2">
-                        {(currentPage - 1) * currentLimit + index + 1}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2 d-flex flex-row align-items-center mb-2">
-                        {item._id}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2">{item.username}</div>
-                    </td>
-                    <td>
-                      <div class="p-2 d-flex flex-column">{item.email}</div>
-                    </td>
-                    <td>
-                      <div class="p-2">
-                        {item.groupId ? item.groupId.name : ""}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2 icons">
-                        <Link to={`/manage/heart-record/${item._id}`}>
-                          <FontAwesomeIcon
-                            icon={faClockRotateLeft}
-                            className="trash-icon"
-                          ></FontAwesomeIcon>
-                        </Link>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+              {[...Array(10)].map((_, index) => (
+                <tr className="border-bottom" key={`skeleton-row-${index}`}>
+                  {Array(6)
+                    .fill()
+                    .map((__, colIdx) => (
+                      <td key={`skeleton-col-${colIdx}`}>
+                        <Skeleton variant="text" width="100%" height={30} />
+                      </td>
+                    ))}
+                </tr>
+              ))}
+            </>
+          ) : listUsers && listUsers.length > 0 ? (
+            <>
+              {listUsers.map((item, index) => (
+                <tr className="border-bottom" key={`row-${index}`}>
+                  <td>
+                    <div className="p-2">
+                      {(currentPage - 1) * currentLimit + index + 1}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="p-2 d-flex flex-row align-items-center mb-2">
+                      {item._id}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="p-2">{item.username}</div>
+                  </td>
+                  <td>
+                    <div className="p-2 d-flex flex-column">{item.email}</div>
+                  </td>
+                  <td>
+                    <div className="p-2">
+                      {item.groupId ? item.groupId.name : ""}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="p-2 icons">
+                      <Link to={`/manage/heart-record/${item._id}`}>
+                        <FontAwesomeIcon
+                          icon={faClockRotateLeft}
+                          className="trash-icon"
+                        />
+                      </Link>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </>
           ) : (
-            <>
-              <tr>
-                <td>Not Found User</td>
-              </tr>
-            </>
+            <tr>
+              <td colSpan={6}>Not Found User</td>
+            </tr>
           )}
         </tbody>
       </table>

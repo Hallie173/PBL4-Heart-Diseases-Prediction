@@ -8,11 +8,9 @@ import { toast } from "react-toastify";
 import ModalDelete from "../Account/ModalDelete";
 import { Button } from "react-bootstrap";
 import ModalHospital from "./ModalHospital";
-import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
+import { Skeleton } from "@mui/material";
 
 function Hospital() {
-  const dispatch = useDispatch();
   const [listUsers, setListUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
@@ -25,33 +23,31 @@ function Hospital() {
   const [actionModalHospital, setActionModalHospital] = useState("CREATE");
   const [dataModalHospital, setDataModalHospital] = useState({});
 
+  const [loadingUsers, setLoadingUsers] = useState(true);
+
   const handleClose = () => {
     setIsShowModalDelete(false);
     setDataModal({});
   };
 
   const confirmDeleteUser = async () => {
-    dispatch(setLoading());
+    setLoadingUsers(true);
     let response = await deleteUser(dataModal);
-    dispatch(setUnLoading());
     console.log(">>Check response: ", response);
     if (response && response.EC === 0) {
       toast.success(response.EM);
-      dispatch(setLoading());
       await fetchHospital();
-      dispatch(setUnLoading());
       setIsShowModalDelete(false);
     } else {
       toast.error(response.EM);
     }
+    setLoadingUsers(false);
   };
 
   const onHideModalHospital = async () => {
     setIsShowModalHospital(false);
     setDataModalHospital({});
-    dispatch(setLoading());
     await fetchHospital();
-    dispatch(setUnLoading());
   };
 
   const handleEditUser = (user) => {
@@ -71,12 +67,14 @@ function Hospital() {
   };
 
   const fetchHospital = async () => {
+    setLoadingUsers(true);
     let response = await fetchAllHospital(currentPage, currentLimit);
     if (response && response.EC === 0) {
       console.log(response.DT);
       setTotalPages(response.DT.totalPages);
       setListUsers(response.DT.users);
     }
+    setLoadingUsers(false);
   };
 
   const handlePageClick = async (event) => {
@@ -116,56 +114,75 @@ function Hospital() {
           </tr>
         </thead>
         <tbody>
-          {listUsers && listUsers.length > 0 ? (
+          {loadingUsers ? (
+            Array.from({ length: 5 }).map((_, index) => (
+              <tr key={`skeleton-${index}`} className="border-bottom">
+                <td>
+                  <Skeleton variant="text" />
+                </td>
+                <td>
+                  <Skeleton variant="text" />
+                </td>
+                <td>
+                  <Skeleton variant="text" />
+                </td>
+                <td>
+                  <Skeleton variant="text" />
+                </td>
+                <td>
+                  <Skeleton variant="text" />
+                </td>
+                <td>
+                  <Skeleton variant="rectangular" height={24} />
+                </td>
+              </tr>
+            ))
+          ) : listUsers && listUsers.length > 0 ? (
             <>
-              {listUsers.map((item, index) => {
-                return (
-                  <tr class="border-bottom" key={`row-${index}`}>
-                    <td>
-                      <div class="p-2">
-                        {(currentPage - 1) * currentLimit + index + 1}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2 d-flex flex-row align-items-center mb-2">
-                        {item._id}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2">{item.username}</div>
-                    </td>
-                    <td>
-                      <div class="p-2 d-flex flex-column">{item.email}</div>
-                    </td>
-                    <td>
-                      <div class="p-2">
-                        {item.groupId ? item.groupId.name : ""}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2 icons">
-                        <FontAwesomeIcon
-                          icon={faPenToSquare}
-                          className="edit-icon"
-                          onClick={() => handleEditUser(item)}
-                        ></FontAwesomeIcon>
-                        <FontAwesomeIcon
-                          icon={faTrashCan}
-                          className="trash-icon"
-                          onClick={() => handleDeleteUser(item)}
-                        ></FontAwesomeIcon>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+              {listUsers.map((item, index) => (
+                <tr className="border-bottom" key={`row-${index}`}>
+                  <td>
+                    <div className="p-2">
+                      {(currentPage - 1) * currentLimit + index + 1}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="p-2 d-flex flex-row align-items-center mb-2">
+                      {item._id}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="p-2">{item.username}</div>
+                  </td>
+                  <td>
+                    <div className="p-2 d-flex flex-column">{item.email}</div>
+                  </td>
+                  <td>
+                    <div className="p-2">
+                      {item.groupId ? item.groupId.name : ""}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="p-2 icons">
+                      <FontAwesomeIcon
+                        icon={faPenToSquare}
+                        className="edit-icon"
+                        onClick={() => handleEditUser(item)}
+                      />
+                      <FontAwesomeIcon
+                        icon={faTrashCan}
+                        className="trash-icon"
+                        onClick={() => handleDeleteUser(item)}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </>
           ) : (
-            <>
-              <tr>
-                <td>Not Found User</td>
-              </tr>
-            </>
+            <tr>
+              <td colSpan={6}>Not Found User</td>
+            </tr>
           )}
         </tbody>
       </table>

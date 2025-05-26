@@ -3,12 +3,12 @@ import Heartrate from "../components/heartrate";
 import Guide from "../components/Guide/Guide";
 import Appointment from "../components/Appointment";
 import LookUp from "../components/LookUp/LookUp";
-import History from "../components/history";
-import EcgHistory from "../components/HistoryHealthRecord.js/EcgHistory";
+import History from "../components/HistoryHealthRecord/history";
+import EcgHistory from "../components/HistoryHealthRecord/EcgHistory";
 import Account from "../components/Account/Account";
 import MeasurePrepare from "../components/NewMeasure/MeasurePrepare";
 import { userState } from "../redux/types/user.type";
-import ChatPage from "../components/Chat/ChatPage";
+import Chat from "../components/Chat/Chat";
 
 const userRoutes = (Layouts: () => React.JSX.Element, user: userState) => {
   /* User Routes */
@@ -25,7 +25,7 @@ const userRoutes = (Layouts: () => React.JSX.Element, user: userState) => {
       <Route path="ecg-history" element={<EcgHistory />} />
       <Route path="account/*" element={<Account />} />
       <Route path="measure-prepare" element={<MeasurePrepare />} />
-      <Route path="chat" element={<ChatPage />} />
+      <Route path="chat" element={<Chat />} />
     </Route>
   );
 };

@@ -8,11 +8,9 @@ import { toast } from "react-toastify";
 import ModalDoctor from "./ModalDoctor";
 import ModalDelete from "./ModalDelete";
 import { Button } from "react-bootstrap";
-import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
+import { Skeleton } from "@mui/material";
 
 function Doctor({ hospitalID }) {
-  const dispatch = useDispatch();
   const [listDoctor, setListDoctor] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
@@ -25,33 +23,31 @@ function Doctor({ hospitalID }) {
   const [actionModalDoctor, setActionModalDoctor] = useState("CREATE");
   const [dataModalDoctor, setDataModalDoctor] = useState({});
 
+  const [loadingDoctor, setLoadingDoctor] = useState(true);
+
   const handleClose = () => {
     setIsShowModalDelete(false);
     setDataModal({});
   };
 
   const confirmDeleteUser = async () => {
-    dispatch(setLoading());
+    setLoadingDoctor(true);
     let response = await deleteUser(dataModal);
-    dispatch(setUnLoading());
     console.log(">>Check response: ", response);
     if (response && response.EC === 0) {
       toast.success(response.EM);
-      dispatch(setLoading());
       await fetchUsers();
-      dispatch(setUnLoading());
       setIsShowModalDelete(false);
     } else {
       toast.error(response.EM);
     }
+    setLoadingDoctor(false);
   };
 
   const onHideModalDoctor = async () => {
     setIsShowModalDoctor(false);
     setDataModalDoctor({});
-    dispatch(setLoading());
     await fetchUsers();
-    dispatch(setUnLoading());
   };
 
   const handleEditDoctor = (user) => {
@@ -71,15 +67,15 @@ function Doctor({ hospitalID }) {
   };
 
   const fetchUsers = async () => {
-    dispatch(setLoading());
+    setLoadingDoctor(true);
     let response = await fetchAllDoctor(hospitalID, currentPage, currentLimit);
-    dispatch(setUnLoading());
 
     if (response && response.EC === 0) {
       console.log(response.DT);
       setTotalPages(response.DT.totalPages);
       setListDoctor(response.DT.doctor);
     }
+    setLoadingDoctor(false);
   };
 
   const handlePageClick = async (event) => {
@@ -125,64 +121,89 @@ function Doctor({ hospitalID }) {
           </tr>
         </thead>
         <tbody>
-          {listDoctor && listDoctor.length > 0 ? (
+          {loadingDoctor ? (
+            Array.from({ length: 10 }).map((_, index) => (
+              <tr className="border-bottom" key={`skeleton-${index}`}>
+                <td>
+                  <Skeleton variant="text" />
+                </td>
+                <td>
+                  <Skeleton variant="text" />
+                </td>
+                <td>
+                  <Skeleton variant="text" />
+                </td>
+                <td>
+                  <Skeleton variant="text" />
+                </td>
+                <td>
+                  <Skeleton variant="text" />
+                </td>
+                <td>
+                  <Skeleton variant="text" />
+                </td>
+                <td>
+                  <Skeleton variant="text" />
+                </td>
+                <td>
+                  <Skeleton variant="rectangular" height={24} />
+                </td>
+              </tr>
+            ))
+          ) : listDoctor && listDoctor.length > 0 ? (
             <>
-              {listDoctor.map((item, index) => {
-                return (
-                  <tr class="border-bottom" key={`row-${index}`}>
-                    <td>
-                      <div class="p-2">
-                        {(currentPage - 1) * currentLimit + index + 1}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2 d-flex flex-row align-items-center mb-2">
-                        {item._id}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2">{item.username}</div>
-                    </td>
-                    <td>
-                      <div class="p-2 d-flex flex-column">
-                        {item.firstName + " " + item.lastName}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2 d-flex flex-column">{item.phone}</div>
-                    </td>
-                    <td>
-                      <div class="p-2 d-flex flex-column">{item.email}</div>
-                    </td>
-                    <td>
-                      <div class="p-2">
-                        {item.faculty_id ? item.faculty_id.name : ""}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2 icons">
-                        <FontAwesomeIcon
-                          icon={faPenToSquare}
-                          className="edit-icon"
-                          onClick={() => handleEditDoctor(item)}
-                        ></FontAwesomeIcon>
-                        <FontAwesomeIcon
-                          icon={faTrashCan}
-                          className="trash-icon"
-                          onClick={() => handleDeleteUser(item)}
-                        ></FontAwesomeIcon>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+              {listDoctor.map((item, index) => (
+                <tr className="border-bottom" key={`row-${index}`}>
+                  <td>
+                    <div className="p-2">
+                      {(currentPage - 1) * currentLimit + index + 1}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="p-2 d-flex flex-row align-items-center mb-2">
+                      {item._id}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="p-2">{item.username}</div>
+                  </td>
+                  <td>
+                    <div className="p-2 d-flex flex-column">
+                      {item.firstName + " " + item.lastName}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="p-2 d-flex flex-column">{item.phone}</div>
+                  </td>
+                  <td>
+                    <div className="p-2 d-flex flex-column">{item.email}</div>
+                  </td>
+                  <td>
+                    <div className="p-2">
+                      {item.faculty_id ? item.faculty_id.name : ""}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="p-2 icons">
+                      <FontAwesomeIcon
+                        icon={faPenToSquare}
+                        className="edit-icon"
+                        onClick={() => handleEditDoctor(item)}
+                      />
+                      <FontAwesomeIcon
+                        icon={faTrashCan}
+                        className="trash-icon"
+                        onClick={() => handleDeleteUser(item)}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </>
           ) : (
-            <>
-              <tr>
-                <td>Not Found User</td>
-              </tr>
-            </>
+            <tr>
+              <td colSpan={8}>Not Found User</td>
+            </tr>
           )}
         </tbody>
       </table>

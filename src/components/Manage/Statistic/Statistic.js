@@ -1,41 +1,27 @@
 import React, { useEffect, useState } from "react";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import {
-  Link,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { fetchAllUsers } from "../../../services/userService";
 import ReactPaginate from "react-paginate";
-import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
+import { Skeleton } from "@mui/material";
 
 function Statistic() {
-  const dispatch = useDispatch();
-  const location = useLocation();
-  const navigate = useNavigate();
   const [listUsers, setListUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
   const [totalPages, setTotalPages] = useState(0);
 
-  const [dataModal, setDataModal] = useState(null);
-  const [isShowModalDelete, setIsShowModalDelete] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState(true);
 
   const fetchUsers = async () => {
-    dispatch(setLoading());
+    setLoadingUsers(true);
     let response = await fetchAllUsers(currentPage, currentLimit);
-    dispatch(setUnLoading());
 
     if (response && response.EC === 0) {
       console.log(response.DT);
       setTotalPages(response.DT.totalPages);
       setListUsers(response.DT.users);
     }
+    setLoadingUsers(false);
   };
 
   const handlePageClick = async (event) => {
@@ -45,11 +31,6 @@ function Statistic() {
   useEffect(() => {
     fetchUsers();
   }, [currentPage]);
-
-  const handleDeleteUser = async (user) => {
-    setDataModal(user);
-    setIsShowModalDelete(true);
-  };
 
   return (
     <div className="statistic">
@@ -74,44 +55,62 @@ function Statistic() {
           </tr>
         </thead>
         <tbody>
-          {listUsers && listUsers.length > 0 ? (
+          {loadingUsers ? (
             <>
-              {listUsers.map((item, index) => {
-                return (
-                  <tr class="border-bottom" key={`row-${index}`}>
-                    <td>
-                      <div class="p-2">
-                        {(currentPage - 1) * currentLimit + index + 1}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2 d-flex flex-row align-items-center mb-2">
-                        {item._id}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2">{item.username}</div>
-                    </td>
-                    <td>
-                      <div class="p-2">
-                        {item.groupId ? item.groupId.name : ""}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2">
-                        <Link to={`/manage/statistic/${item._id}`}>Show</Link>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+              {[...Array(10)].map((_, index) => (
+                <tr className="border-bottom" key={`skeleton-row-${index}`}>
+                  <td>
+                    <Skeleton variant="text" width={30} />
+                  </td>
+                  <td>
+                    <Skeleton variant="text" width={100} />
+                  </td>
+                  <td>
+                    <Skeleton variant="text" width={80} />
+                  </td>
+                  <td>
+                    <Skeleton variant="text" width={80} />
+                  </td>
+                  <td>
+                    <Skeleton variant="text" width={50} />
+                  </td>
+                </tr>
+              ))}
+            </>
+          ) : listUsers && listUsers.length > 0 ? (
+            <>
+              {listUsers.map((item, index) => (
+                <tr className="border-bottom" key={`row-${index}`}>
+                  <td>
+                    <div className="p-2">
+                      {(currentPage - 1) * currentLimit + index + 1}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="p-2 d-flex flex-row align-items-center mb-2">
+                      {item._id}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="p-2">{item.username}</div>
+                  </td>
+                  <td>
+                    <div className="p-2">
+                      {item.groupId ? item.groupId.name : ""}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="p-2">
+                      <Link to={`/manage/statistic/${item._id}`}>Show</Link>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </>
           ) : (
-            <>
-              <tr>
-                <td>Not Found User</td>
-              </tr>
-            </>
+            <tr>
+              <td colSpan={5}>Not Found User</td>
+            </tr>
           )}
         </tbody>
       </table>

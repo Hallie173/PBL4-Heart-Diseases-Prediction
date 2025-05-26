@@ -26,9 +26,7 @@ function GroupRoles() {
   }, []);
 
   const getGroups = async () => {
-    dispatch(setLoading());
     let res = await fetchGroup();
-    dispatch(setUnLoading());
     if (res && res.EC === 0) {
       setUserGroups(res.DT);
     } else {
@@ -37,9 +35,7 @@ function GroupRoles() {
   };
 
   const getAllRoles = async () => {
-    dispatch(setLoading());
     let data = await fetchAllRoles();
-    dispatch(setUnLoading());
     if (data && +data.EC === 0) {
       setListRoles(data.DT);
     }
@@ -48,9 +44,7 @@ function GroupRoles() {
   const handleOnchangeGroup = async (value) => {
     setSelectGroup(value);
     if (value) {
-      dispatch(setLoading());
       let data = await fetchRolesByGroup(value);
-      dispatch(setUnLoading());
 
       if (data && +data.EC === 0) {
         let result = buildDataRolesByGroup(data.DT, listRoles);
@@ -111,9 +105,7 @@ function GroupRoles() {
 
   const handleSave = async () => {
     let data = buildDataToSave();
-    dispatch(setLoading());
     let res = await assignRolesToGroup(data);
-    dispatch(setUnLoading());
     if (res && res.EC === 0) {
       toast.success(res.EM);
     } else {

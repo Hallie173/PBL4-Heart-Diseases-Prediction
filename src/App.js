@@ -3,36 +3,32 @@ import { useNavigate } from "react-router-dom";
 import "./App.css";
 import { ToastContainer } from "react-toastify";
 import { RotatingTriangles } from "react-loader-spinner";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import AppRoutes from "./Routes/appRoutes";
+import { setLoading, setUnLoading } from "./redux/reducer/loading";
+import { Buffer } from "buffer";
+import process from "process";
+
+window.Buffer = Buffer;
+
+if (typeof global === "undefined") {
+  window.global = window;
+}
 
 function App() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user) || {};
+  const token = localStorage.getItem("jwt");
   const isLoading = useSelector((state) => state.loading.isLoading) || false;
 
-  // useEffect(() => {
-  //   if (user) {
-  //     localStorage.setItem("user", JSON.stringify(user));
-  //   } else navigate("/login");
-  //   switch (user?.account?.groupWithRoles?.name) {
-  //     case "admin":
-  //       navigate("/manage");
-  //       break;
-  //     case "hospital":
-  //       navigate("/hospital");
-  //       break;
-  //     case "doctor":
-  //       navigate("/doctor");
-  //       break;
-  //     case "user":
-  //       navigate("/");
-  //       break;
-  //     default:
-  //       navigate("/login");
-  //       break;
-  //   }
-  // }, [user]);
+  useEffect(() => {
+    dispatch(setLoading());
+    if (!token) {
+      navigate("/login");
+    }
+    dispatch(setUnLoading());
+  }, [token]);
 
   return (
     <>

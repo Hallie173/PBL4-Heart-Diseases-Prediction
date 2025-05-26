@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import styles from "../Manage/Manage.module.css";
 import "../Navbar.css";
@@ -199,6 +199,7 @@ function HospitalManage() {
             </li>
           </ul>
           <div className={styles.tabContent}>
+            <Outlet />
             {/* <Routes>
               <Route
                 path="doctor"

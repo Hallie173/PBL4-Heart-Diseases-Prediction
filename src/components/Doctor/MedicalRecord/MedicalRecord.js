@@ -11,6 +11,7 @@ import { fetchDoctorMedicalRecord } from "../../../services/userService";
 import ModalMedicalRecord from "./ModalMedicalRecord";
 import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
 import { useDispatch } from "react-redux";
+import { Skeleton } from "@mui/material";
 
 const MedicalRecord = ({ doctorID }) => {
   const dispatch = useDispatch();
@@ -23,18 +24,19 @@ const MedicalRecord = ({ doctorID }) => {
     useState(false);
   const [dataModalMedicalRecord, setDataModalMedicalRecord] = useState({});
 
+  const [loadingMedicalRecord, setLoadingMedicalRecord] = useState(true);
+
   const handlePageClick = async (event) => {
     setCurrentPage(+event.selected + 1);
   };
 
   const fetchMedicalRecord = async () => {
-    dispatch(setLoading());
+    setLoadingMedicalRecord(true);
     let response = await fetchDoctorMedicalRecord(
       doctorID,
       currentPage,
       currentLimit
     );
-    dispatch(setUnLoading());
 
     if (response && response.EC === 0) {
       const medicalRecordsWithLocalTime = response.DT.MedicalRecord.map(
@@ -50,6 +52,7 @@ const MedicalRecord = ({ doctorID }) => {
       );
       setTotalPages(response.DT.totalPages);
       setListMedicalRecord(medicalRecordsWithLocalTime);
+      setLoadingMedicalRecord(false);
     }
   };
 
@@ -96,52 +99,68 @@ const MedicalRecord = ({ doctorID }) => {
           </tr>
         </thead>
         <tbody>
-          {listMedicalRecord && listMedicalRecord.length > 0 ? (
-            <>
-              {listMedicalRecord.map((item, index) => {
-                return (
-                  <tr class="border-bottom" key={`row-${index}`}>
-                    <td>
-                      <div class="p-2">
-                        {(currentPage - 1) * currentLimit + index + 1}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2 d-flex flex-row align-items-center mb-2">
-                        {item._id}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2">{item.doctor_id?.username}</div>
-                    </td>
-                    <td>
-                      <div class="p-2 d-flex flex-column">
-                        {item.patient_id?.username}
-                      </div>
-                    </td>
-                    <td>
-                      <div class="p-2 d-flex flex-column">{item.diagnosis}</div>
-                    </td>
-
-                    <td>
-                      <div class="p-2 icons">
-                        <FontAwesomeIcon
-                          icon={faEye}
-                          className="edit-icon"
-                          onClick={() => handleDetailMedicalRecord(item)}
-                        ></FontAwesomeIcon>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </>
-          ) : (
-            <>
-              <tr>
-                <td>Not Found User</td>
+          {loadingMedicalRecord ? (
+            Array.from({ length: 5 }).map((_, index) => (
+              <tr className="border-bottom" key={`skeleton-${index}`}>
+                <td>
+                  <Skeleton variant="text" width={20} />
+                </td>
+                <td>
+                  <Skeleton variant="text" width={120} />
+                </td>
+                <td>
+                  <Skeleton variant="text" width={100} />
+                </td>
+                <td>
+                  <Skeleton variant="text" width={100} />
+                </td>
+                <td>
+                  <Skeleton variant="text" width={150} />
+                </td>
+                <td>
+                  <Skeleton variant="circular" width={24} height={24} />
+                </td>
               </tr>
-            </>
+            ))
+          ) : listMedicalRecord && listMedicalRecord.length > 0 ? (
+            listMedicalRecord.map((item, index) => (
+              <tr className="border-bottom" key={`row-${index}`}>
+                <td>
+                  <div className="p-2">
+                    {(currentPage - 1) * currentLimit + index + 1}
+                  </div>
+                </td>
+                <td>
+                  <div className="p-2 d-flex flex-row align-items-center mb-2">
+                    {item._id}
+                  </div>
+                </td>
+                <td>
+                  <div className="p-2">{item.doctor_id?.username}</div>
+                </td>
+                <td>
+                  <div className="p-2 d-flex flex-column">
+                    {item.patient_id?.username}
+                  </div>
+                </td>
+                <td>
+                  <div className="p-2 d-flex flex-column">{item.diagnosis}</div>
+                </td>
+                <td>
+                  <div className="p-2 icons">
+                    <FontAwesomeIcon
+                      icon={faEye}
+                      className="edit-icon"
+                      onClick={() => handleDetailMedicalRecord(item)}
+                    />
+                  </div>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={6}>Not Found User</td>
+            </tr>
           )}
         </tbody>
       </table>

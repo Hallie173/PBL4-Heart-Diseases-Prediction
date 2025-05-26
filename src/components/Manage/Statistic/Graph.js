@@ -13,8 +13,7 @@ import {
   Legend,
 } from "chart.js";
 import { getStatisticWithId } from "../../../services/userService";
-import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
+import { Skeleton } from "@mui/material";
 
 ChartJS.register(
   CategoryScale,
@@ -27,13 +26,14 @@ ChartJS.register(
 );
 
 function Graph() {
-  const dispatch = useDispatch();
   const { id } = useParams();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [data, setData] = useState([]);
 
   const [filteredData, setFilteredData] = useState(data);
+
+  const [loadingChart, setLoadingChart] = useState(true);
 
   const applyFilter = () => {
     const filtered = data.filter((item) => {
@@ -59,12 +59,12 @@ function Graph() {
   };
 
   const fetchDataStatistic = async () => {
-    dispatch(setLoading());
+    setLoadingChart(true);
     let response = await getStatisticWithId(id);
-    dispatch(setUnLoading());
     if (response && +response.EC === 0) {
       setData(response.DT);
     }
+    setLoadingChart(false);
   };
 
   useEffect(() => {
@@ -103,7 +103,9 @@ function Graph() {
         </label>
       </div>
       <div className="statistic-content">
-        {filteredData.length > 0 ? (
+        {loadingChart ? (
+          <Skeleton variant="rectangular" width="100%" height={300} />
+        ) : filteredData.length > 0 ? (
           <Line data={chartData} />
         ) : (
           <p>Không có dữ liệu trong khoảng thời gian đã chọn.</p>
