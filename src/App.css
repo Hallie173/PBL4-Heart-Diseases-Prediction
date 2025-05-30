@@ -255,6 +255,9 @@
   position: relative;
 }
 .msg_cotainer_send {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: auto;
   margin-bottom: auto;
   margin-right: 10px;
@@ -269,15 +272,16 @@
   bottom: -15px;
   color: rgba(255, 255, 255, 0.5);
   font-size: 10px;
-  width: 60px;
+  width: 80px;
 }
 .msg_time_send {
   position: absolute;
   right: 0;
+  text-align: end;
   bottom: -15px;
   color: rgba(255, 255, 255, 0.5);
   font-size: 10px;
-  width: 60px;
+  width: 80px;
 }
 .msg_head {
   position: relative;
@@ -350,7 +354,8 @@
   background: #333;
 }
 
-.local-video {
+.local-video,
+.local-img {
   position: absolute !important;
   top: 20px !important;
   right: 20px !important;
