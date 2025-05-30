@@ -62,7 +62,7 @@ function User() {
   };
 
   const fetchUsers = async () => {
-    // setLoadingUserList(true);
+    setLoadingUserList(true);
     let response = await fetchAllUsers(currentPage, currentLimit);
 
     if (response && response.EC === 0) {
@@ -70,7 +70,7 @@ function User() {
       setTotalPages(response.DT.totalPages);
       setListUsers(response.DT.users);
     }
-    // setLoadingUserList(false);
+    setLoadingUserList(false);
   };
 
   const handlePageClick = async (event) => {
