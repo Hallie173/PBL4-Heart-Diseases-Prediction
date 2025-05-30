@@ -4,11 +4,17 @@ import { ref, onValue, push, set, remove } from "firebase/database";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faCamera,
   faLocationArrow,
+  faMicrophone,
+  faMicrophoneSlash,
   faPaperclip,
   faPhone,
+  faPhoneAlt,
   faSearch,
   faVideo,
+  faVideoCamera,
+  faVideoSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { getUserByIDs } from "../../services/userService";
 import { Skeleton } from "@mui/material";
@@ -40,6 +46,7 @@ function Chat() {
   const callTimeout = useRef(null);
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(true);
+  const activeStreams = useRef([]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({
@@ -153,6 +160,7 @@ function Chat() {
       setIsCameraOn(isVideoCall);
       setIsMicOn(true);
       setStream(localStream);
+      addActiveStream(localStream);
 
       // Debug: Kiểm tra video ref
       console.log("🎥 myVideoRef.current:", myVideoRef.current);
@@ -280,7 +288,7 @@ function Chat() {
 
     try {
       const localStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
+        video: isCameraOn,
         audio: true,
       });
 
@@ -288,6 +296,7 @@ function Chat() {
       console.log("🎥 Video tracks (accept):", localStream.getVideoTracks());
 
       setStream(localStream);
+      addActiveStream(localStream);
 
       // Debug: Kiểm tra video ref
       console.log("🎥 myVideoRef.current (accept):", myVideoRef.current);
@@ -386,16 +395,20 @@ function Chat() {
     if (stream) {
       stream.getTracks().forEach((track) => {
         track.stop();
+        stream.removeTrack(track);
       });
     }
 
     // Cleanup video elements
     if (myVideoRef.current) {
       myVideoRef.current.srcObject = null;
+      myVideoRef.current.load();
     }
     if (remoteVideoRef.current) {
       remoteVideoRef.current.srcObject = null;
     }
+
+    clearAllStreams();
 
     // Reset states
     setPeer(null);
@@ -423,26 +436,49 @@ function Chat() {
   };
 
   // Hàm toggle camera
-  const toggleCamera = () => {
-    if (stream) {
-      const videoTracks = stream.getVideoTracks();
-      const newCameraState = !isCameraOn;
+  const toggleCamera = async () => {
+    if (!stream) return;
 
-      videoTracks.forEach((track) => {
-        track.enabled = newCameraState;
-      });
+    const videoTracks = stream.getVideoTracks();
+    const newCameraState = !isCameraOn;
 
-      if (newCameraState && myVideoRef.current) {
-        // Gán lại srcObject để đảm bảo phần tử video được cập nhật
-        myVideoRef.current.srcObject = stream;
-        myVideoRef.current.play().catch((e) => {
-          console.error("Lỗi phát video cục bộ sau khi bật/tắt:", e);
+    if (newCameraState) {
+      // Nếu đang tắt, thì bật lại bằng cách lấy lại camera
+      try {
+        const newStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
         });
-      }
+        addActiveStream(newStream);
+        setTimeout(() => {
+          if (myVideoRef.current) {
+            console.log("🎥 Setting srcObject to local video");
+            myVideoRef.current.srcObject = newStream;
 
-      setIsCameraOn(newCameraState);
-      console.log("📹 Camera:", newCameraState ? "BẬT" : "TẮT");
+            // Force play
+            myVideoRef.current.play().catch((e) => {
+              console.error("Error playing local video:", e);
+            });
+
+            console.log(
+              "🎥 Local video srcObject set:",
+              myVideoRef.current.srcObject
+            );
+          } else {
+            console.error("🎥 myVideoRef.current is null!");
+          }
+        }, 100);
+      } catch (err) {
+        console.error("Không thể bật lại camera:", err);
+      }
+    } else {
+      // Nếu đang bật, thì tắt camera bằng cách disable track
+      videoTracks.forEach((track) => {
+        track.enabled = false;
+      });
     }
+
+    setIsCameraOn(newCameraState);
+    console.log("📹 Camera:", newCameraState ? "BẬT" : "TẮT");
   };
 
   // Cleanup khi component unmount
@@ -451,6 +487,38 @@ function Chat() {
       endCall();
     };
   }, []);
+
+  const addActiveStream = (stream) => {
+    activeStreams.current.push(stream);
+  };
+
+  const clearAllStreams = () => {
+    activeStreams.current.forEach((s) => {
+      s.getTracks().forEach((t) => t.stop());
+    });
+    activeStreams.current = [];
+  };
+
+  function formatTimeAgo(timestamp) {
+    const now = Date.now();
+    const time =
+      typeof timestamp === "number" ? timestamp : new Date(timestamp).getTime();
+    const diffMs = now - time;
+    const diffSec = Math.floor(diffMs / 1000);
+
+    const mins = Math.floor(diffSec / 60);
+    const hours = Math.floor(diffSec / 3600);
+    const days = Math.floor(diffSec / 86400);
+    const months = Math.floor(diffSec / (30 * 86400));
+    const years = Math.floor(diffSec / (365 * 86400));
+
+    if (diffSec < 60) return `vừa xong`;
+    if (mins < 60) return `${mins} phút trước`;
+    if (hours < 24) return `${hours} giờ trước`;
+    if (days < 30) return `${days} ngày trước`;
+    if (months < 12) return `${months} tháng trước`;
+    return `${years} năm trước`;
+  }
 
   return (
     <div className="container-fluid h-100 my-3">
@@ -638,8 +706,13 @@ function Chat() {
                       }
                     >
                       {msg.text}
-                      <span className="msg_time">
-                        {new Date(msg.timestamp).toLocaleTimeString()}
+                      <span
+                        className={`${
+                          msg.sender === userId ? "msg_time_send" : "msg_time"
+                        }`}
+                      >
+                        {/* {new Date(msg.timestamp).toLocaleTimeString()} */}
+                        {formatTimeAgo(msg.timestamp)}
                       </span>
                     </div>
                   </div>
@@ -746,12 +819,29 @@ function Chat() {
                     backgroundColor: "#000",
                     border: "2px solid red",
                   }}
+                  onClick={() => console.log(myVideoRef)}
                 />
               ) : (
-                <img
-                  src={user?.account?.avatar}
-                  className="rounded-circle user_img_msg"
-                />
+                <div
+                  className="local-img"
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "#000",
+                    border: "2px solid red",
+                  }}
+                >
+                  <img
+                    src={user?.account?.avatar || "/default-avatar.png"}
+                    alt="Avatar"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                </div>
               )}
 
               {/* Debug info */}
@@ -778,24 +868,33 @@ function Chat() {
               </div> */}
 
               {/* Nút kết thúc cuộc gọi */}
-              <div className="call-controls">
+              <div className="call-controls d-flex justify-content-center gap-3 mt-3">
                 <button
                   className="btn btn-secondary toggle-camera-btn"
                   onClick={toggleCamera}
+                  title={isCameraOn ? "Tắt camera" : "Bật camera"}
                 >
-                  {isCameraOn ? "Tắt Camera" : "Bật Camera"}
+                  <FontAwesomeIcon
+                    icon={isCameraOn ? faVideoCamera : faVideoSlash}
+                  />
                 </button>
+
                 <button
                   className="btn btn-danger end-call-btn"
                   onClick={endCall}
+                  title="Kết thúc cuộc gọi"
                 >
-                  Kết thúc cuộc gọi
+                  <FontAwesomeIcon icon={faPhone} />
                 </button>
+
                 <button
                   className="btn btn-secondary toggle-mic-btn"
                   onClick={toggleMicrophone}
+                  title={isMicOn ? "Tắt micro" : "Bật micro"}
                 >
-                  {isMicOn ? "Tắt Mic" : "Bật Mic"}
+                  <FontAwesomeIcon
+                    icon={isMicOn ? faMicrophone : faMicrophoneSlash}
+                  />
                 </button>
               </div>
             </div>
