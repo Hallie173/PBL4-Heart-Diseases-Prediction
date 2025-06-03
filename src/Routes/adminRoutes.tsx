@@ -1,8 +1,8 @@
 import { Route } from "react-router-dom";
 import Manage from "../components/Manage/Manage";
-import User from "../components/Account/User";
-import Roles from "../components/Account/Roles";
-import GroupRoles from "../components/Account/GroupRoles";
+import User from "../components/Manage/Account/User";
+import Roles from "../components/Manage/Role/Roles";
+import GroupRoles from "../components/Manage/Group_Role/GroupRoles";
 import HearthRecord from "../components/Manage/HealthRecord/HearthRecord";
 import Statistic from "../components/Manage/Statistic/Statistic";
 import Graph from "../components/Manage/Statistic/Graph";

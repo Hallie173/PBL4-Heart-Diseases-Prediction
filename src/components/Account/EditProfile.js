@@ -75,6 +75,7 @@ function EditProfile() {
                   className="form-control"
                   value={userData.email}
                   readOnly
+                  disabled
                 />
               </div>
 
@@ -85,6 +86,7 @@ function EditProfile() {
                   className="form-control"
                   value={userData.phone}
                   readOnly
+                  disabled
                 />
               </div>
               <div className="mb-3">

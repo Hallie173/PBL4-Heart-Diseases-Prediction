@@ -87,6 +87,7 @@ const ModalAppointment = (props) => {
                 className="form-control"
                 type="text"
                 value={dataModalAppointment.date}
+                readOnly
               />
             </div>
 
@@ -96,6 +97,7 @@ const ModalAppointment = (props) => {
                 className="form-control"
                 rows={5}
                 value={dataModalAppointment.reason}
+                readOnly
               />
             </div>
           </div>

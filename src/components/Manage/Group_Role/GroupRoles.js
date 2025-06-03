@@ -9,16 +9,17 @@ import {
 } from "../../../services/roleService";
 import _, { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
-import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
+import { Skeleton } from "@mui/material";
 
 function GroupRoles() {
-  const dispatch = useDispatch();
   const [userGroups, setUserGroups] = useState([]);
   const [listRoles, setListRoles] = useState([]);
   const [selectGroup, setSelectGroup] = useState("");
 
   const [assignRolesByGroup, setAssignRolesByGroup] = useState([]);
+
+  const [loadingGroups, setLoadingGroups] = useState(true);
+  const [loadingAssignRoles, setLoadingAssignRoles] = useState(true);
 
   useEffect(() => {
     getGroups();
@@ -26,30 +27,36 @@ function GroupRoles() {
   }, []);
 
   const getGroups = async () => {
+    setLoadingGroups(true);
     let res = await fetchGroup();
     if (res && res.EC === 0) {
       setUserGroups(res.DT);
     } else {
       toast.error(res.EM);
     }
+    setLoadingGroups(false);
   };
 
   const getAllRoles = async () => {
+    setLoadingGroups(true);
     let data = await fetchAllRoles();
     if (data && +data.EC === 0) {
       setListRoles(data.DT);
     }
+    setLoadingGroups(false);
   };
 
   const handleOnchangeGroup = async (value) => {
     setSelectGroup(value);
     if (value) {
+      setLoadingAssignRoles(true);
       let data = await fetchRolesByGroup(value);
 
       if (data && +data.EC === 0) {
         let result = buildDataRolesByGroup(data.DT, listRoles);
         setAssignRolesByGroup(result);
       }
+      setLoadingAssignRoles(false);
     }
   };
 
@@ -105,17 +112,21 @@ function GroupRoles() {
 
   const handleSave = async () => {
     let data = buildDataToSave();
+    setLoadingGroups(true);
     let res = await assignRolesToGroup(data);
+
     if (res && res.EC === 0) {
       toast.success(res.EM);
     } else {
       toast.error(res.EM);
     }
+    setLoadingGroups(false);
   };
 
   useEffect(() => {
     console.log(assignRolesByGroup);
   }, [assignRolesByGroup]);
+
   return (
     <div className="group-roles">
       <div className="select-div">
@@ -127,42 +138,70 @@ function GroupRoles() {
           onChange={(event) => handleOnchangeGroup(event.target.value)}
         >
           <option value="">Please select your group</option>
-          {userGroups.length > 0 &&
-            userGroups.map((item, index) => {
-              return (
-                <option key={`group-${index}`} value={item._id}>
-                  {item.name}
-                </option>
-              );
-            })}
+          {loadingGroups ? (
+            <>
+              <option disabled>Loading...</option>
+              <option disabled>
+                <Skeleton variant="text" width={100} />
+              </option>
+              <option disabled>
+                <Skeleton variant="text" width={100} />
+              </option>
+            </>
+          ) : (
+            userGroups.length > 0 &&
+            userGroups.map((item, index) => (
+              <option key={`group-${index}`} value={item._id}>
+                {item.name}
+              </option>
+            ))
+          )}
         </select>
       </div>
       <hr />
       {selectGroup && (
         <div className="roles">
           <h5>Assign Roles: </h5>
-          {assignRolesByGroup &&
-            assignRolesByGroup.length > 0 &&
-            assignRolesByGroup.map((item, index) => {
-              return (
-                <div className="form-check mb-4" key={`list-role-${index}`}>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    value={item._id}
-                    id={`list-role-${index}`}
-                    checked={item.isAssigned}
-                    onChange={(event) => handleSelectRole(event.target.value)}
+          {loadingAssignRoles ? (
+            <>
+              {[...Array(10)].map((_, index) => (
+                <div
+                  className="form-check mb-4 d-flex"
+                  key={`skeleton-role-${index}`}
+                >
+                  <Skeleton
+                    variant="rectangular"
+                    width={20}
+                    height={20}
+                    sx={{ marginRight: 1 }}
                   />
-                  <label
-                    className="form-check-label"
-                    htmlFor={`list-role-${index}`}
-                  >
-                    {item.url}
-                  </label>
+                  <Skeleton variant="text" width={150} />
                 </div>
-              );
-            })}
+              ))}
+            </>
+          ) : (
+            assignRolesByGroup &&
+            assignRolesByGroup.length > 0 &&
+            assignRolesByGroup.map((item, index) => (
+              <div className="form-check mb-4" key={`list-role-${index}`}>
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  value={item._id}
+                  id={`list-role-${index}`}
+                  checked={item.isAssigned}
+                  onChange={(event) => handleSelectRole(event.target.value)}
+                />
+                <label
+                  className="form-check-label"
+                  htmlFor={`list-role-${index}`}
+                >
+                  {item.url}
+                </label>
+              </div>
+            ))
+          )}
+
           <div className="mt-3">
             <button className="btn btn-warning" onClick={() => handleSave()}>
               Save
@@ -170,29 +209,6 @@ function GroupRoles() {
           </div>
         </div>
       )}
-      {/* <div className="assign-roles">
-        <h5 className="assign-roles-title">Assign Roles:</h5>
-        <label for="ad-create">
-          <input type="checkbox" id="ad-create" />
-          /admin/create
-        </label>
-        <label for="ad-update">
-          <input type="checkbox" id="ad-update" />
-          /admin/update
-        </label>
-        <label for="ad-read">
-          <input type="checkbox" id="ad-read" />
-          /admin/read
-        </label>
-        <label for="ad-delete">
-          <input type="checkbox" id="ad-delete" />
-          /admin/delete
-        </label>
-
-        <button type="submit" className="save-roles-list">
-          Save
-        </button>
-      </div> */}
     </div>
   );
 }

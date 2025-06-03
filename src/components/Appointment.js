@@ -133,8 +133,13 @@ const Appointment = ({ patient }) => {
       _validInputs.reason = false;
       isValid = false;
     }
+
     if (!data.date) {
       toast.error("Ngày khám không được để trống!");
+      _validInputs.date = false;
+      isValid = false;
+    } else if (new Date(data.date).getTime() < Date.now()) {
+      toast.error("Ngày khám không được nhỏ hơn ngày giờ hiện tại!");
       _validInputs.date = false;
       isValid = false;
     }
