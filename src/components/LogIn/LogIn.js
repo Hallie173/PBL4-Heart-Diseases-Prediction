@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useState } from "react";
 import "./LogIn.css";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -7,7 +7,6 @@ import logo from "../../logo.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
 import { loginUserRedux } from "../../redux/reducer/user.reducer";
-import { RootState } from "../../store.ts";
 
 const LogIn = (props) => {
   const user = useSelector((state) => state.user) || {};
@@ -76,23 +75,19 @@ const LogIn = (props) => {
       };
 
       localStorage.setItem("jwt", token);
-      localStorage.setItem('user', JSON.stringify(data));
+      localStorage.setItem("user", JSON.stringify(data));
       dispatch(loginUserRedux(data));
       switch (groupWithRoles?.name) {
         case "admin":
-          console.log("Đã vào switch case admin");
           navigate("/manage");
           break;
         case "hospital":
-          console.log("Đã vào switch case");
           navigate("/hospital");
           break;
         case "doctor":
-          console.log("Đã vào switch case");
           navigate("/doctor");
           break;
         default:
-          console.log("Đã vào switch case");
           navigate("/");
           break;
       }
