@@ -46,6 +46,7 @@ function Chat() {
   const callTimeout = useRef(null);
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(true);
+  const [isRemoteCameraOn, setIsRemoteCameraOn] = useState(true);
   const activeStreams = useRef([]);
 
   const scrollToBottom = () => {
@@ -102,8 +103,6 @@ function Chat() {
           }));
 
           setChannels(enrichedChannels);
-        } else {
-          console.log("call api failed");
         }
       } catch (err) {
         console.error("Failed to fetch partner info:", err);
@@ -138,6 +137,75 @@ function Chat() {
     setText("");
   };
 
+  // const sendControlSignal = (type, value) => {
+  //   if (!selectedChannel?.id) return;
+
+  //   const controlRef = ref(db, `calls/${selectedChannel.id}/controls`);
+  //   const controlData = {
+  //     type, // 'camera' hoặc 'microphone'
+  //     value, // true/false
+  //     timestamp: Date.now(),
+  //     from: userId,
+  //   };
+
+  //   safeFirebaseSet(controlRef, controlData);
+  // };
+
+  useEffect(() => {
+    if (!selectedChannel?.id || !inCall) return;
+
+    const controlRef = ref(db, `calls/${selectedChannel.id}/controls`);
+    const unsubscribe = onValue(controlRef, (snapshot) => {
+      const controlData = snapshot.val();
+      if (controlData && controlData.from !== userId) {
+        if (controlData.type === "camera") {
+          setIsRemoteCameraOn(controlData.value);
+        }
+      }
+    });
+
+    return () => unsubscribe();
+  }, [selectedChannel?.id, inCall, userId]);
+
+  // Helper function để clean dữ liệu Firebase
+  const cleanFirebaseData = (obj) => {
+    if (obj === null || obj === undefined) {
+      return null;
+    }
+
+    if (Array.isArray(obj)) {
+      return obj
+        .map(cleanFirebaseData)
+        .filter((item) => item !== null && item !== undefined);
+    }
+
+    if (typeof obj === "object") {
+      const cleaned = {};
+      Object.keys(obj).forEach((key) => {
+        const value = cleanFirebaseData(obj[key]);
+        if (value !== null && value !== undefined) {
+          cleaned[key] = value;
+        }
+      });
+      return Object.keys(cleaned).length > 0 ? cleaned : null;
+    }
+
+    return obj;
+  };
+
+  // Hàm an toàn để set Firebase data
+  const safeFirebaseSet = async (ref, data) => {
+    try {
+      const cleanedData = cleanFirebaseData(data);
+      if (cleanedData !== null && cleanedData !== undefined) {
+        await set(ref, cleanedData);
+      }
+    } catch (error) {
+      console.error("Firebase set error:", error);
+      throw error;
+    }
+  };
+
   // Gửi cuộc gọi đi
   const startCall = async (isVideoCall) => {
     if (!selectedChannel?.id) return;
@@ -148,61 +216,63 @@ function Chat() {
     const callRef = ref(db, `calls/${selectedChannel.id}`);
 
     try {
-      const localStream = await navigator.mediaDevices.getUserMedia({
-        video: isVideoCall,
+      // Định nghĩa constraints rõ ràng
+      const constraints = {
+        video: isVideoCall === true,
         audio: true,
-      });
+      };
 
-      console.log("🎥 Got local stream:", localStream);
-      console.log("🎥 Video tracks:", localStream.getVideoTracks());
-      console.log("🎥 Audio tracks:", localStream.getAudioTracks());
+      const localStream = await navigator.mediaDevices.getUserMedia(
+        constraints
+      );
 
       setIsCameraOn(isVideoCall);
       setIsMicOn(true);
       setStream(localStream);
       addActiveStream(localStream);
 
-      // Debug: Kiểm tra video ref
-      console.log("🎥 myVideoRef.current:", myVideoRef.current);
+      // Set video element
+      if (isVideoCall) {
+        setTimeout(() => {
+          if (myVideoRef.current) {
+            myVideoRef.current.srcObject = localStream;
+            myVideoRef.current.play().catch((e) => {
+              console.error("Error playing local video:", e);
+            });
+          }
+        }, 100);
+      }
 
-      // Đợi một chút để React re-render
-      setTimeout(() => {
-        if (myVideoRef.current) {
-          console.log("🎥 Setting srcObject to local video");
-          myVideoRef.current.srcObject = localStream;
-
-          // Force play
-          myVideoRef.current.play().catch((e) => {
-            console.error("Error playing local video:", e);
-          });
-
-          console.log(
-            "🎥 Local video srcObject set:",
-            myVideoRef.current.srcObject
-          );
-        } else {
-          console.error("🎥 myVideoRef.current is null!");
-        }
-      }, 100);
-
-      const p = new Peer({
+      // Tạo Peer
+      const peerConfig = {
         initiator: true,
         trickle: false,
         stream: localStream,
-      });
+        config: {
+          iceServers: [
+            { urls: "stun:stun.l.google.com:19302" },
+            { urls: "stun:stun1.l.google.com:19302" },
+          ],
+        },
+      };
+
+      const p = new Peer(peerConfig);
       setPeer(p);
 
       p.on("signal", (data) => {
-        set(callRef, {
+        const callData = {
           callerId: userId,
           calleeId,
-          signal: data,
+          signal: cleanFirebaseData(data),
           status: "calling",
+          callType: isVideoCall ? "video" : "voice",
           timestamp: Date.now(),
-        });
+        };
+
+        safeFirebaseSet(callRef, callData);
       });
 
-      // Lắng nghe phản hồi từ callee
+      // Lắng nghe phản hồi
       const responseRef = ref(db, `calls/${selectedChannel.id}`);
       const unsubscribeResponse = onValue(responseRef, (snapshot) => {
         const callData = snapshot.val();
@@ -212,7 +282,10 @@ function Chat() {
           callData.responseSignal
         ) {
           if (p && !p.destroyed) {
-            p.signal(callData.responseSignal);
+            const cleanedSignal = cleanFirebaseData(callData.responseSignal);
+            if (cleanedSignal) {
+              p.signal(cleanedSignal);
+            }
             clearTimeout(callTimeout.current);
             setCallPending(false);
             unsubscribeResponse();
@@ -224,13 +297,15 @@ function Chat() {
       });
 
       p.on("stream", (remoteStream) => {
-        console.log("🎥 Got remote stream:", remoteStream);
         if (remoteVideoRef.current) {
           remoteVideoRef.current.srcObject = remoteStream;
           remoteVideoRef.current.play().catch((e) => {
             console.error("Error playing remote video:", e);
           });
         }
+
+        // Set initial remote camera state based on call type
+        setIsRemoteCameraOn(isVideoCall);
       });
 
       p.on("error", (err) => {
@@ -264,18 +339,21 @@ function Chat() {
       const callData = snapshot.val();
 
       // Chỉ hiển thị incoming call nếu:
-      // 1. Có data
+      // 1. Có data và signal hợp lệ
       // 2. User này là người được gọi
       // 3. Trạng thái đang gọi
       // 4. Chưa trong cuộc gọi khác
       if (
         callData &&
+        callData.signal &&
         callData.calleeId === userId &&
         callData.status === "calling" &&
         !inCall &&
         !callPending
       ) {
-        setCallInfo(callData);
+        // Clean call data trước khi set
+        const cleanedCallData = cleanFirebaseData(callData);
+        setCallInfo(cleanedCallData);
       }
     });
 
@@ -284,69 +362,78 @@ function Chat() {
 
   // Chấp nhận cuộc gọi
   const acceptCall = async () => {
-    if (!callInfo) return;
+    if (!callInfo || !callInfo.signal) return;
 
     try {
-      const localStream = await navigator.mediaDevices.getUserMedia({
-        video: isCameraOn,
+      const isVideoCall = callInfo.callType === "video";
+
+      const constraints = {
+        video: isVideoCall === true,
         audio: true,
-      });
+      };
 
-      console.log("🎥 Got local stream (accept):", localStream);
-      console.log("🎥 Video tracks (accept):", localStream.getVideoTracks());
+      const localStream = await navigator.mediaDevices.getUserMedia(
+        constraints
+      );
 
+      setIsCameraOn(isVideoCall);
+      setIsMicOn(true);
       setStream(localStream);
       addActiveStream(localStream);
 
-      // Debug: Kiểm tra video ref
-      console.log("🎥 myVideoRef.current (accept):", myVideoRef.current);
+      // Set video element
+      if (isVideoCall) {
+        setTimeout(() => {
+          if (myVideoRef.current) {
+            myVideoRef.current.srcObject = localStream;
+            myVideoRef.current.play().catch((e) => {
+              console.error("Error playing local video:", e);
+            });
+          }
+        }, 100);
+      }
 
-      // Đợi một chút để React re-render
-      setTimeout(() => {
-        if (myVideoRef.current) {
-          console.log("🎥 Setting srcObject to local video (accept)");
-          myVideoRef.current.srcObject = localStream;
-
-          // Force play
-          myVideoRef.current.play().catch((e) => {
-            console.error("Error playing local video:", e);
-          });
-
-          console.log(
-            "🎥 Local video srcObject set (accept):",
-            myVideoRef.current.srcObject
-          );
-        } else {
-          console.error("🎥 myVideoRef.current is null! (accept)");
-        }
-      }, 100);
-
-      const p = new Peer({
+      const peerConfig = {
         initiator: false,
         trickle: false,
         stream: localStream,
-      });
+        config: {
+          iceServers: [
+            { urls: "stun:stun.l.google.com:19302" },
+            { urls: "stun:stun1.l.google.com:19302" },
+          ],
+        },
+      };
+
+      const p = new Peer(peerConfig);
       setPeer(p);
 
       p.on("signal", (signal) => {
-        set(ref(db, `calls/${selectedChannel.id}`), {
-          ...callInfo,
+        const responseData = {
+          ...cleanFirebaseData(callInfo),
           status: "accepted",
-          responseSignal: signal,
+          responseSignal: cleanFirebaseData(signal),
           timestamp: Date.now(),
-        });
+        };
+
+        safeFirebaseSet(ref(db, `calls/${selectedChannel.id}`), responseData);
       });
 
-      p.signal(callInfo.signal);
+      const cleanedSignal = cleanFirebaseData(callInfo.signal);
+      if (cleanedSignal) {
+        p.signal(cleanedSignal);
+      }
 
       p.on("stream", (remoteStream) => {
-        console.log("🎥 Got remote stream (accept):", remoteStream);
         if (remoteVideoRef.current) {
           remoteVideoRef.current.srcObject = remoteStream;
           remoteVideoRef.current.play().catch((e) => {
             console.error("Error playing remote video:", e);
           });
         }
+
+        // Set initial remote camera state
+        setIsRemoteCameraOn(isVideoCall);
       });
 
       p.on("error", (err) => {
@@ -367,19 +454,19 @@ function Chat() {
   const rejectCall = () => {
     if (!selectedChannel?.id) return;
 
-    set(ref(db, `calls/${selectedChannel.id}/status`), "rejected");
+    safeFirebaseSet(ref(db, `calls/${selectedChannel.id}/status`), "rejected");
     setCallInfo(null);
   };
 
   // Kết thúc cuộc gọi
   const endCall = () => {
-    // Cleanup Firebase listener nếu có
+    // Cleanup Firebase listeners
     if (window.currentCallUnsubscribe) {
       window.currentCallUnsubscribe();
       window.currentCallUnsubscribe = null;
     }
 
-    // Xóa call data trên Firebase
+    // Xóa call data và controls trên Firebase
     if (selectedChannel?.id) {
       remove(ref(db, `calls/${selectedChannel.id}`)).catch((error) => {
         console.error("Failed to remove call data:", error);
@@ -416,6 +503,7 @@ function Chat() {
     setInCall(false);
     setCallInfo(null);
     setCallPending(false);
+    setIsRemoteCameraOn(true); // Reset remote camera state
 
     if (callTimeout.current) {
       clearTimeout(callTimeout.current);
@@ -431,55 +519,162 @@ function Chat() {
         track.enabled = !track.enabled;
       });
       setIsMicOn(!isMicOn);
-      console.log("🎤 Microphone:", !isMicOn ? "ON" : "OFF");
     }
   };
 
   // Hàm toggle camera
   const toggleCamera = async () => {
-    if (!stream) return;
-
-    const videoTracks = stream.getVideoTracks();
-    const newCameraState = !isCameraOn;
-
-    if (newCameraState) {
-      // Nếu đang tắt, thì bật lại bằng cách lấy lại camera
-      try {
-        const newStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
-        addActiveStream(newStream);
-        setTimeout(() => {
-          if (myVideoRef.current) {
-            console.log("🎥 Setting srcObject to local video");
-            myVideoRef.current.srcObject = newStream;
-
-            // Force play
-            myVideoRef.current.play().catch((e) => {
-              console.error("Error playing local video:", e);
-            });
-
-            console.log(
-              "🎥 Local video srcObject set:",
-              myVideoRef.current.srcObject
-            );
-          } else {
-            console.error("🎥 myVideoRef.current is null!");
-          }
-        }, 100);
-      } catch (err) {
-        console.error("Không thể bật lại camera:", err);
-      }
-    } else {
-      // Nếu đang bật, thì tắt camera bằng cách disable track
-      videoTracks.forEach((track) => {
-        track.enabled = false;
-      });
+    if (!stream || !peer || peer._pc.connectionState !== "connected") {
+      console.error("Stream hoặc peer không hợp lệ");
+      return;
     }
 
-    setIsCameraOn(newCameraState);
-    console.log("📹 Camera:", newCameraState ? "BẬT" : "TẮT");
+    const newCameraState = !isCameraOn;
+
+    try {
+      if (newCameraState) {
+        const videoConstraints = { video: true, audio: true };
+        const newVideoStream = await navigator.mediaDevices.getUserMedia(
+          videoConstraints
+        );
+        const newVideoTrack = newVideoStream.getVideoTracks()[0];
+
+        if (newVideoTrack && peer && !peer.destroyed) {
+          console.log("Gửi video track:", newVideoTrack);
+          const sender = peer._pc
+            .getSenders()
+            .find((s) => s.track && s.track.kind === "video");
+          if (sender) {
+            await sender.replaceTrack(newVideoTrack);
+          } else {
+            await peer._pc.addTrack(newVideoTrack, stream);
+            if (peer._pc.signalingState === "stable") {
+              const offer = await peer._pc.createOffer();
+              await peer._pc.setLocalDescription(offer);
+              sendControlSignal("offer", offer);
+            }
+          }
+
+          stream.getVideoTracks().forEach((track) => {
+            stream.removeTrack(track);
+            track.stop();
+          });
+          stream.addTrack(newVideoTrack);
+
+          setTimeout(() => {
+            if (myVideoRef.current) {
+              myVideoRef.current.srcObject = stream;
+              myVideoRef.current
+                .play()
+                .catch((e) => console.error("Error playing local video:", e));
+            }
+          }, 100);
+
+          newVideoStream.getTracks().forEach((track) => {
+            if (track !== newVideoTrack) track.stop();
+          });
+        }
+      } else {
+        const videoTracks = stream.getVideoTracks();
+        const sender = peer._pc
+          .getSenders()
+          .find((s) => s.track && s.track.kind === "video");
+        if (sender) {
+          await sender.replaceTrack(null);
+        }
+        videoTracks.forEach((track) => {
+          track.stop();
+          stream.removeTrack(track);
+        });
+        if (myVideoRef.current) {
+          myVideoRef.current.srcObject = null;
+        }
+      }
+
+      console.log("Sending camera signal:", newCameraState);
+      setIsCameraOn(newCameraState);
+      sendControlSignal("camera", newCameraState);
+    } catch (error) {
+      console.error("Error toggling camera:", error);
+      setIsCameraOn(!newCameraState);
+    }
   };
+
+  // Hàm sendControlSignal (đã có)
+  const sendControlSignal = (type, value) => {
+    if (!selectedChannel?.id) return;
+
+    const controlRef = ref(db, `calls/${selectedChannel.id}/controls`);
+    const controlData = {
+      type, // 'camera' hoặc 'microphone'
+      value, // true/false
+      timestamp: Date.now(),
+      from: userId,
+    };
+
+    safeFirebaseSet(controlRef, controlData);
+  };
+
+  // Phía remote: Lắng nghe Firebase và xử lý ontrack
+  useEffect(() => {
+    if (!selectedChannel?.id) return;
+
+    const controlRef = ref(db, `calls/${selectedChannel.id}/controls`);
+    const unsubscribe = onValue(controlRef, async (snapshot) => {
+      const data = snapshot.val();
+      if (data && data.from !== userId) {
+        console.log("Nhận tín hiệu:", data);
+        if (data.type === "camera" && remoteVideoRef.current) {
+          if (data.value === false) {
+            remoteVideoRef.current.srcObject = null;
+            console.log("📹 Remote camera: TẮT");
+          } else if (data.value === true) {
+            const remoteStream = new MediaStream(
+              peer._pc
+                .getReceivers()
+                .filter((r) => r.track && r.track.kind === "video")
+                .map((r) => r.track)
+            );
+            console.log("Video tracks:", remoteStream.getVideoTracks());
+            if (remoteStream.getVideoTracks().length > 0) {
+              remoteVideoRef.current.srcObject = remoteStream;
+              remoteVideoRef.current
+                .play()
+                .catch((e) => console.error("Error playing remote video:", e));
+              console.log("📹 Remote camera: BẬT");
+            } else {
+              console.warn("Không tìm thấy video track trong peer connection");
+            }
+          }
+        } else if (data.type === "offer") {
+          await peer._pc.setRemoteDescription(
+            new RTCSessionDescription(data.value)
+          );
+          const answer = await peer._pc.createAnswer();
+          await peer._pc.setLocalDescription(answer);
+          sendControlSignal("answer", answer);
+        }
+      }
+    });
+
+    return () => unsubscribe();
+  }, [selectedChannel?.id, userId]);
+
+  if (peer) {
+    peer._pc.ontrack = (event) => {
+      if (event.track.kind === "video" && remoteVideoRef.current) {
+        console.log(
+          "ontrack triggered:",
+          event.track,
+          event.streams[0].getVideoTracks()
+        );
+        remoteVideoRef.current.srcObject = event.streams[0];
+        remoteVideoRef.current
+          .play()
+          .catch((e) => console.error("Error playing remote video:", e));
+      }
+    };
+  }
 
   // Cleanup khi component unmount
   useEffect(() => {
@@ -550,7 +745,9 @@ function Chat() {
                       <li
                         key={channel.id}
                         className={`user-item ${
-                          selectedChannel?.id === channel.id ? "active" : ""
+                          selectedChannel?.id === channel.id
+                            ? "active-channel"
+                            : ""
                         }`}
                         onClick={() => setSelectedChannel(channel)}
                       >
@@ -754,15 +951,160 @@ function Chat() {
 
         {/* Hiển thị màn hình chờ khi đang gọi */}
         {callPending && (
-          <div className="incoming-call-overlay">
-            <div className="incoming-call-box">
-              <h5>
-                Đang chờ {selectedChannel?.partnerInfo?.username || "người lạ"}{" "}
-                chấp nhận cuộc gọi...
-              </h5>
-              <div className="incoming-call-actions mt-3">
-                <button className="btn btn-danger" onClick={endCall}>
-                  Hủy cuộc gọi
+          <div className="video-call-overlay">
+            <div className="video-container">
+              {/* Avatar của người được gọi */}
+              <div
+                className="remote-video"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#1a1a1a",
+                  position: "relative",
+                }}
+              >
+                <img
+                  src={
+                    selectedChannel?.partnerInfo?.avatar ||
+                    "/default-avatar.png"
+                  }
+                  alt="Avatar"
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    borderRadius: "50%",
+                    border: "3px solid #fff",
+                  }}
+                />
+                {/* Hiệu ứng ringing */}
+                <div
+                  style={{
+                    position: "absolute",
+                    width: "150px",
+                    height: "150px",
+                    borderRadius: "50%",
+                    border: "2px solid rgba(255, 255, 255, 0.3)",
+                    animation: "pulse 2s infinite",
+                  }}
+                ></div>
+              </div>
+
+              {/* Video của bản thân (local) */}
+              {isCameraOn ? (
+                <video
+                  ref={myVideoRef}
+                  autoPlay
+                  muted={true}
+                  playsInline
+                  className="local-video"
+                  onError={(e) => console.error("🎥 Local video error:", e)}
+                  style={{
+                    display: "block",
+                    backgroundColor: "#000",
+                    border: "2px solid #28a745",
+                  }}
+                />
+              ) : (
+                <div
+                  className="local-img"
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "#000",
+                    border: "2px solid #28a745",
+                  }}
+                >
+                  <img
+                    src={user?.account?.avatar || "/default-avatar.png"}
+                    alt="Avatar"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* Thông tin cuộc gọi */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: "20px",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  color: "white",
+                  textAlign: "center",
+                  backgroundColor: "rgba(0,0,0,0.7)",
+                  padding: "15px 25px",
+                  borderRadius: "25px",
+                  backdropFilter: "blur(10px)",
+                }}
+              >
+                <h5 style={{ margin: "0 0 5px 0", fontSize: "18px" }}>
+                  Đang gọi...
+                </h5>
+                <p style={{ margin: 0, fontSize: "14px", opacity: 0.8 }}>
+                  {selectedChannel?.partnerInfo?.username || "người lạ"}
+                </p>
+              </div>
+
+              {/* Nút điều khiển cuộc gọi */}
+              <div className="call-controls d-flex justify-content-center gap-3 mt-3">
+                <button
+                  className="btn btn-secondary toggle-camera-btn"
+                  onClick={toggleCamera}
+                  title={isCameraOn ? "Tắt camera" : "Bật camera"}
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={isCameraOn ? faVideoCamera : faVideoSlash}
+                    size="lg"
+                  />
+                </button>
+
+                <button
+                  className="btn btn-danger end-call-btn"
+                  onClick={endCall}
+                  title="Hủy cuộc gọi"
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <FontAwesomeIcon icon={faPhone} size="lg" />
+                </button>
+
+                <button
+                  className="btn btn-secondary toggle-mic-btn"
+                  onClick={toggleMicrophone}
+                  title={isMicOn ? "Tắt micro" : "Bật micro"}
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={isMicOn ? faMicrophone : faMicrophoneSlash}
+                    size="lg"
+                  />
                 </button>
               </div>
             </div>
@@ -771,18 +1113,134 @@ function Chat() {
 
         {/* Màn hình hiển thị khi có cuộc gọi đến */}
         {callInfo && (
-          <div className="incoming-call-overlay">
-            <div className="incoming-call-box">
-              <h5>
-                Cuộc gọi đến từ{" "}
-                {selectedChannel?.partnerInfo?.username || "người lạ"}
-              </h5>
-              <div className="incoming-call-actions mt-3">
-                <button className="btn btn-success me-2" onClick={acceptCall}>
-                  Chấp nhận
+          <div className="video-call-overlay">
+            <div className="video-container">
+              {/* Avatar của người gọi */}
+              <div
+                className="remote-video"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#1a1a1a",
+                  position: "relative",
+                }}
+              >
+                <img
+                  src={
+                    selectedChannel?.partnerInfo?.avatar ||
+                    "/default-avatar.png"
+                  }
+                  alt="Avatar"
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    borderRadius: "50%",
+                    border: "3px solid #fff",
+                  }}
+                />
+                {/* Hiệu ứng incoming call */}
+                <div
+                  style={{
+                    position: "absolute",
+                    width: "150px",
+                    height: "150px",
+                    borderRadius: "50%",
+                    border: "2px solid rgba(40, 167, 69, 0.6)",
+                    animation: "pulse 1.5s infinite",
+                  }}
+                ></div>
+                <div
+                  style={{
+                    position: "absolute",
+                    width: "180px",
+                    height: "180px",
+                    borderRadius: "50%",
+                    border: "2px solid rgba(40, 167, 69, 0.3)",
+                    animation: "pulse 1.5s infinite 0.5s",
+                  }}
+                ></div>
+              </div>
+
+              {/* Preview video của bản thân */}
+              <div
+                className="local-img"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#000",
+                  border: "2px solid #007bff",
+                }}
+              >
+                <img
+                  src={user?.account?.avatar || "/default-avatar.png"}
+                  alt="Avatar"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    borderRadius: "50%",
+                  }}
+                />
+              </div>
+
+              {/* Thông tin cuộc gọi đến */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: "20px",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  color: "white",
+                  textAlign: "center",
+                  backgroundColor: "rgba(0,0,0,0.7)",
+                  padding: "15px 25px",
+                  borderRadius: "25px",
+                  backdropFilter: "blur(10px)",
+                }}
+              >
+                <h5 style={{ margin: "0 0 5px 0", fontSize: "18px" }}>
+                  Cuộc gọi đến
+                </h5>
+                <p style={{ margin: 0, fontSize: "14px", opacity: 0.8 }}>
+                  {selectedChannel?.partnerInfo?.username || "người lạ"}
+                </p>
+              </div>
+
+              {/* Nút điều khiển cuộc gọi đến */}
+              <div className="call-controls d-flex justify-content-center gap-4 mt-3">
+                <button
+                  className="btn btn-danger"
+                  onClick={rejectCall}
+                  title="Từ chối cuộc gọi"
+                  style={{
+                    width: "70px",
+                    height: "70px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "20px",
+                  }}
+                >
+                  <FontAwesomeIcon icon={faPhone} size="lg" />
                 </button>
-                <button className="btn btn-danger" onClick={rejectCall}>
-                  Từ chối
+
+                <button
+                  className="btn btn-success"
+                  onClick={acceptCall}
+                  title="Chấp nhận cuộc gọi"
+                  style={{
+                    width: "70px",
+                    height: "70px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "20px",
+                  }}
+                >
+                  <FontAwesomeIcon icon={faPhone} size="lg" />
                 </button>
               </div>
             </div>
@@ -793,18 +1251,52 @@ function Chat() {
         {inCall && (
           <div className="video-call-overlay">
             <div className="video-container">
-              {/* Video của người khác (remote) */}
-              <video
-                ref={remoteVideoRef}
-                autoPlay
-                playsInline
-                muted={false}
-                className="remote-video"
-                onLoadedMetadata={() => console.log("🎥 Remote video loaded")}
-                onError={(e) => console.error("🎥 Remote video error:", e)}
-              />
+              {/* Video/Avatar của người khác (remote) */}
+              {isRemoteCameraOn ? (
+                <video
+                  ref={remoteVideoRef}
+                  autoPlay
+                  playsInline
+                  muted={false}
+                  className="remote-video"
+                  onError={(e) => console.error("🎥 Remote video error:", e)}
+                />
+              ) : (
+                <div
+                  className="remote-video"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "#1a1a1a",
+                    color: "white",
+                  }}
+                >
+                  <img
+                    src={
+                      selectedChannel?.partnerInfo?.avatar ||
+                      "/default-avatar.png"
+                    }
+                    alt="Avatar"
+                    style={{
+                      width: "120px",
+                      height: "120px",
+                      borderRadius: "50%",
+                      border: "3px solid #fff",
+                      marginBottom: "10px",
+                    }}
+                  />
+                  <p style={{ margin: 0, fontSize: "16px", opacity: 0.8 }}>
+                    {selectedChannel?.partnerInfo?.username || "người lạ"}
+                  </p>
+                  <p style={{ margin: 0, fontSize: "12px", opacity: 0.6 }}>
+                    Camera tắt
+                  </p>
+                </div>
+              )}
 
-              {/* Video của bản thân (local) */}
+              {/* Video của bản thân (local) - giữ nguyên */}
               {isCameraOn ? (
                 <video
                   ref={myVideoRef}
@@ -819,7 +1311,6 @@ function Chat() {
                     backgroundColor: "#000",
                     border: "2px solid red",
                   }}
-                  onClick={() => console.log(myVideoRef)}
                 />
               ) : (
                 <div
@@ -844,32 +1335,9 @@ function Chat() {
                 </div>
               )}
 
-              {/* Debug info */}
-              {/* <div
-                style={{
-                  position: "absolute",
-                  top: "10px",
-                  left: "10px",
-                  color: "white",
-                  backgroundColor: "rgba(0,0,0,0.7)",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  fontSize: "12px",
-                }}
-              >
-                <div>
-                  Local stream: {stream ? "Available" : "Not available"}
-                </div>
-                <div>
-                  Local video ref:{" "}
-                  {myVideoRef.current ? "Available" : "Not available"}
-                </div>
-                <div>In call: {inCall ? "Yes" : "No"}</div>
-              </div> */}
-
-              {/* Nút kết thúc cuộc gọi */}
+              {/* Nút điều khiển */}
               <div className="call-controls d-flex justify-content-center gap-3 mt-3">
-                <button
+                {/* <button
                   className="btn btn-secondary toggle-camera-btn"
                   onClick={toggleCamera}
                   title={isCameraOn ? "Tắt camera" : "Bật camera"}
@@ -877,7 +1345,7 @@ function Chat() {
                   <FontAwesomeIcon
                     icon={isCameraOn ? faVideoCamera : faVideoSlash}
                   />
-                </button>
+                </button> */}
 
                 <button
                   className="btn btn-danger end-call-btn"
@@ -887,7 +1355,7 @@ function Chat() {
                   <FontAwesomeIcon icon={faPhone} />
                 </button>
 
-                <button
+                {/* <button
                   className="btn btn-secondary toggle-mic-btn"
                   onClick={toggleMicrophone}
                   title={isMicOn ? "Tắt micro" : "Bật micro"}
@@ -895,7 +1363,7 @@ function Chat() {
                   <FontAwesomeIcon
                     icon={isMicOn ? faMicrophone : faMicrophoneSlash}
                   />
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
