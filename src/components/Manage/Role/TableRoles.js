@@ -7,16 +7,15 @@ import { toast } from "react-toastify";
 import ReactPaginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
+import { Skeleton } from "@mui/material";
 
 const TableRoles = forwardRef((props, ref) => {
-  const dispatch = useDispatch();
   const [listRoles, setListRoles] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(6);
   const [totalPages, setTotalPages] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handlePageClick = async (event) => {
     setCurrentPage(+event.selected + 1);
@@ -33,24 +32,20 @@ const TableRoles = forwardRef((props, ref) => {
   }));
 
   const getAllRoles = async () => {
-    dispatch(setLoading());
+    setIsLoading(true);
     let data = await fetchAllRolesWithPaging(currentPage, currentLimit);
-    dispatch(setUnLoading());
     if (data && +data.EC === 0) {
       setTotalPages(data.DT.totalPages);
       setListRoles(data.DT.roles);
     }
+    setIsLoading(false);
   };
 
   const handleDeleteRole = async (role) => {
-    dispatch(setLoading());
     let data = await deleteRole(role);
-    dispatch(setUnLoading());
     if (data && +data.EC === 0) {
       toast.success(data.EM);
-      dispatch(setLoading());
       await getAllRoles();
-      dispatch(setUnLoading());
     }
   };
 
@@ -75,21 +70,38 @@ const TableRoles = forwardRef((props, ref) => {
             </tr>
           </thead>
           <tbody>
-            {listRoles && listRoles.length > 0 ? (
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, index) => (
+                <tr className="border-bottom" key={`skeleton-${index}`}>
+                  <td>
+                    <Skeleton variant="text" width={180} />
+                  </td>
+                  <td>
+                    <Skeleton variant="text" width={100} /> 
+                  </td>
+                  <td>
+                    <Skeleton variant="text" width={100} />
+                  </td>
+                  <td>
+                    <Skeleton variant="circular" width={24} height={24} />
+                  </td>
+                </tr>
+              ))
+            ) : listRoles && listRoles.length > 0 ? (
               <>
                 {listRoles.map((item, index) => {
                   return (
-                    <tr class="border-bottom" key={`row-${index}`}>
+                    <tr className="border-bottom" key={`row-${index}`}>
                       <td>
-                        <div class=" d-flex flex-row align-items-center mb-2">
+                        <div className="d-flex flex-row align-items-center mb-2">
                           {item._id}
                         </div>
                       </td>
                       <td>
-                        <div class="d-flex">{item.url}</div>
+                        <div className="d-flex">{item.url}</div>
                       </td>
                       <td>
-                        <div class=" d-flex flex-column">
+                        <div className="d-flex flex-column">
                           {item.description}
                         </div>
                       </td>
@@ -110,11 +122,9 @@ const TableRoles = forwardRef((props, ref) => {
                 })}
               </>
             ) : (
-              <>
-                <tr>
-                  <td colSpan={4}>Not Found Roles</td>{" "}
-                </tr>
-              </>
+              <tr>
+                <td colSpan={4}>Not Found Roles</td>
+              </tr>
             )}
           </tbody>
         </table>

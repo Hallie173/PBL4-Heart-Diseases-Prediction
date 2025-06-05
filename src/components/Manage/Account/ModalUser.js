@@ -8,11 +8,8 @@ import {
 } from "../../../services/userService";
 import { toast } from "react-toastify";
 import _ from "lodash";
-import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
 
 const ModalUser = (props) => {
-  const dispatch = useDispatch();
   const { action, dataModalUser } = props;
   const defaultUserData = {
     email: "",
@@ -67,9 +64,7 @@ const ModalUser = (props) => {
   }, [action]);
 
   const getGroups = async () => {
-    dispatch(setLoading());
     let res = await fetchGroup();
-    dispatch(setUnLoading());
     if (res && res.EC === 0) {
       setUserGroups(res.DT);
       if (res.DT && res.DT.length > 0) {
@@ -112,7 +107,6 @@ const ModalUser = (props) => {
     // create user
     let check = checkValidateInputs();
     if (check === true) {
-      dispatch(setLoading());
       let res =
         action === "CREATE"
           ? await createNewUser({
@@ -123,7 +117,6 @@ const ModalUser = (props) => {
               ...userData,
               groupId: userData["group"],
             });
-      dispatch(setUnLoading());
       if (res && res.EC === 0) {
         props.onHide();
         setUserData({

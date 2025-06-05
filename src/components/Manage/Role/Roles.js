@@ -1,5 +1,5 @@
 import "./Roles.css";
-import { useDebugValue, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-toastify";
@@ -8,11 +8,8 @@ import TableRoles from "./TableRoles";
 import { createRoles } from "../../../services/roleService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
-import { useDispatch } from "react-redux";
 
 function Roles() {
-  const dispatch = useDispatch();
   const dataChildDefault = { url: "", description: "", isValidUrl: true };
 
   const childRef = useRef();
@@ -62,9 +59,7 @@ function Roles() {
     if (!invalidObj) {
       // call api
       let data = buildDataToPersist();
-      dispatch(setLoading());
       let res = await createRoles(data);
-      dispatch(setUnLoading());
       if (res && res.EC === 0) {
         toast.success(res.EM);
         childRef.current.fetListRolesAgain();
@@ -155,32 +150,6 @@ function Roles() {
       </div>
     </div>
   );
-  // return (
-  //     <div className="roles">
-  //         <div className="add-role">
-  //             <h5 className="add-role-title">Add a new role:</h5>
-  //             <input type="text" className="add-role-url" placeholder="URL..." />
-  //             <input type="text" className="add-role-description" placeholder="Description.." />
-  //             <button type="submit" className="save-new-role">Add role</button>
-  //         </div>
-  //         <div className="title">
-  //             <span className="r-id">ID</span>
-  //             <span className="url">URL</span>
-  //             <span className="description">Description</span>
-  //             <span className="actions">Actions</span>
-  //         </div>
-  //         <ul className="roles-list">
-  //             <li className="roles-item">
-  //                 <span className="role-id">001</span>
-  //                 <span className="role-url">..................................</span>
-  //                 <span className="role-description">nothingnothingnothingnothingnothingnothing</span>
-  //                 <span className="role-actions">
-  //                     <FontAwesomeIcon icon={faTrashCan} className="trash-icon"></FontAwesomeIcon>
-  //                 </span>
-  //             </li>
-  //         </ul>
-  //     </div>
-  // )
 }
 
 export default Roles;

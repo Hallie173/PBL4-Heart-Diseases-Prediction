@@ -4,13 +4,11 @@ import { ref, onValue, push, set, remove } from "firebase/database";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCamera,
   faLocationArrow,
   faMicrophone,
   faMicrophoneSlash,
   faPaperclip,
   faPhone,
-  faPhoneAlt,
   faSearch,
   faVideo,
   faVideoCamera,
@@ -136,20 +134,6 @@ function Chat() {
     await push(ref(db, `channels/${selectedChannel.id}/messages`), newMsg);
     setText("");
   };
-
-  // const sendControlSignal = (type, value) => {
-  //   if (!selectedChannel?.id) return;
-
-  //   const controlRef = ref(db, `calls/${selectedChannel.id}/controls`);
-  //   const controlData = {
-  //     type, // 'camera' hoặc 'microphone'
-  //     value, // true/false
-  //     timestamp: Date.now(),
-  //     from: userId,
-  //   };
-
-  //   safeFirebaseSet(controlRef, controlData);
-  // };
 
   useEffect(() => {
     if (!selectedChannel?.id || !inCall) return;
