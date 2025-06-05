@@ -3,7 +3,6 @@ import "./EditProfile.css";
 import _ from "lodash";
 import { updateCurrentUser } from "../../../services/userService";
 import { toast } from "react-toastify";
-import { setLoading, setUnLoading } from "../../../redux/reducer/loading.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserRedux } from "../../../redux/reducer/user.reducer";
 
@@ -32,9 +31,7 @@ function EditProfile() {
   };
 
   const updateUser = async (getState) => {
-    dispatch(setLoading());
     let response = await updateCurrentUser(userData);
-    dispatch(setUnLoading());
     if (response && +response.EC === 0) {
       toast.success(response.EM);
       let token = response.DT.access_token;
