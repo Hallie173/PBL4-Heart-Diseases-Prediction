@@ -45,7 +45,7 @@ const ModalMedicalRecord = (props) => {
     let arr = ["diagnosis", "notes"];
     let check = true;
     for (let i = 0; i < arr.length; i++) {
-      if (!data[arr[i]]) {
+      if (data[arr[i]] === undefined || data[arr[i]] === "") {
         let _validInputs = _.cloneDeep(dataValid);
         _validInputs[arr[i]] = false;
         setValidInputs(_validInputs);
@@ -158,6 +158,9 @@ const ModalMedicalRecord = (props) => {
                 className="form-control"
                 type="text"
                 value={data.diagnosis}
+                onChange={(e) =>
+                  handleOnChangeInput(e.target.value, "diagnosis")
+                }
               />
             </div>
 
@@ -167,6 +170,9 @@ const ModalMedicalRecord = (props) => {
                 className="form-control"
                 rows={10} // hoặc tùy chỉnh số dòng mong muốn
                 value={data.notes}
+                onChange={(e) =>
+                  handleOnChangeInput(e.target.value, "notes")
+                }
               />
             </div>
 

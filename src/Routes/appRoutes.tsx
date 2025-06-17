@@ -12,6 +12,8 @@ import userRoutes from "./userRoutes";
 import LogIn from "../components/LogIn/LogIn";
 import SignUp from "../components/SignUp/SignUp";
 import Page404 from "../components/Page404/Page404";
+import StaffLayout from "../Layouts/StaffLayout";
+import staffRoutes from "./staffRoutes";
 
 interface AppRoutesProps {
   user: userState;
@@ -29,6 +31,8 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ user }) => (
           return doctorRoutes(DoctorLayout, user);
         case "user":
           return userRoutes(UserLayout, user);
+        case "staff":
+          return staffRoutes(StaffLayout, user);
       }
     })()}
     <Route path="/login" element={<LogIn />} />

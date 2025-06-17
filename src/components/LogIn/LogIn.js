@@ -87,6 +87,9 @@ const LogIn = (props) => {
         case "doctor":
           navigate("/doctor");
           break;
+        case "staff":
+          navigate("/staff");
+          break;
         default:
           navigate("/");
           break;
