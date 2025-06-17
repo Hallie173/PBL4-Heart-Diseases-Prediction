@@ -9,9 +9,7 @@ import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
 import { logoutUser } from "../../services/userService";
-import MedicalRecord from "./MedicalRecord/MedicalRecord";
 import ModalDoctor from "../Hospital/Doctor/ModalDoctor";
-import Appointment from "./Appointment/Appointment";
 import { setLoading, setUnLoading } from "../../redux/reducer/loading.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -130,21 +128,7 @@ function DoctorManage() {
         </div>
         <div className={styles.rolesManage}>
           <ul class={classNames(styles.nav, styles.navTabs)}>
-            <li className={styles.navItem}>
-              <Link
-                className={classNames(
-                  styles.navLink,
-                  styles.manageItem,
-                  styles.grouproleLink,
-                  {
-                    [styles.active]: location.pathname.endsWith("/appointment"),
-                  }
-                )}
-                to="appointment"
-              >
-                Appointment
-              </Link>
-            </li>
+            
             <li className={styles.navItem}>
               <Link
                 className={classNames(
@@ -153,12 +137,12 @@ function DoctorManage() {
                   styles.heartRecordLink,
                   {
                     [styles.active]:
-                      location.pathname.endsWith("/medical-record"),
+                      location.pathname.endsWith("/patients"),
                   }
                 )}
-                to="medical-record"
+                to="patients"
               >
-                Medical Record
+               Patients
               </Link>
             </li>
           </ul>

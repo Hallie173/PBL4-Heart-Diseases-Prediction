@@ -29,6 +29,10 @@ const fetchAllUsers = (page, limit) => {
   return instance.get(`/api/v1/user/read?page=${page}&limit=${limit}`);
 };
 
+const fetchAllPatients = (page, limit) => {
+  return instance.get(`/api/v1/user/read?page=${page}&limit=${limit}`);
+};
+
 const fetchAllHospital = (page, limit) => {
   return instance.get(`/api/v1/hospital/read?page=${page}&limit=${limit}`);
 };
@@ -252,4 +256,5 @@ export {
   getAllMessage,
   sendMessageBetweenUser,
   fetchAllUsersChatting,
+  fetchAllPatients
 };
